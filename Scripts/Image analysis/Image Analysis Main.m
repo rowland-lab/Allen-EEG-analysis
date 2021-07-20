@@ -15,6 +15,7 @@ dcm2niix_path='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\dcm2n
 %% Steps
 
 % Step 1 - Download DICOM images and run Quality Check
+% Requires VPN or muscsecure wifi connection
 imageproc_s1(hostname,username,password,remotehostfolder,dicomoutputfolder)
 cd(dicomoutputfolder)
 
