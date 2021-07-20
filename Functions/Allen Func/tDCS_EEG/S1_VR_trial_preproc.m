@@ -1,32 +1,23 @@
-% clc
-% clear all
-% close all
-% 
-% %% Change parameters
-% protocolfolder='C:\Box Sync\Allen_Rowland_EEG\protocol_00087153';
-% 
-% sbjnum='pro00087153_0001';
-% 
-% % Channel Selection
-% vr_chan=42;
-% tdcs_chan=43;
-
-
 function S1_VR_trial_preproc(sbjnum,protocolfolder)
 dbstop if error
 
 %% Preprocess VR Trials
-subjectfolder=fullfile(protocolfolder,sbjnum);
-vrDataFolder =fullfile(subjectfolder,'vr');
-eegDataFile =fullfile(subjectfolder,[sbjnum,'.edf']);
-
-
-mkdir(fullfile(subjectfolder,'analysis','S1-VR_preproc'))
+% Define folder paths
+subjectfolder = fullfile(protocolfolder,sbjnum);
+vrDataFolder = fullfile(subjectfolder,'vr');
+edffolder = fullfile(subjectfolder,'edf');
 analysisfolder=fullfile(subjectfolder,'analysis','S1-VR_preproc');
 
+% Define EEG data path
+eegDataFile = fullfile(edffolder,dir(fullfile(edffolder,'*.edf')).name);
+
+% Make analysis folder
+mkdir(analysisfolder)
+
+% Find VR files
 filePattern = dir(fullfile(vrDataFolder,'TRIAL_*')); % Removed '.' in 'TRIAL_*.'
 for i=1:length(filePattern)
-    vrDataFolders{i,1}=([fileparts(vrDataFolder),'/vr/',filePattern(i).name]); %/vr/ for mac, \vr\ for all else
+    vrDataFolders{i,1}=fullfile(vrDataFolder,filePattern(i).name);
 end
 
 % Load VR file
@@ -36,12 +27,12 @@ tdcs_chan=43; %default tDCS channel
 % Double check correct channel selection
 figure
 hold on
-plot((trialData.eeg.data(:,1)-mean(trialData.eeg.data(:,1)))/std(trialData.eeg.data(:,1)))
+plot((trialData.eeg.data(:,7)-mean(trialData.eeg.data(:,7)))/std(trialData.eeg.data(:,7)))
 plot((trialData.eeg.data(:,vr_chan)-mean(trialData.eeg.data(:,vr_chan)))/std(trialData.eeg.data(:,vr_chan))-20)
 plot(((trialData.eeg.data(:,tdcs_chan)-mean(trialData.eeg.data(:,tdcs_chan)))/std(trialData.eeg.data(:,tdcs_chan))*-1)-40,'LineWidth',2)
 xlabel('Samples')
 ylabel('Z-score')
-legend('Fp1','VR','tDCS')
+legend('C3','VR','tDCS')
 
 clc
 x=input('Correct Channels? [y=1,n=2]');
@@ -52,12 +43,13 @@ while x~=1
     
     figure
     hold on
-    plot((trialData.eeg.data(:,1)-mean(trialData.eeg.data(:,1)))/std(trialData.eeg.data(:,1)))
+    plot((trialData.eeg.data(:,7)-mean(trialData.eeg.data(:,7)))/std(trialData.eeg.data(:,7)))
     plot((trialData.eeg.data(:,vr_chan)-mean(trialData.eeg.data(:,vr_chan)))/std(trialData.eeg.data(:,vr_chan))-20)
     plot(((trialData.eeg.data(:,tdcs_chan)-mean(trialData.eeg.data(:,tdcs_chan)))/std(trialData.eeg.data(:,tdcs_chan))*-1)-40,'LineWidth',2)
     xlabel('Samples')
     ylabel('Z-score')
-    legend('Fp1','VR','tDCS')
+    legend('C3','VR','tDCS')
+    title('Correct Channels? [y=1,n=2]')
     
     x=input('Correct Channels? [y=1,n=2]');
     clc
@@ -68,6 +60,8 @@ end
 % Import reference table
 import_table=readtable(fullfile(protocolfolder,'Trial Reference.xlsx'));
 subj_idx=find(strcmp(import_table.ID,sbjnum));
+
+% Define session information
 sessioninfo.patientID=import_table.ID{subj_idx};
 sessioninfo.dx=import_table.dx{subj_idx};
 sessioninfo.stimlat=import_table.Laterality_brain_{subj_idx};
@@ -141,6 +135,7 @@ for i=1:length(trialData.vr)
     
 end
 
+% Create EEG trace and save
 figure('units','normalized','outerposition',[0 0 1 1]); hold on
 plot((trialData.eeg.data(:,7)-mean(trialData.eeg.data(:,7)))/std(trialData.eeg.data(:,7))+20)
 plot((trialData.eeg.data(:,18)-mean(trialData.eeg.data(:,18)))/std(trialData.eeg.data(:,18)))
@@ -159,8 +154,9 @@ close all
 
 %% Detect tDCS signal
 
-
-[tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,vr_chan,tdcs_chan);
+% Use tdcsdetect function to detect vr signal and tDCS signal
+threshold=7000; % define threshold for random spike removal (default is 7000)
+[tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,vr_chan,tdcs_chan,threshold);
 
 sessioninfo.tdcssig.time=tdcs_detect;
 sessioninfo.sessionperiod=Session_times;
@@ -174,6 +170,7 @@ if length(trialData.vr)~=numel(sessioninfo.trialnames) || length(sessioninfo.vrs
     error('ERROR automated trial remove does not match trial reference')
 end
 
+% Define trials as pre, intra, or post stimulation
 for i=1:length(trialData.vr)
     pattern=sessioninfo.trialnames{i};
     switch pattern(1:3)
@@ -187,10 +184,15 @@ for i=1:length(trialData.vr)
     trialData.vr(i).information.env=import_table.VREnvironment(subj_idx);
 end
 %% Save Step 1 info
-
+% Save session info
 sessioninfo.s1rejecttrials=reject_trials;
 sessioninfo.vrchan=vr_chan;
 sessioninfo.tdcschan=tdcs_chan;
+sessioninfo.path.vrfolder=vrDataFolder;
+sessioninfo.path.edffile=eegDataFile;
+sessioninfo.path.sbjfolder=subjectfolder;
+
+% Save preprocessed vr data
 preprocessed_vr=trialData.vr;
 
 save(fullfile(analysisfolder,[sbjnum,'_S1-VRdata_preprocessed']),'preprocessed_vr','sessioninfo');

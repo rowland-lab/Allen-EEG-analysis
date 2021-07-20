@@ -1,19 +1,21 @@
 
-function S2_MetricPlot (sbjnum,protocolfolder)
+function S2_MetricPlot (sbjnum,protocolfolder,threshold)
 
 %% Assigned Variables
 sbjname=['Subject-',extractAfter(sbjnum,'pro00087153_00')];
 
-
-% initialize data folders
-subjectfolder=fullfile(protocolfolder,sbjnum);
-vrDataFolder =fullfile(subjectfolder,'vr');
-eegDataFile =fullfile(subjectfolder,[sbjnum,'.edf']);
-
-% Import preprocessed VR data
-importdata = load(fullfile(subjectfolder,'analysis','S1-VR_preproc',[sbjnum,'_S1-VRdata_preprocessed.mat']));
+% Import S1 preprocessed data
+try
+    importdata = load(fullfile(protocolfolder,sbjnum,'analysis','S1-VR_preproc',[sbjnum,'_S1-VRdata_preprocessed.mat']));
+catch
+    error('Step 1 Preprocessing files NOT FOUND')
+end
 trialData.vr = importdata.preprocessed_vr;
 trialData.sessioninfo=importdata.sessioninfo;
+
+% initialize data folders
+subjectfolder=trialData.sessioninfo.path.sbjfolder;
+vrDataFolder=trialData.sessioninfo.path.vrfolder;
 
 % Make analysis folder
 metricsfolder=fullfile(subjectfolder,'analysis','S2-metrics');
@@ -55,7 +57,6 @@ colorsnr.sham={'g'};
 colorsnr.pre = {'k'};
 colorsnr.stim = {'r'};
 colorsnr.post = {'b'};
-
 linestyle={'-','--',':','-.','-','--',':','-.'};
 
 % Pre
@@ -142,8 +143,8 @@ saveas(fh(2),fullfile(metricsfolder,'velocity.jpeg'))
 %% bar graphs
 figure('units','normalized','outerposition',[0 0 1 1])
 for i = 1:length(metricNames)
-    subplot(2,6,i)
-
+    
+    % Organize Information
     v_pre=[];
     for z=1:numel(fieldnames(vrMetrics_pre))        
         fieldnames_pre=fieldnames(vrMetrics_pre);
@@ -181,10 +182,13 @@ for i = 1:length(metricNames)
                 end
         end
     end
-    normality=kstest(bardata(:));
+    
+    % Create bar graph
+    subplot(2,6,i)
     bar([mean(v_pre,'omitnan') mean(v_stim,'omitnan') mean(v_post,'omitnan')],'FaceColor',[0.8 0.8 0.8]);
     hold on
-
+    
+    % Create error bars
     for z=1:size(bardata,2)
         err(:,z)=std(bardata(:,z),'omitnan')/sqrt(size(bardata(:,z),1));
     end
@@ -192,7 +196,11 @@ for i = 1:length(metricNames)
     er=errorbar(1:size(bardata,2),[mean(v_pre,'omitnan') mean(v_stim,'omitnan') mean(v_post,'omitnan')],err,err);
     er.Color = 'r';                          
     er.LineStyle = 'none';      
-
+    
+    % Test for normality
+    normality=kstest(bardata(:));
+    
+    % Perform statistics
     if normality ==0
         [~,~,stats]=anova1(bardata,[],'off');
         pvalues=multcompare(stats,'Display','off');
@@ -239,8 +247,8 @@ saveas(gcf,fullfile(metricsfolder,'metric bar graph.jpeg'))
 %% Box plots
 figure('units','normalized','outerposition',[0 0 1 1])
 for i = 1:length(metricNames)
-    subplot(2,6,i)
-
+    
+    % Organize Data
     v_pre=[];
     for z=1:numel(fieldnames(vrMetrics_pre))        
         fieldnames_pre=fieldnames(vrMetrics_pre);
@@ -278,17 +286,17 @@ for i = 1:length(metricNames)
                 end
         end
     end
+    
+    % Create box plot
+    subplot(2,6,i)
     boxplot(boxdata);
     hold on
-
     for z=1:size(boxdata,2)
     plot(z*ones(size(boxdata,1)),boxdata(:,z),'ko');
         for k=1:size(boxdata,1)
             text(z+.05,boxdata(k,z), sprintf('%d',k));
         end
     end
-
-
     set(gca,'XTickLabel',importdata.sessioninfo.trialnames)
     xtickangle(-65)
     ylabel(metricYlabel{i})
@@ -297,9 +305,9 @@ end
 
 saveas(gcf,fullfile(metricsfolder,'metric box graph.jpeg'))
 
-%% Detect bad trials
+%% Detect bad trials based on outlier reaction time
 
-
+% Organize data
 v_pre=[];
 for z=1:numel(fieldnames(vrMetrics_pre))        
     fieldnames_pre=fieldnames(vrMetrics_pre);
@@ -340,10 +348,10 @@ end
 reactiontimes_rearrange=reactiontimes(:);
 
 
-% Find outliers >2 sec
+% Find outliers >threshold sec
 rej_row_2=[];
 rej_col_2=[];
-[rej_row_2,rej_col_2]=find(reactiontimes>2);
+[rej_row_2,rej_col_2]=find(reactiontimes>threshold);
 
 % plot reaction time threshold
 figure('units','normalized','outerposition',[0 0 1 1]);
@@ -357,7 +365,7 @@ plot(z*ones(size(reactiontimes,1)),reactiontimes(:,z),'ko');
 end
 
 h1=plot([1 size(reactiontimes,2)],[2 2],'--');
-legend([h1],{'2 second'})
+legend([h1],{[num2str(threshold),' second']})
 set(gca,'XTickLabel',importdata.sessioninfo.trialnames)
 title('Rejected Trials')
 saveas(gcf,fullfile(metricsfolder,'Rejected Trials Plot.jpeg'))

@@ -1,80 +1,43 @@
-% Channel Reference
-% {'Fp1' }
-% {'F7'  }
-% {'T3'  }
-% {'T5'  }
-% {'O1'  } 5
-% {'F3'  }
-% {'C3'  } 7
-% {'P3'  }
-% {'A1'  }
-% {'Fz'  } 10
-% {'Cz'  }
-% {'Fp2' }
-% {'F8'  }
-% {'T4'  }
-% {'T6'  }
-% {'O2'  }
-% {'F4'  }
-% {'C4'  } 18
-% {'P4'  }
-% {'A2'  }20
-% {'Fpz' }
-% {'Pz'  }
-% {'X1'  }23 [EKG]
-% {'X2'  }
-% {'X3'  }25
-% {'X4'  }
-% {'X5'  }
-% {'X6'  }
-% {'X7'  }
-% {'X8'  }30
-% {'X9'  }
-% {'X10' }
-% {'X11' }
-% {'X12' }
-% {'X13' }35
-% {'X14' }
-% {'X15' }
-% {'X16' }
-% {'X17' }
-% {'X18' }40
-% {'DC1' } 41- VR
-% {'DC2' } 42- VR
-% {'DC3' } 43- tDCS
-% {'DC4' } 44- tDCS
-% {'OSAT'}
-% {'PR'  }
-
-%% Enter Info
-    
 function S3_EEGanalysis(sbjnum,protocolfolder)
-close all
-clc
-
-% sbjnum='pro00087153_0001';
-% protocolfolder='C:\Box Sync\Allen_Rowland_EEG\protocol_00087153';
-% protocolfolder='C:\Users\allen\Box Sync\Allen_Rowland_EEG\protocol_00087153';
-
-
 %% Define variables and import data
+analysisfolder=fullfile(protocolfolder,sbjnum,'analysis');
 
-sbjfolder=fullfile(protocolfolder,sbjnum);
-analysisfolder=fullfile(sbjfolder,'analysis');
+% Detect and import S1 info file
+try
+    importdataS1=load(fullfile(analysisfolder,'S1-VR_preproc',[sbjnum,'_S1-VRdata_preprocessed.mat']));
+catch
+    error('Step 1 Preprocessing files NOT FOUND')
+end
+sessioninfo=importdataS1.sessioninfo;
+
+
+% Detect and import S2 file
+try
+    importdataS2=load(fullfile(analysisfolder,'S2-metrics',[sbjnum,'_S2-Metrics']));
+catch
+    error('Step 2 Preprocessing files NOT FOUND')
+end
+S2_trialdat=importdataS2.trialData.vr;
+movementstart=struct2cell(importdataS2.movementstart);
+movementstart=[movementstart{:}];
+
+% Define folders
+edffile=sessioninfo.path.edffile;
+vrDataFolder=sessioninfo.path.vrfolder;
 eeganalysisfolder=fullfile(analysisfolder,'S3-EEGanalysis');
+
+
+% Make eeg analysis folder
 mkdir(eeganalysisfolder)
 
-edffile=fullfile(sbjfolder,[sbjnum,'.edf']);
-
+% Make restvr folder
 restvrfolder=fullfile(eeganalysisfolder,'restvr');
 mkdir(restvrfolder)
 
+% Make vrepoch folder
 vrepochfolder=fullfile(eeganalysisfolder,'vrepoch');
 mkdir(vrepochfolder)
 
-% Detect and import S1 info file
-importdataS1=load(fullfile(analysisfolder,'S1-VR_preproc',[sbjnum,'_S1-VRdata_preprocessed.mat']));
-sessioninfo=importdataS1.sessioninfo;
 trial_label=sessioninfo.trialnames;
 figtitle=[sessioninfo.patientID,'-',sessioninfo.dx,'-',sessioninfo.stimlat];
 
@@ -86,16 +49,11 @@ else
     contra_cn=18;
 end
 
-% Detect and import S2 file
-importdataS2=load(fullfile(analysisfolder,'S2-metrics',[sbjnum,'_S2-Metrics']));
-S2_trialdat=importdataS2.trialData.vr;
-movementstart=struct2cell(importdataS2.movementstart);
-movementstart=[movementstart{:}];
 
 % Read edf
-filePattern = dir(fullfile(sbjfolder,'vr','TRIAL_*.'));
+filePattern = dir(fullfile(vrDataFolder,'TRIAL_*.'));
 for i=1:length(filePattern)
-    vrDataFolders{i,1}=fullfile(sbjfolder,'vr',filePattern(i).name);
+    vrDataFolders{i,1}=fullfile(vrDataFolder,filePattern(i).name);
 end
 trialData = loadVrTrialData_EEG(vrDataFolders,edffile,{'DC1' 'DC2'},false,sessioninfo.vrchan);
 
@@ -113,14 +71,6 @@ trialData.eeg.data=filtfilt(n1_b,n1_a,trialData.eeg.data);
 trialData.eeg.data=filtfilt(n2_b,n2_a,trialData.eeg.data);
 trialData.eeg.data=filtfilt(n3_b,n3_a,trialData.eeg.data);
 
-% % EKG filter
-% [n4_b, n4_a]=butter(3,2*[49 55]/trialData.eeg.header.samplingrate,'stop');%52 Hz
-% [n5_b, n5_a]=butter(3,2*[101 107]/trialData.eeg.header.samplingrate,'stop');%104 Hz
-% [n6_b, n6_a]=butter(3,2*[153 159]/trialData.eeg.header.samplingrate,'stop');%156 Hz
-% 
-% trialData.eeg.data=filtfilt(n4_b,n4_a,trialData.eeg.data);
-% trialData.eeg.data=filtfilt(n5_b,n5_a,trialData.eeg.data);
-% trialData.eeg.data=filtfilt(n6_b,n6_a,trialData.eeg.data);
 
 % % Band pass filter
 % trialData.eeg.data(:,1:22)= bandpass(trialData.eeg.data(:,1:22),[13 30],trialData.eeg.header.samplingrate);
@@ -225,44 +175,6 @@ while x~=1
             end
         end
     end
-% % % % % %     
-% % % % % %     % Create movement figures
-% % % % % %     coi=[7 18];
-% % % % % %     for cn=1:numel(coi)
-% % % % % %         for i=1:length(fieldnames(epochs.vrevents))
-% % % % % %             figure
-% % % % % %             sgtitle([trial_label{i},' Channel ',string(coi(cn))])
-% % % % % %             move_start=eval(['epochs.vrevents.t',num2str(i),'.',epocheventtypes{3},'.val']);
-% % % % % %             for ms=1:length(temp_val)
-% % % % % %                 subplot(2,ceil(length(temp_val)/2),ms)
-% % % % % %                 plot((trialData.eeg.data(:,18)-mean(trialData.eeg.data(:,18)))/std(trialData.eeg.data(:,18)))
-% % % % % %                 clearvars eventtimelist
-% % % % % %                 for trial=1:length(trialData.vr)
-% % % % % %                     fieldnamesevents={'targetUp','targetHit'};
-% % % % % %                     eventtimelist=0;
-% % % % % %                     for t=1:length(fieldnamesevents)
-% % % % % %                         eval(['eventtimes=trialData.vr(i).events.',fieldnamesevents{t},'.time;'])
-% % % % % %                         for q=1:length(eventtimes)
-% % % % % %                             if any(eventtimelist==eventtimes(q))
-% % % % % %                                 h=text(eventtimes(q)*1024,0,['\leftarrow',fieldnamesevents{t},' ',num2str(q)],'FontSize',11,'Rotation',-90);
-% % % % % %                             else
-% % % % % %                                 h=text(eventtimes(q)*1024,0,['\leftarrow',fieldnamesevents{t},' ',num2str(q)],'FontSize',11,'Rotation',90);
-% % % % % %                             end
-% % % % % %                             set (h, 'Clipping', 'on');
-% % % % % %                             eventtimelist=[eventtimelist eventtimes(q)];
-% % % % % %                         end
-% % % % % %                     end   
-% % % % % %                 end
-% % % % % %                 xlim([move_start(ms,1) move_start(ms,1)+2*1024]) 
-% % % % % %                 currentgca=gca;
-% % % % % %                 xTickseconds=currentgca.XTick/1024;
-% % % % % %                 currentgca.XTickLabel=string(round(xTickseconds-xTickseconds(1),2));
-% % % % % %                 ylim([-1 1])
-% % % % % %                 xlabel({'Seconds'})
-% % % % % %             end
-% % % % % %             saveas(gcf,fullfile('C:\Users\allen\Desktop\EEG traces',[trial_label{i},'_Channel_',num2str(coi(cn))]))
-% % % % % %         end
-% % % % % %     end
 
     clearvars eventtimelist
     for i=1:length(trialData.vr)
@@ -404,11 +316,8 @@ end
 legend('C3','C4','EKG','VR','tDCS')
 
 % Input Comparison (Rest vs VR Whole Epochs)
-% 7- [1,1;2,2;3,3;5,4;5,5;6,6]
-% 10- [1,1;2,2;3,3;4,4;5,5]
-
 clc
-Epochcompare=input(sprintf('Enter epoch comparisons (Multiple=[#R,#VR;#R,#VR]) :  '))
+Epochcompare=input(sprintf('Enter epoch comparisons (Multiple=[#R,#VR;#R,#VR]) :  '));
 
 % Create Line Plots (Rest Epochs and VR Whole Epochs)
 figure('Name',['Cn7_Cn18_RestEpochs==',figtitle],'units','normalized','outerposition',[0 0 1 1])
@@ -1196,4 +1105,5 @@ saveas(gcf,fullfile(vrepochfolder,[get(gcf,'Name'),'.jpg']))
 
 %% Save variables
 save(fullfile(eeganalysisfolder,'s3_dat'),'Epochcompare','epochs')
+close all
 end

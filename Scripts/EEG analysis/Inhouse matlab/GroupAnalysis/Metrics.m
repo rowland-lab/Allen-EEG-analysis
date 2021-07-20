@@ -1,9 +1,3 @@
-close all
-clc
-clear all
-
-Rowland_start
-
 % Enter in protocol folder
 protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
 
@@ -55,7 +49,7 @@ norm=false;
 
 clear vars shamdat stimdat
 
-for d=3
+for d=1:numel(dx_type)
     
     % Create figure
     figure;
@@ -208,7 +202,7 @@ stim_type={0,2};
 metric_measures=metricdat.label;
 norm=false;
 
-for d=1
+for d=1:numel(dx_type)
     
     
     % Create figure
@@ -294,7 +288,7 @@ metric_measures=metricdat.label;
 comparisons=[6 10;3 10];
 timepoints={'Baseline','Early-Stim','Late-Stim','Post-Stim'};
 
-for d=2
+for d=1:numel(dx_type)
     for comp=1:size(comparisons,1)
         % Create figure
         figure;

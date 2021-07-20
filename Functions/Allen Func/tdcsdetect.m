@@ -1,4 +1,4 @@
-function [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,VR_chan,tDCS_chan)
+function [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,VR_chan,tDCS_chan,threshold)
 %TDCSDETECT detects when tdcs is on or off
 % tdcs_chan = entire EEG data from tDCS channel
 % start = the starting sample number of the experiment (start of analysis)
@@ -6,7 +6,7 @@ function [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,VR_chan,tDCS_
 % tdcs_start = tDCS ramp up (begining, end)
 % tdcs_end = tDCS ramp down(begining, end)
 
-% Define session position
+% Define session position using session_detect function
 Session_positions=session_detect(trialData,VR_chan,tDCS_chan);
 
 % Detect VR
@@ -26,7 +26,7 @@ VR_sig(end)=RowNrs(end);
 VR_sig=VR_sig+Session_positions{1};
 
 % Remove Random Spikes VR
-VR_sig(find(diff(VR_sig,1,2)<7000),:)=[];
+VR_sig(diff(VR_sig,1,2)<threshold,:)=[];
 
 % Detect tDCS times
 if var(trialData.eeg.data(Session_positions{1}:Session_positions{2},tDCS_chan))>50000

@@ -1,8 +1,4 @@
-function [trialData,VR_chan_auto] = loadVrTrialData_EEG_ftsync(vrDataFolder,eegDataFile,eegSyncChannels,manualSyncReview,VR_chan,FieldTripDir)
-
-% Add FieldTrip
-addpath(FieldTripDir);
-ft_defaults
+function [trialData,VR_chan_auto] = loadVrTrialData_EEG(vrDataFolder,eegDataFile,eegSyncChannels,manualSyncReview,VR_chan)
 
 % initialize output structure
 trialData = [];
@@ -46,7 +42,10 @@ if ~isempty(vrDataFolder)
         analogDataFile = fullfile(vrDataFolder{it},'AnalogIn.csv');
         digitalDataFile = fullfile(vrDataFolder{it},'DigitalOut.csv');
         eventDataFile = fullfile(vrDataFolder{it},'Events.csv');
-        environmentFile = fullfile(vrDataFolder{it},dir(fullfile(vrDataFolder{it},'environment*')).name);
+        
+        environmentdir=dir(fullfile(vrDataFolder{it},'environment*'));
+        environmentFile = fullfile(vrDataFolder{it},environmentdir.name);
+%         environmentFile = fullfile(vrDataFolder{it},dir(fullfile(vrDataFolder{it},'environment*')).name);
         if exist(vrDataFolder{it},'dir') && exist(trialInformationFile,'file') && exist(trackerDataFile,'file') && exist(analogDataFile,'file') && exist(digitalDataFile,'file') && exist(eventDataFile,'file')
             
             % load trial information
@@ -90,29 +89,32 @@ if ~isempty(eegDataFile)
     
     % make sure vr data folder is valid
     if exist(eegDataFile,'file')
-        
-        % Read Data with FieldTrip
-        cfg = [];
-        cfg.continuous  = 'yes';
-        cfg.dataset     = eegDataFile;
-        data            = ft_preprocessing(cfg);
-
-        
-        eegData = data.trial{1, 1};
+        [eegData, edfHdr] = lab_read_edf(eegDataFile);
         eegData = eegData';
         
         % add time vector(s) to ecog data
-        eegTime = (0:(size(eegData,1)-1)) * (1/data.hdr.Fs);
+        eegTime = (0:(size(eegData,1)-1)) * (1/edfHdr.samplingrate);
         eegTime = eegTime';
-               
+        
+        % add event times
+        if isfield(edfHdr,'events')
+            edfHdr.events.TIME = double(edfHdr.events.POS) * (1/edfHdr.samplingrate);
+        end
+        
+        % create list of data channels
+        channels = cell(1,size(edfHdr.channels,1));
+        for i=1:length(channels)
+            channels{i} = strtrim(edfHdr.channels(i,:));
+        end
+        
         % update flag
         eegLoaded = true;
         
         % save data to structure
-        trialData.eeg.header = data.hdr;
+        trialData.eeg.header = edfHdr;
         trialData.eeg.time = eegTime;
         trialData.eeg.data = eegData;
-        trialData.eeg.channels = data.hdr.label;
+        trialData.eeg.channels = channels;
     else
         disp('Invalid EEG data file.')
     end
@@ -151,13 +153,13 @@ if (vrLoaded && eegLoaded)
         
         if ~isempty(eegSyncChannels{1})
             eegSync1 = trialData.eeg.data(:,strcmpi(trialData.eeg.channels,eegSyncChannels{1}));
-            [eegSync1, snr1] = processSyncSignal(eegSync1,trialData.eeg.header.Fs,sync_start);
-            eegSync1 = movmean(eegSync1,round(trialData.eeg.header.Fs * 0.1));
+            [eegSync1, snr1] = processSyncSignal(eegSync1,trialData.eeg.header.samplingrate,sync_start);
+            eegSync1 = movmean(eegSync1,round(trialData.eeg.header.samplingrate * 0.1));
         end
         if ~isempty(eegSyncChannels{2})
             eegSync2 = trialData.eeg.data(:,strcmpi(trialData.eeg.channels,eegSyncChannels{2}));
-            [eegSync2, snr2] = processSyncSignal(eegSync2,trialData.eeg.header.Fs,sync_start);
-            eegSync2 = movmean(eegSync2,round(trialData.eeg.header.Fs * 0.1));
+            [eegSync2, snr2] = processSyncSignal(eegSync2,trialData.eeg.header.samplingrate,sync_start);
+            eegSync2 = movmean(eegSync2,round(trialData.eeg.header.samplingrate * 0.1));
         end
 
         if snr1>snr2
@@ -169,8 +171,8 @@ if (vrLoaded && eegLoaded)
         end
     else
         eegSync = trialData.eeg.data(:,VR_chan);
-        [eegSync, ~] = processSyncSignal(eegSync,trialData.eeg.header.Fs);
-        eegSync = movmean(eegSync,round(trialData.eeg.header.Fs * 0.1));
+        [eegSync, ~] = processSyncSignal(eegSync,trialData.eeg.header.samplingrate);
+        eegSync = movmean(eegSync,round(trialData.eeg.header.samplingrate * 0.1));
         eeg_TTLsync = eegSync;
     end
     
@@ -263,7 +265,7 @@ if (vrLoaded && eegLoaded)
 end
 
 % auxiliary function to process sync signal
-function [eegSync, snr] = processSyncSignal(eegSync,Fs,syncStart)
+function [eegSync, snr] = processSyncSignal(eegSync,samplingRate,syncStart)
 
 % When the sync signal is not included in the montage, it is set to zero.
 % These data points need to be removed for proper synchronization
@@ -274,7 +276,7 @@ end
 
 % remove spikes
 s0 = abs(eegSync);
-ns = round(Fs * 0.1);
+ns = round(samplingRate * 0.1);
 sb = movmean(s0,[ns-1 0]);
 sa = (movmean(s0,[0 ns])*(ns+1)-s0)/ns;
 stb = movstd(s0,[ns-1 0]);
@@ -312,7 +314,7 @@ for i = 1:length(rising)
     r = rising(i);
     f = falling(find(falling>r,1,'first'));
     
-    if (f-r)<Fs*10
+    if (f-r)<samplingRate*10
         
         indDel = max(1,r-10):min(f+10,length(eegSync));
         indMed = max(1,r-ns):max(1,r-5);

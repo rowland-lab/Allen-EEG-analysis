@@ -1,10 +1,9 @@
-function [EEG]=EEGlab_epochimport(s4_mat,EEG)
+function [EEG]=EEGlab_epochimport(trialData,sessioninfo,epochs,EEG)
 
-    import=open(s4_mat);
 
-    ft_vrdat=import.ft_vrdat;
-    ft_sessioninfo=import.ft_sessioninfo;
-    ft_epochs=import.ft_epochs;
+    ft_vrdat=trialData.vr;
+    ft_sessioninfo=sessioninfo;
+    ft_epochs=epochs;
 
     fn=fieldnames(ft_epochs.vrevents);
     trials=extractAfter(fn,'t');

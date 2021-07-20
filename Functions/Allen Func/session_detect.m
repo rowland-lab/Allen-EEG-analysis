@@ -1,4 +1,9 @@
 function Session_positions=session_detect(trialData,VR_chan,tDCS_chan)
+% Function to define session START and session END
+
+
+
+%% Create figure
 figure('units','normalized','outerposition',[0 0 1 1]);
 hold on
 try
@@ -14,7 +19,7 @@ catch
     return
 end
 
-
+% display EEG notes
 try
     for i=1:length(trialData.eeg.header.events.TYP)
         text(double(trialData.eeg.header.events.POS(i)),0,['\leftarrow', trialData.eeg.header.events.TYP{i}],'FontSize',11,'Rotation',90,'Color','blue')
@@ -24,6 +29,7 @@ end
 shg
 clc
 
+%% Define start and end of session
 for i = 1:2
     shg
     if i==1
@@ -38,7 +44,7 @@ end
 disp('Selections completed')
 close all
 
-% Export the positions obtained by the data cursor to the workspace
+%% Export the positions obtained by the data cursor to the workspace
 
 for i = 1:size(Session_info,2)
         Session_positions{i} = Session_info{i};

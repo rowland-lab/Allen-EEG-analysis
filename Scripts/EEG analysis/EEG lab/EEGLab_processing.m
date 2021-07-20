@@ -1,22 +1,23 @@
-close all
-clear all
-clc
+%%
+% Note: Must have run S1,S2,S3 in EEG analysis - Main script
 
-Rowland_start
-addpath('C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\eeglab-develop');
+% Enter in protocol folder
+protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
+
+% Enter EEG lab path
+eeglabpath='C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\eeglab-develop';
+addpath(eeglabpath);
+
+% Start eeglab default settings
 eeglab
 close all
 clc
-
-% Enter in protocol folder
-% protocolfolder='C:\Box Sync\Allen_Rowland_EEG\protocol_00087153';
-protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
 
 % Detect subjects
 sbj=dir(fullfile(protocolfolder,'pro000*.'));
 sbj={sbj.name}';
 
-%%
+%% Run Code
 
 % Preprocess EEGLab (Epoch, Filter, ICA weights)
 for i=1:numel(sbj)

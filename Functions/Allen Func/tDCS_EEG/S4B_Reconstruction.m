@@ -1,15 +1,26 @@
 %% replay data collection
 
-function S2B_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,trial_num)
+function S4B_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,trial_num)
 %% Generate variables
-
 subjectFolder=fullfile(protocol_folder,subjectName);
 
+
+% Import S1 preprocessed data
+try
+    import=load(fullfile(subjectFolder,'analysis','S1-VR_preproc',[subjectName,'_S1-VRdata_preprocessed.mat']));
+
+catch
+    error('Step 1 Preprocessing files NOT FOUND')
+end
+
+% Define folders
+eegfile=import.sessioninfo.path.edffile;
 reconFolder=fullfile(subjectFolder,'analysis','S2B-Reconstruction');
+
+
+% Make reconstruction folder
 mkdir(reconFolder)
 
-% Import S1-VR_preproc data
-import=load(fullfile(subjectFolder,'analysis','S1-VR_preproc',[subjectName,'_S1-VRdata_preprocessed.mat']));
 
 if isempty(trial_num)
     trial_num=1:numel(import.preprocessed_vr);
@@ -36,7 +47,7 @@ for trials=trial_num
     dataFile = fullfile(trialFolder,'Data.csv');
     eventsFile = fullfile(trialFolder,'Events.csv');
 
-    trialData=loadVrTrialData_EEG(trialFolder,fullfile(subjectFolder,[subjectName,'.edf']),{'DC1' 'DC2'},false,import.sessioninfo.vrchan);
+    trialData=loadVrTrialData_EEG(trialFolder,eegfile,{'DC1' 'DC2'},false,import.sessioninfo.vrchan);
     trialData.vr=import.preprocessed_vr(trials);
     trackerData = trialData.vr.tracker;
     
