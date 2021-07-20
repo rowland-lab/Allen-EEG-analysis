@@ -1,5 +1,4 @@
 %% paths
-dcm2niix_path='C:\Users\allen\Documents\GitHub\Rowland_Allen\dcm2niix';
 img_path='C:\Users\allen\Downloads\20210707_104257_pro00087153_0005\20210707_104257_pro00087153_0005\dicom';
 out_path='C:\Users\allen\Downloads\niiout'; mkdir(out_path);
 
