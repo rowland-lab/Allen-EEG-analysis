@@ -7,7 +7,7 @@ password='eR4GLRe07ceK';
 remotehostfolder='/MRdata/Rowland/NR_tdcs/upload';
 
 % DICOM output folder
-dicomoutputfolder='C:\Users\allen\Downloads\subject05 DICOM';
+dicomoutputfolder='C:\Users\allen\Downloads\subject003 DICOM';
 
 % dcm2niix program path
 dcm2niix_path='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\dcm2niix';
