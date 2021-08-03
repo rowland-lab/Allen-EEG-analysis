@@ -1,6 +1,5 @@
-function imageproc_s1(hostname,username,password,remotehostfolder,outputfolder)
+function subjectfolder=imageproc_s1(hostname,username,password,remotehostfolder,outputfolder)
 
-mkdir(outputfolder);
 %% SSH into CBI host (via SSH/SFTP/SCP For Matlab (v2) toolbox)
 % Requires VPN or to be on 'muscsecure' wifi
 % Setup connection
@@ -17,19 +16,42 @@ for r=1:numel(response)
 end
 selection=input('Choose number associated with file === ');
 
+% Create subject folder
+sbjnum=extractBetween(response{selection},'87153_','.zip');
+subjectfolder=fullfile(outputfolder,['sbj_',sbjnum{:}]);
+mkdir(subjectfolder);
+
 % SSH files over to download folder
-ssh2_conn = scp_get(ssh2_conn, response{selection},outputfolder,remotehostfolder);
+disp('Downloading files from CBI repo');
+ssh2_conn = scp_get(ssh2_conn, response{selection},subjectfolder,remotehostfolder);
 
 % Close SSH connection
 ssh2_conn = ssh2_close(ssh2_conn);
 
+% go to subject folder
+cd(subjectfolder)
+
+% Make raw data folder
+disp('Organzing files... creating raw folder');
+rawfolder=fullfile(pwd,'raw');
+mkdir(rawfolder)
+
+% Move zip folder
+movefile(fullfile(pwd,'*.zip'),rawfolder)
+
 %% Unzip DICOM and QC raw data
 
 % Unzip to download folder
-unzip(fullfile(outputfolder,response{selection}),outputfolder)
+disp('Unzipping download files');
+unzip(fullfile(rawfolder,response{selection}),rawfolder);
 
-% Define DICOM file path and add to path
-dicomfolder=fullfile(outputfolder,extractBefore(response{selection},'.zip'),'dicom');
+% Create dicom folder
+dicomfolder=fullfile(subjectfolder,'dicom');
+mkdir(dicomfolder)
+
+% Move dicom files
+disp('Moving DICOM files');
+copyfile(fullfile(rawfolder,extractBefore(response{selection},'.zip'),'dicom'),dicomfolder)
 addpath(dicomfolder);
 
 % Detect DICOM file names
@@ -54,6 +76,7 @@ end
 % Create T1,T2,fMRI,DKI figures
 imagetypes={'t1','t2','Resting_State','DKI'};
 scannames=fieldnames(dicomdata);
+disp('Creating QC images...takes awhile');
 for img=1:numel(imagetypes)
     temp_scan=scannames(~cellfun(@isempty,(regexp(scannames,[imagetypes{img}],'ForceCelloutput'))));
     for sn=1:numel(temp_scan)
@@ -70,3 +93,4 @@ for img=1:numel(imagetypes)
         imshow3D(tempimg)
     end
 end
+

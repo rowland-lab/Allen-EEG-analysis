@@ -1,23 +1,52 @@
-% Input initial data
+clear all
+clc
 
+% Input initial data
 % SSH information
 hostname='cbihome.musc.edu';
 username='ajc210';
 password='eR4GLRe07ceK';
 remotehostfolder='/MRdata/Rowland/NR_tdcs/upload';
 
-% DICOM output folder
-dicomoutputfolder='C:\Users\allen\Downloads\subject003 DICOM';
+
+% Data save folder
+datasavefolder='C:\Users\allen\Downloads\';
 
 % dcm2niix program path
-dcm2niix_path='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\dcm2niix';
+dcm2niix_path='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\imaging\dcm2niix';
+
+% SPM
+spm_path='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\imaging\spm12'; addpath(genpath(spm_path));
+
+% CONN
+conn_path='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\imaging\conn'; addpath(genpath(conn_path));
+
+% DSI studio
+dsipath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\imaging\dsi_studio_64';
+
+subjectfolder='C:\Users\allen\Downloads\sbj_0003';
 
 %% Steps
 
 % Step 1 - Download DICOM images and run Quality Check
 % Requires VPN or muscsecure wifi connection
-imageproc_s1(hostname,username,password,remotehostfolder,dicomoutputfolder)
-cd(dicomoutputfolder)
+subjectfolder=imageproc_s1(hostname,username,password,remotehostfolder,datasavefolder)
+cd(subjectfolder)
 
-% Step 2 - Preprocess images
+% Step 2 - DICOM to nifti and organize files
+imageproc_s2(subjectfolder,dcm2niix_path)
 
+% Step 3a - Process fMRI data
+fmrifolder=fullfile(subjectfolder,'analysis','fmri');
+mkdir(fmrifolder);
+fmriproc_s3a(subjectfolder)
+
+% Step 3b - Process DKI data
+dkifolder=fullfile(subjectfolder,'analysis','dki');
+mkdir(dkifolder);
+dkiproc_s3b(dkifolder,subjectfolder,dsipath)
+
+% Step 4a - Analyze fMRI data
+
+% Step 4b - Analyze DKI data
+dkianal_s4b(dkifolder);
