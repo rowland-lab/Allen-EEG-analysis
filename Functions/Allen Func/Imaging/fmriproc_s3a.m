@@ -17,6 +17,19 @@ fmri_path=fullfile(nii_path,'fmri');
 rsfile.name={dir(fullfile(fmri_path,'*Resting_State*.nii')).name};
 rsfile.header={dir(fullfile(fmri_path,'*Resting_State*.json')).name};
 
+% % Field Mapping files
+% fmname={dir(fullfile(fmri_path,'*field_mapping*.nii')).name};
+% fm_aqnum=unique(extractBetween(fmname,'gre_field_mapping_','_'));
+% for faq=1:numel(fmname)
+% %     try
+%         tempname=fmname{faq};
+%         tempaq=extractBetween(tempname,'gre_field_mapping_','_');
+%         tempec=extractBetween(tempname,['gre_field_mapping_',tempaq{:},'_e'],'.nii');
+%         fmfile.name{str2num(tempec{:},),1)}=tempname;
+%         fmfile.header={dir(fullfile(fmri_path,'*field_mapping*.json')).name};
+% %     end
+% end
+
 % fmri analysis path
 fmrianal_path=fullfile(subject_folder,'analysis','fmri');
 
@@ -46,6 +59,7 @@ SO=I;
 
 
 %% Run CONN toolbox (SPM toolbox)
+%https://andysbrainbook.readthedocs.io/en/latest/SPM/SPM_Overview.html
 %%%% Motify Batch fields
 [~,sbjname]=fileparts(subject_folder);
 batch.name=sbjname;
@@ -71,6 +85,9 @@ batch.Setup.preprocessing.steps='default_mni';
 batch.Setup.preprocessing.sliceorder=SO;
 batch.Setup.done=1;
 batch.Setup.overwrite='Yes';
+
+% % Field map
+% batch.Setup.functionals{1}{1}={'gre_field_mapping_17_e2_ph.nii'};
 
 %%%% Create Denoising field
 batch.Denoising.done=1;

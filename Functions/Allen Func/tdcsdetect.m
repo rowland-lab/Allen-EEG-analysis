@@ -14,7 +14,7 @@ Session_data=trialData.eeg.data(Session_positions{1}:Session_positions{2},VR_cha
 if mean(Session_data)<0
     Session_data=Session_data*-1;
 end
-[RowNrs,~]=find(Session_data>mean([min(Session_data),max(Session_data)]));
+[RowNrs,~]=find(Session_data>mean([min(Session_data(Session_data>=0)),max(Session_data)]));
 [Row,~]=find(diff(RowNrs)>1000);
 
 VR_sig(1,1)=RowNrs(1);

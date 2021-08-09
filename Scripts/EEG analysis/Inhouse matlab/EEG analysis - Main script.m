@@ -67,6 +67,7 @@ sbj={sbj.name}';
 
 % Preprocessing --> S1_VR_trial_preproc(sbjnum,protocolfolder)
 for i=1:numel(sbj)
+    for i=35:36
     S1_VR_trial_preproc(sbj{i},protocolfolder)
 end
 

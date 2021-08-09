@@ -35,6 +35,7 @@ mkdir(fmri_folder)
 
 % Move fmri files
 movefile('*Resting*',fmri_folder)
+movefile('*field_mapping*',fmri_folder)
 
 %%%% DKI
 % create diffusion folder

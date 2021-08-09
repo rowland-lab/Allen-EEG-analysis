@@ -28,20 +28,17 @@ for df=1:numel(bvecfilenames)
     cmd=sprintf('dsi_studio --action=rec --source=%s.src.gz --method=4  --param0=1.25',srcfilename);
     system(cmd);
 
-    % Tractography
-    statfolder=fullfile(dkifolder,'stat');
-    mkdir(statfolder)
-    
-        cmd=sprintf('dsi_studio --action=trk --source=%s.src.gz.gqi.1.25.fib.gz --seed_count=1000000  --roi=HCP842_tractography:Cortico_Spinal_Tract_L --output=%s\CST_L.tt.gz --export=stat',srcfilename,statfolder);
-
-    
+    % Fiber tracking
+    tractsfolder=fullfile(dkifolder,'tracts');
+    mkdir(tractsfolder)
+   
     for r=1:numel(ROIs)
-    cmd=sprintf('dsi_studio --action=trk --source=%s.src.gz.gqi.1.25.fib.gz --seed_count=1000000  --roi=HCP842_tractography:Cortico_Spinal_Tract_L --output=%s\CST_L.tt.gz --export=stat',srcfilename,statfolder);
-    system(cmd);
-    
-    
-        dsi_studio --action=ana --source=my.fib.gz --atlas=FreeSurferDKT
+%         cmd=sprintf('dsi_studio --action=trk --source=%s.src.gz.gqi.1.25.fib.gz --seed_count=1000000  --track_id=%s --output=%s --export=stat',srcfilename,ROIs{r},fullfile(tractsfolder,ROIs{r}));
+        cmd=sprintf('dsi_studio --action=atk --source=%s.src.gz.gqi.1.25.fib.gz --track_id=%s',srcfilename,ROIs{r});
+        system(cmd);
+        movefile(fullfile(srcfibfolder,['*',ROIs{r},'*']),tractsfolder);
+    end
 end
 
-cd(dkifolder)
+cd(tractsfolder)
 end

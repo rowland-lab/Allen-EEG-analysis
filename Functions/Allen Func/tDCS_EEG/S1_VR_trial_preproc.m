@@ -66,7 +66,7 @@ sessioninfo.patientID=import_table.ID{subj_idx};
 sessioninfo.dx=import_table.dx{subj_idx};
 sessioninfo.stimlat=import_table.Laterality_brain_{subj_idx};
 sessioninfo.stimamp=import_table.Amp(subj_idx);
-vr_idx=~cellfun(@isempty,regexp(import_table.Properties.VariableNames,'vrTrial.*'));
+vr_idx=~cellfun(@isempty,regexp(import_table.Properties.VariableNames,'vrTrial*'));
 sessioninfo.trialidx=table2cell(import_table(subj_idx,vr_idx));
 sessioninfo.trialnames=sessioninfo.trialidx(~cellfun(@isempty,sessioninfo.trialidx));
 
@@ -155,7 +155,7 @@ close all
 %% Detect tDCS signal
 
 % Use tdcsdetect function to detect vr signal and tDCS signal
-threshold=7000; % define threshold for random spike removal (default is 7000)
+threshold=5000; % define threshold for random spike removal (default is 7000)
 [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,vr_chan,tdcs_chan,threshold);
 
 sessioninfo.tdcssig.time=tdcs_detect;
