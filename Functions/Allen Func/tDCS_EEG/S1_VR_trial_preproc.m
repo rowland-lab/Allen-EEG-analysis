@@ -21,40 +21,30 @@ for i=1:length(filePattern)
 end
 
 % Load VR file
-[trialData,vr_chan] = loadVrTrialData_EEG(vrDataFolders,eegDataFile,{'DC1' 'DC2'},true); % Double-check that all your paths are added
-tdcs_chan=43; %default tDCS channel
+[trialData,vr_chan,tdcs_channels,Session_times] = loadVrTrialData_EEG(vrDataFolders,eegDataFile,{'DC1','DC2'},{'DC3','DC4'},true); % Double-check that all your paths are added
+tdcs_chan=tdcs_channels{1};
 
-% Double check correct channel selection
-figure
-hold on
-plot((trialData.eeg.data(:,7)-mean(trialData.eeg.data(:,7)))/std(trialData.eeg.data(:,7)))
-plot((trialData.eeg.data(:,vr_chan)-mean(trialData.eeg.data(:,vr_chan)))/std(trialData.eeg.data(:,vr_chan))-20)
-plot(((trialData.eeg.data(:,tdcs_chan)-mean(trialData.eeg.data(:,tdcs_chan)))/std(trialData.eeg.data(:,tdcs_chan))*-1)-40,'LineWidth',2)
-xlabel('Samples')
-ylabel('Z-score')
-legend('C3','VR','tDCS')
-
-clc
-x=input('Correct Channels? [y=1,n=2]');
-close all
-while x~=1
-    vr_chan=input(['Enter new VR Channel (previous=',num2str(vr_chan),')']);
-    tdcs_chan=input(['Enter new tDCS Channel (previous=',num2str(tdcs_chan),')']);
-    
-    figure
-    hold on
-    plot((trialData.eeg.data(:,7)-mean(trialData.eeg.data(:,7)))/std(trialData.eeg.data(:,7)))
-    plot((trialData.eeg.data(:,vr_chan)-mean(trialData.eeg.data(:,vr_chan)))/std(trialData.eeg.data(:,vr_chan))-20)
-    plot(((trialData.eeg.data(:,tdcs_chan)-mean(trialData.eeg.data(:,tdcs_chan)))/std(trialData.eeg.data(:,tdcs_chan))*-1)-40,'LineWidth',2)
-    xlabel('Samples')
-    ylabel('Z-score')
-    legend('C3','VR','tDCS')
-    title('Correct Channels? [y=1,n=2]')
-    
-    x=input('Correct Channels? [y=1,n=2]');
-    clc
-    close all
-end
+% % Double check correct channel selection
+% pass=false;
+% while pass==false
+%     figure
+%     hold on
+%     plot((trialData.eeg.data(:,7)-mean(trialData.eeg.data(:,7)))/std(trialData.eeg.data(:,7))+20)
+%     plot((trialData.eeg.data(:,18)-mean(trialData.eeg.data(:,18)))/std(trialData.eeg.data(:,18)))
+%     plot((trialData.eeg.data(:,vr_chan)-mean(trialData.eeg.data(:,vr_chan)))/std(trialData.eeg.data(:,vr_chan))-20)
+%     plot(((trialData.eeg.data(:,tdcs_chan)-mean(trialData.eeg.data(:,tdcs_chan)))/std(trialData.eeg.data(:,tdcs_chan))*-1)-40,'LineWidth',2)
+%     xlabel('Samples')
+%     ylabel('Z-score')
+%     legend('C3','C4','VR','tDCS')
+%     title('Correct tDCS channel? [y=1,n=2]')
+%     x=input('Correct tDCS channel? [y=1,n=2]');
+%     
+%     if x==2
+%         tdcs_chan=input(['Enter new tDCS Channel (previous=',num2str(tdcs_chan),')']);
+%     elseif x==1
+%         pass=true;
+%     end
+% end
 
 
 % Import reference table
@@ -132,7 +122,6 @@ for i=1:length(trialData.vr)
         end
     end
     disp(['REMOVED BAD SUB-TRIALS'])
-    
 end
 
 % Create EEG trace and save
@@ -143,6 +132,7 @@ plot((trialData.eeg.data(:,vr_chan)-mean(trialData.eeg.data(:,vr_chan)))/std(tri
 plot(((trialData.eeg.data(:,tdcs_chan)-mean(trialData.eeg.data(:,tdcs_chan)))/std(trialData.eeg.data(:,tdcs_chan))*-1)-40,'LineWidth',2)
 xlabel('Samples')
 ylabel('Z-score')
+ylim([-50 40]);
 legend('C3','C4','VR','tDCS')
 if sessioninfo.stimamp== 0
    title([sbjnum,'-',num2str(sessioninfo.stimamp),'mA-SHAM']);
@@ -155,8 +145,7 @@ close all
 %% Detect tDCS signal
 
 % Use tdcsdetect function to detect vr signal and tDCS signal
-threshold=5000; % define threshold for random spike removal (default is 7000)
-[tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,vr_chan,tdcs_chan,threshold);
+[tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,vr_chan,tdcs_chan,vrDataFolders,Session_times);
 
 sessioninfo.tdcssig.time=tdcs_detect;
 sessioninfo.sessionperiod=Session_times;
@@ -192,10 +181,8 @@ sessioninfo.path.vrfolder=vrDataFolder;
 sessioninfo.path.edffile=eegDataFile;
 sessioninfo.path.sbjfolder=subjectfolder;
 
-% Save preprocessed vr data
-preprocessed_vr=trialData.vr;
-
-save(fullfile(analysisfolder,[sbjnum,'_S1-VRdata_preprocessed']),'preprocessed_vr','sessioninfo');
+% Save preprocessed data
+save(fullfile(analysisfolder,[sbjnum,'_S1-VRdata_preprocessed']),'trialData','sessioninfo','-v7.3');
 
 end
 

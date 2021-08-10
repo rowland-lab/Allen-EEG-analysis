@@ -1,4 +1,4 @@
-function [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,VR_chan,tDCS_chan,threshold)
+function [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,VR_chan,tDCS_chan,vrfolder,Session_positions)
 %TDCSDETECT detects when tdcs is on or off
 % tdcs_chan = entire EEG data from tDCS channel
 % start = the starting sample number of the experiment (start of analysis)
@@ -6,8 +6,9 @@ function [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,VR_chan,tDCS_
 % tdcs_start = tDCS ramp up (begining, end)
 % tdcs_end = tDCS ramp down(begining, end)
 
-% Define session position using session_detect function
-Session_positions=session_detect(trialData,VR_chan,tDCS_chan);
+
+% % Define session position using session_detect function
+% Session_positions=session_detect(trialData,VR_chan,tDCS_chan);
 
 % Detect VR
 Session_data=trialData.eeg.data(Session_positions{1}:Session_positions{2},VR_chan);
@@ -25,8 +26,36 @@ end
 VR_sig(end)=RowNrs(end);
 VR_sig=VR_sig+Session_positions{1};
 
-% Remove Random Spikes VR
-VR_sig(diff(VR_sig,1,2)<threshold,:)=[];
+
+% Find which VR signal match trials
+times=[];
+for vr=1:numel(vrfolder)
+    tempxml=readtable(fullfile(vrfolder{vr},'Events.csv'));
+    times(vr,1)=tempxml.Time(end)*trialData.eeg.header.samplingrate;
+end
+vrsiglength=num2cell(diff(VR_sig,1,2));
+
+tolerance=0.01; % default tolerance
+step=0.01; % default step
+x=1;
+while x==1
+    vrsiglog= cellfun(@(x) ismembertol(x,times,tolerance),vrsiglength,'UniformOutput',false);
+    vrsiglog=cell2mat(vrsiglog);
+    if numel(vrfolder)==sum(vrsiglog)
+        x=2;
+    elseif numel(vrfolder)<sum(vrsiglog)
+        tolerance=tolerance+step
+    elseif numel(vrfolder)>sum(vrsiglog)
+        tolerance=tolerance-step
+    elseif tolerance>500
+        figure;
+        plot(trialData.eeg.data(:,VR_chan))
+        hold on
+        scatter(VR_sig(:),ones(numel(VR_sig),1)*mean(Session_data))
+    end
+end
+
+VR_sig=VR_sig(vrsiglog,:);
 
 % Detect tDCS times
 if var(trialData.eeg.data(Session_positions{1}:Session_positions{2},tDCS_chan))>50000

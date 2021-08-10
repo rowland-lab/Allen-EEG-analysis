@@ -64,20 +64,17 @@ sbj=dir(fullfile(protocolfolder,'pro000*.'));
 sbj={sbj.name}';
 
 %% Run code
-
-% Preprocessing --> S1_VR_trial_preproc(sbjnum,protocolfolder)
-for i=1:numel(sbj)
-    for i=35:36
+for i=30:numel(sbj)
+    % Preprocessing --> S1_VR_trial_preproc(sbjnum,protocolfolder)
     S1_VR_trial_preproc(sbj{i},protocolfolder)
 end
 
-% Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
-for i=1:numel(sbj)
+for i=29:numel(sbj)
+    % Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
     S2_MetricPlot(sbj{i},protocolfolder,2)
 end
-
-% EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder)
-for i=1:numel(sbj)
+for i=9:numel(sbj)
+    % EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder)
     S3_EEGanalysis(sbj{i},protocolfolder)
 end
 

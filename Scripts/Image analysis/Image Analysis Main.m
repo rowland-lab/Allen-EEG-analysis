@@ -1,6 +1,7 @@
 clear all
 clc
 
+%%%%% CHANGE
 % Input initial data
 % SSH information
 hostname='cbihome.musc.edu';
@@ -11,17 +12,11 @@ remotehostfolder='/MRdata/Rowland/NR_tdcs/upload';
 % Data save folder
 datasavefolder='C:\Users\allen\Downloads\results';
 
-% dcm2niix program path
-dcm2niix_path='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\imaging\dcm2niix';
+% Git path
+gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
 
-% SPM
-spm_path='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\imaging\spm12'; addpath(genpath(spm_path));
-
-% CONN
-conn_path='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\imaging\conn'; addpath(genpath(conn_path));
-
-% DSI studio
-dsipath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis\tooboxes\imaging\dsi_studio_64';
+% Gen path
+allengit_genpaths(gitpath,'imaging')
 
 % Region of Interest (look at the end of script for ROIS)
 ROI={'Corticospinal_Tract_L',
@@ -31,9 +26,34 @@ ROI={'Corticospinal_Tract_L',
     'Corpus_Callosum_Tapetum',
     'Corpus_Callosum_Forceps_Major'};
 
-
 % Subject folder
-subjectfolder='C:\Users\allen\Downloads\results\sbj_0043';
+subjectfolder='C:\Users\allen\Downloads\results\sbj_0042';
+
+
+
+
+
+%%%% DON'T CHANGE (unless paths are incorrect; paths should be correct if
+%%%% cloning git)
+
+% dcm2niix program path
+if ismac
+    plat='mac';
+elseif isunix
+    plat='linux';
+elseif ispc
+    plat='windows';
+end
+dcm2niix_path=fullfile(gitpath,'toolboxes','imaging','dcm2niix',plat);
+
+% SPM
+spm_path=fullfile(gitpath,'tooboxes','imaging','spm12');
+
+% CONN
+conn_path=fullfile(gitpath,'tooboxes','imaging','conn'); 
+
+% DSI studio
+dsipath=fullfile(gitpath,'tooboxes','imaging','dsi_studio_64');
 %% Steps
 
 % Step 1 - Download DICOM images and run Quality Check

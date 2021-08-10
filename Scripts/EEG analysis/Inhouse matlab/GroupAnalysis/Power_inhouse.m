@@ -2,7 +2,6 @@ close all
 clc
 clear all
 
-Rowland_start
 
 % Enter in protocol folder
 protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';

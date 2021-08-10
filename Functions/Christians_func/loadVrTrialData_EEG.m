@@ -1,4 +1,5 @@
-function [trialData,VR_chan_auto] = loadVrTrialData_EEG(vrDataFolder,eegDataFile,eegSyncChannels,manualSyncReview,VR_chan)
+function [trialData,VR_chan_auto,tDCS_default,Session_positions] = loadVrTrialData_EEG(vrDataFolder,eegDataFile,eegSyncChannels,tDCSchannellabels,manualSyncReview,VR_chan)
+
 
 % initialize output structure
 trialData = [];
@@ -29,6 +30,8 @@ end
 
 % skip if not specified
 if ~isempty(vrDataFolder)
+    
+    disp('Loading VR Files...');
     
     if ~iscell(vrDataFolder)
         vrDataFolder = {vrDataFolder};
@@ -86,7 +89,8 @@ end
 
 % skip if not specified
 if ~isempty(eegDataFile)
-    
+    disp('Loading EEG Files...');
+
     % make sure vr data folder is valid
     if exist(eegDataFile,'file')
         [eegData, edfHdr] = lab_read_edf(eegDataFile);
@@ -115,6 +119,10 @@ if ~isempty(eegDataFile)
         trialData.eeg.time = eegTime;
         trialData.eeg.data = eegData;
         trialData.eeg.channels = channels;
+        
+        % Default tDCS
+        tDCS_default{1}=find(strcmp(channels,tDCSchannellabels{1}));
+        tDCS_default{2}=find(strcmp(channels,tDCSchannellabels{1}));
     else
         disp('Invalid EEG data file.')
     end
@@ -123,7 +131,8 @@ end
 
 %% c) sync data sets
 if (vrLoaded && eegLoaded)
-    
+    disp('Syncing VR and EEG...');
+
     % extract sync signal and timestamps
     eeg_time = trialData.eeg.time;
     
@@ -135,39 +144,67 @@ if (vrLoaded && eegLoaded)
     sync_start = 1;
     if manualSyncReview
         if ~isempty(eegSyncChannels{1})
-            eegSync1 = trialData.eeg.data(:,strcmpi(trialData.eeg.channels,eegSyncChannels{1}));
+           eegSync1 = trialData.eeg.data(:,strcmpi(trialData.eeg.channels,eegSyncChannels{1}));
         end
         if ~isempty(eegSyncChannels{2})
-            eegSync2 = trialData.eeg.data(:,strcmpi(trialData.eeg.channels,eegSyncChannels{2}));
+           eegSync2 = trialData.eeg.data(:,strcmpi(trialData.eeg.channels,eegSyncChannels{2}));
         end
         
-        fig = figure;
-        plot(eeg_time,eegSync1,eeg_time,eegSync2)
-        xlabel('time [s]')
-        ylabel('EEG sync signals')
-        title('Select correct sync signal start time')
+        eegSyncChannels_idx={find(strcmpi(trialData.eeg.channels,eegSyncChannels{1})),find(strcmpi(trialData.eeg.channels,eegSyncChannels{2}))};
         
-        [t_start, ~] = ginput(1);
-        sync_start = find(eeg_time>=t_start,1,'first');
+%         pass=false;
+%         while pass==false
+%             
+%             
+            fig = figure;
+            plot(1:size(trialData.eeg.data,1),trialData.eeg.data(:,eegSyncChannels_idx{1}),1:size(trialData.eeg.data,1),trialData.eeg.data(:,eegSyncChannels_idx{2}))
+            xlabel('samples')
+            ylabel('EEG sync signals')
+%             title('Correct VR sync channels? [1=yes,2=no]')
+%             response=input('Correct VR sync channels? [1=yes,2=no]');
+%             
+%             if response==2
+%                 eegSyncChannels_idx{1}=input(['Enter new VR sync channel 1 [previous=',num2str(eegSync1),']']);
+%                 eegSyncChannels_idx{2}=input(['Enter new VR sync channel 2 [previous=',num2str(eegSync2),']']);
+%             elseif response==1
+%                 pass=true;
+%             end
+%         end
+        
+        for i = 1:2
+            shg
+            if i==1
+                disp('Press START of Session ')
+                title('Press START of Session ')
+            else
+                disp('Press END of Session ')
+                title('Press END of Session ')
+            end
+            [x, ~] = ginput(1);
+            Session_positions{i} = x;
+        end
+        disp('Selections completed')
+
+        sync_start = find(eeg_time>=Session_positions{1}/trialData.eeg.header.samplingrate,1,'first');
         close(fig);
         
-        if ~isempty(eegSyncChannels{1})
-            eegSync1 = trialData.eeg.data(:,strcmpi(trialData.eeg.channels,eegSyncChannels{1}));
+        if ~isempty(eegSyncChannels_idx{1})
+            eegSync1 = trialData.eeg.data(:,eegSyncChannels_idx{1});
             [eegSync1, snr1] = processSyncSignal(eegSync1,trialData.eeg.header.samplingrate,sync_start);
             eegSync1 = movmean(eegSync1,round(trialData.eeg.header.samplingrate * 0.1));
         end
-        if ~isempty(eegSyncChannels{2})
-            eegSync2 = trialData.eeg.data(:,strcmpi(trialData.eeg.channels,eegSyncChannels{2}));
+        if ~isempty(eegSyncChannels_idx{2})
+            eegSync2 = trialData.eeg.data(:,eegSyncChannels_idx{2});
             [eegSync2, snr2] = processSyncSignal(eegSync2,trialData.eeg.header.samplingrate,sync_start);
             eegSync2 = movmean(eegSync2,round(trialData.eeg.header.samplingrate * 0.1));
         end
 
         if snr1>snr2
             eeg_TTLsync = eegSync1;
-            VR_chan_auto=find(strcmpi(trialData.eeg.channels,eegSyncChannels{1}));
+            VR_chan_auto=eegSyncChannels_idx{1};
         else
             eeg_TTLsync = eegSync2;
-            VR_chan_auto=find(strcmpi(trialData.eeg.channels,eegSyncChannels{2}));
+            VR_chan_auto=eegSyncChannels_idx{2};
         end
     else
         eegSync = trialData.eeg.data(:,VR_chan);

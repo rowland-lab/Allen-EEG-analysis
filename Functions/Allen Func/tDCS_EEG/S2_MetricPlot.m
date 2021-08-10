@@ -10,7 +10,7 @@ try
 catch
     error('Step 1 Preprocessing files NOT FOUND')
 end
-trialData.vr = importdata.preprocessed_vr;
+trialData.vr = importdata.trialData.vr;
 trialData.sessioninfo=importdata.sessioninfo;
 
 % initialize data folders

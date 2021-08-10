@@ -24,17 +24,17 @@ for sub=1:numel(sbj)
         disp(['Preprocessing file is missing on ',sbj{sub}]);
         continue
     end
-    disp(['Loading s1 data...',sbj{sub}]);
     s1_dat=load(fullfile(wk_sbjfolder,'analysis','S1-VR_preproc',[sbj{sub},'_S1-VRdata_preprocessed.mat']));
     sessioninfo=s1_dat.sessioninfo;
+    disp(['Loading s1 data...',sbj{sub}]);
     
     % Load S2 data
-    disp(['Loading s2 data...',sbj{sub}]);
     s2_dat=load(fullfile(wk_sbjfolder,'analysis','S2-metrics',[sbj{sub},'_S2-Metrics.mat']));
     temp_metric=s2_dat.metricdat;
+    disp(['Loading s2 data...',sbj{sub}]);
     
     % Save VR data
-    disp(['Calculating VR metrics...',sbj{sub}]);
+        disp(['Loading s1 data...',sbj{sub}]);
 
     metricdat.data(sub,:)=temp_metric.data;
     metricdat.label=temp_metric.label;
