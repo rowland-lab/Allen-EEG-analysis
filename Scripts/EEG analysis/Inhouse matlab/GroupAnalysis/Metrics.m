@@ -53,7 +53,7 @@ norm=false;
 
 clear vars shamdat stimdat
 
-for d=1:numel(dx_type)
+for d=1
     
     % Create figure
     figure;
@@ -72,6 +72,9 @@ for d=1:numel(dx_type)
 
             % Subject Idx
             subj_idx=dx_idx&stim_idx;
+            
+            % Subject names
+            subjectnames=sbj_label(subj_idx);
 
             % Obtain measure data
             tempmetricdat=metricdat.data(subj_idx,measure);

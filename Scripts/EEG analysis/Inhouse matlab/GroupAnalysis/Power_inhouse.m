@@ -23,10 +23,12 @@ for sub=1:numel(sbj)
         disp(['Preprocessing file is missing on ',sbj{sub}]);
         continue
     end
+    disp(['Loading s1 data...',sbj{sub}])
     s1_dat=load(fullfile(wk_sbjfolder,'analysis','S1-VR_preproc',[sbj{sub},'_S1-VRdata_preprocessed.mat']));
     sessioninfo=s1_dat.sessioninfo;
     
     % Load S3 data
+    disp(['Loading s3 data...',sbj{sub}])
     s3_dat=load(fullfile(wk_sbjfolder,'analysis','S3-EEGanalysis','s3_dat.mat'));
     temp_vrevents=s3_dat.epochs.vrevents;
     
@@ -109,8 +111,8 @@ phases={'Hold','Prep','Move'};
 % Optional inputs
 norm=false;
 percent=false;
-remove=true;
-rm_sbj=[2 11];
+% remove=true;
+% rm_sbj=[2 11];
 
 clear vars sham_contra sham_ip stim_contra stim_ip
 for d=3
@@ -121,10 +123,10 @@ for d=3
     % Subject index
     temp_sbj=sbj_label(dx_idx);
     
-    % Remove subjects
-    if remove
-        dx_idx(logical(sum(str2num(vertcat(sbj_label{:}))==rm_sbj,2)))=false;
-    end
+%     % Remove subjects
+%     if remove
+%         dx_idx(logical(sum(str2num(vertcat(sbj_label{:}))==rm_sbj,2)))=false;
+%     end
     
     % Create figure
     figure;
@@ -147,6 +149,9 @@ for d=3
             % Dedicate contra and ips data
             contradat=powerdat.beta.contra(dx_idx&stim_idx,ph);
             ipdat=powerdat.beta.ip(dx_idx&stim_idx,ph);
+            
+            % sbj label
+            stim_label=sbj_label(dx_idx&stim_idx);
             
             % Select trials of interest
             contradat_toi=[];

@@ -1,6 +1,5 @@
 function dkianal_s4b(dkifolder)
 tractfolder=fullfile(dkifolder,'tracts');
-sbjname=extractBetween(tractfolder,'Imaging','analysis');
 
  % Detect text outputs
 textfiles={dir(fullfile(tractfolder,'*.txt')).name};
@@ -27,12 +26,11 @@ bhdat=cellfun(@(x) x-1,ratio(:,2));
 hold on
 b1=barh(find(bhdat>0),bhdat(bhdat>0),'red');
 b2=barh(find(bhdat<0),bhdat(bhdat<0),'green');
-b1.BarWidth=0.8;
-b2.BarWidth=0.8;
+
 xlim([-0.5 0.5])
 yticks([1:1:numel(bhdat)]);
 yticklabels(ratio(:,1))
-title(['Right/Left Ratio - ',sbjname])
+title('Right/Left Ratio')
 grid on
 ax=gca;
 ax.XGrid='off';

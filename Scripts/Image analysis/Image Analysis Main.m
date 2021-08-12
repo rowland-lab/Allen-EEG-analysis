@@ -27,7 +27,7 @@ ROI={'Corticospinal_Tract_L',
     'Corpus_Callosum_Forceps_Major'};
 
 % Subject folder
-subjectfolder='C:\Users\allen\Downloads\results\sbj_0042';
+subjectfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153\Imaging\sbj_0042';
 
 
 
@@ -77,6 +77,8 @@ dkiproc_s3b(dkifolder,subjectfolder,dsipath,ROI)
 % Step 4a - Analyze fMRI data
 
 % Step 4b - Analyze DKI data
+subjectfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153\Imaging\sbj_0043';
+dkifolder=fullfile(subjectfolder,'analysis','dki');
 dkianal_s4b(dkifolder);
 %% ROIS
 
