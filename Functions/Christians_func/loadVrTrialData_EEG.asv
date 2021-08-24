@@ -188,45 +188,37 @@ if (vrLoaded && eegLoaded)
             plot(trialData.eeg.data(:,eegSyncChannels_idx{1}));
             title('Correct VR sync channels? [1=yes,2=no]')
             response=input('Correct VR sync channels? [1=yes,2=no]');
-            shg
             if response==1
                 eeg_TTLsync = eegSync1;
-                VR_chan_auto=eegSyncChannels_idx{1};
             else
                 plot(trialData.eeg.data(:,eegSyncChannels_idx{2}));
                 title('Correct VR sync channels? [1=yes,2=no]')
                 response2=input('Correct VR sync channels? [1=yes,2=no]');
-                shg
-                if response2==2
+                if reponse2==2
                     error('incorrect vr channel selection')
                 else
                     eeg_TTLsync = eegSync2;
-                    VR_chan_auto=eegSyncChannels_idx{2};
                 end
             end
         else
             plot(trialData.eeg.data(:,eegSyncChannels_idx{2}));
             title('Correct VR sync channels? [1=yes,2=no]')
             response=input('Correct VR sync channels? [1=yes,2=no]');
-            shg
             if response==1
                 eeg_TTLsync = eegSync2;
-                VR_chan_auto=eegSyncChannels_idx{2};
             else
                 plot(trialData.eeg.data(:,eegSyncChannels_idx{1}));
                 title('Correct VR sync channels? [1=yes,2=no]')
                 response2=input('Correct VR sync channels? [1=yes,2=no]');
-                shg
-                if response2==2
+                if reponse2==2
                     error('incorrect vr channel selection')
                 else
                     eeg_TTLsync = eegSync1;
-                    VR_chan_auto=eegSyncChannels_idx{1};
-                    
                 end
             end
         end
-        close all
+
+        
     else
         eegSync = trialData.eeg.data(:,VR_chan);
         [eegSync, ~] = processSyncSignal(eegSync,trialData.eeg.header.samplingrate);
@@ -317,7 +309,6 @@ if (vrLoaded && eegLoaded)
         else
             trialData.vr(it).sync.success = false;
             trialData.vr(it).sync.deltaT = [];
-            error('SYNC FAILURE. CHECK CORRECT VR CHANNELS');
         end
     end
     

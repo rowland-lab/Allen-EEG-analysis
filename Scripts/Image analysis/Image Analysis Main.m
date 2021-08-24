@@ -58,7 +58,7 @@ dsipath=fullfile(gitpath,'tooboxes','imaging','dsi_studio_64');
 
 % Step 1 - Download DICOM images and run Quality Check
 % Requires VPN or muscsecure wifi connection
-subjectfolder=imageproc_s1(hostname,username,password,remotehostfolder,datasavefolder)
+subjectfolder=imageproc_s1(hostname,username,password,remotehostfolder,datasavefolder);
 cd(subjectfolder)
 
 % Step 2 - DICOM to nifti and organize files

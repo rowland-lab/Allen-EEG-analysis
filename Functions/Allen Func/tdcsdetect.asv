@@ -47,7 +47,7 @@ while x==1
         figure;
         plot(trialData.eeg.data(:,VR_chan))
         hold on
-        scatter(VR_sig(vrsiglog,2),ones(sum(vrsiglog),1)*mean(Session_data))
+        scatter(VR_sig(:),ones(numel(VR_sig),1)*mean(Session_data))
         error('error')
     elseif numel(vrfolder)<sum(vrsiglog)
         tolerance=tolerance-step

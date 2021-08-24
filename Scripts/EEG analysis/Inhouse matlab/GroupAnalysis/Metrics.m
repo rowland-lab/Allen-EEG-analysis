@@ -1,3 +1,6 @@
+allengit_genpaths('C:\Users\allen\Documents\GitHub\Allen-EEG-analysis','tDCS')
+
+
 % Enter in protocol folder
 protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
 

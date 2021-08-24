@@ -58,6 +58,7 @@
 %% Input
 % Enter gitpath
 gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
+cd(gitpath)
 
 % Enter in protocol folder
 protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
