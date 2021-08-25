@@ -2,7 +2,6 @@ function allengit_genpaths(gitpath,type)
 % allengit_genpaths(gitpath,type)
 % gitpath = Path of Allen's cloned github
 % type = string input ('imaging','tDCS',or 'EEG')
-
 warning('off','all')
 
 % Add Scripts

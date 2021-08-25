@@ -36,7 +36,7 @@ C4_coordinates=[167 89 209];% ALREADY CALCULATED
 %% Calculate Region around electrode
 pad=100; % Zero padding
 radius=50; % Radius of ROI
-threshold=200; % Segment threshold
+threshold=10; % Segment threshold
 
 % Padded Coordinates
 C4_coordinates_pad=C4_coordinates+pad;
@@ -61,14 +61,12 @@ roi_sphere=elec;
 roi_sphere.img=roi;
 save_untouch_nii(roi_sphere,fullfile(datafolder,'C4_ROI'));
 
+% Save thresholded image
 
 %% Calculate intersection between ROI and segmented tissue
 roi_log=logical(roi);
 seg_log=seg.img>threshold;
 
 
-% Save thresholded image
-seg.img=seg.img>threshold;
-save_untouch_nii(seg,fullfile(datafolder,['threshold_',segment_filename]))
 
 sum(double(roi_log&seg_log),'all')

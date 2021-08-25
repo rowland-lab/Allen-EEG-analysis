@@ -66,7 +66,6 @@ protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087
 % Add EEG related paths
 allengit_genpaths(gitpath,'EEG')
 
-
 % Detect subjects
 sbj=dir(fullfile(protocolfolder,'pro000*.'));
 sbj={sbj.name}';
