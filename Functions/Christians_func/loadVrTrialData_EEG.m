@@ -317,7 +317,9 @@ if (vrLoaded && eegLoaded)
         else
             trialData.vr(it).sync.success = false;
             trialData.vr(it).sync.deltaT = [];
-            error('SYNC FAILURE. CHECK CORRECT VR CHANNELS');
+            if ~strcmp(trialData.vr(it).information.quality,'rejected')
+                error('SYNC FAILURE. CHECK CORRECT VR CHANNELS');
+            end
         end
     end
     

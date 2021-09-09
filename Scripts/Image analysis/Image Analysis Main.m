@@ -16,6 +16,7 @@ datasavefolder='C:\Users\allen\Downloads\results';
 gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
 
 % Gen path
+cd(gitpath)
 allengit_genpaths(gitpath,'imaging')
 
 % Region of Interest (look at the end of script for ROIS)

@@ -16,7 +16,6 @@ elec=load_untouch_nii(fullfile(datafolder,em_filename));
 segment_filename=dir(fullfile(datafolder,'c2t1*')).name;
 seg=load_untouch_nii(fullfile(datafolder,segment_filename));
 
-
 % Find electrode around C3
 elec_dim=size(elec.img);
 for d=1:elec_dim(1)
