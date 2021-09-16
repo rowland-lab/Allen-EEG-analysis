@@ -63,15 +63,16 @@ cd(gitpath)
 % Enter in protocol folder
 protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
 
+protocolfolder='~/Downloads'
 % Add EEG related paths
 allengit_genpaths(gitpath,'EEG')
 
 % Detect subjects
-sbj=dir(fullfile(protocolfolder,'pro000*.'));
+sbj=dir(fullfile(protocolfolder,'pro000*'));
 sbj={sbj.name}';
 
 %% Run code
-for i=30:numel(sbj)
+for i=20:21%:21%:numel(sbj)
     % Preprocessing --> S1_VR_trial_preproc(sbjnum,protocolfolder)
     S1_VR_trial_preproc(sbj{i},protocolfolder)
 end
