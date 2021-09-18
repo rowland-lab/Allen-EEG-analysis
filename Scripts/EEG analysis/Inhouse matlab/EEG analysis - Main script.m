@@ -72,7 +72,7 @@ sbj=dir(fullfile(protocolfolder,'pro000*'));
 sbj={sbj.name}';
 
 %% Run code
-for i=20:21%:21%:numel(sbj)
+for i=18:19%:21%:numel(sbj)
     % Preprocessing --> S1_VR_trial_preproc(sbjnum,protocolfolder)
     S1_VR_trial_preproc(sbj{i},protocolfolder)
 end
