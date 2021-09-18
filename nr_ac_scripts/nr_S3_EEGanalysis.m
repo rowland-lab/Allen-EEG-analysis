@@ -1,4 +1,4 @@
-function S3_EEGanalysis(sbjnum,protocolfolder)
+function nr_S3_EEGanalysis(sbjnum,protocolfolder)
 %% Define variables and import data
 analysisfolder=fullfile(protocolfolder,sbjnum,'analysis');
 
@@ -138,7 +138,7 @@ while x~=1
     end
 
     %%%%%%%%%% Check if properly epoched %%%%%%%%%%
-    figure('Name',['Epoched EEG signal graph==',figtitle],'units','normalized','outerposition',[0 0 1 1]); 
+    figure('Name',['Epoched EEG signal graph==',figtitle],'Position',[15 24 745 923]); 
     hold on
     plot((trialData.eeg.data(:,7)-mean(trialData.eeg.data(:,7)))/std(trialData.eeg.data(:,7)))
     plot((trialData.eeg.data(:,18)-mean(trialData.eeg.data(:,18)))/std(trialData.eeg.data(:,18))-20)
@@ -198,7 +198,7 @@ while x~=1
     end
 end
 
-saveas(gcf,fullfile(eeganalysisfolder,[get(gcf,'Name'),'.jpg']))
+savefig(gcf,fullfile(eeganalysisfolder,[get(gcf,'Name')]))
 close all
 
 
@@ -262,7 +262,7 @@ mkdir(psd_vrwhole_allchan_folder);
 % Plot VR whole
 for i=1:size(epochs.vrwhole.psd.saw,3)
 
-    figure('Name',[trial_label{i},'_VR_whole==',figtitle],'units','normalized','outerposition',[0 0 1 1])
+    figure('Name',[trial_label{i},'_VR_whole==',figtitle],'Position',[15 24 745 923])
     hold on
     subplot(2,1,1)
     plot(epochs.vrwhole.psd.freq(1:freq_idx_100),log10(epochs.vrwhole.psd.saw(1:freq_idx_100,chan_num,i)),'LineWidth',1.5)
@@ -282,7 +282,7 @@ for i=1:size(epochs.vrwhole.psd.saw,3)
     ylim([-4 4]);
     hold off
     
-    saveas(gcf,fullfile(psd_vrwhole_allchan_folder,[get(gcf,'Name'),'.jpg']))
+    savefig(gcf,fullfile(psd_vrwhole_allchan_folder,[get(gcf,'Name')]))
 end        
 
 close all
@@ -317,7 +317,7 @@ close all
 Epochcompare=[1:size(epochs.vrwhole.val,1);1:size(epochs.vrwhole.val,1)]'; % Default epoch compare
 
 % Create Line Plots (Rest Epochs and VR Whole Epochs)
-figure('Name',['Cn7_Cn18_RestEpochs==',figtitle],'units','normalized','outerposition',[0 0 1 1])
+figure('Name',['Cn7_Cn18_RestEpochs==',figtitle],'Position',[15 24 745 923])
 subplot(1,2,1)
 hold on
 for i=1:length(Epochcompare)
@@ -365,9 +365,9 @@ legend(trial_label)
 xlabel('Hz')
 ylabel('Log Power')
 sgtitle('Rest Epochs')
-saveas(gcf,fullfile(restvrfolder,[get(gcf,'Name'),'.jpg']))
+savefig(gcf,fullfile(restvrfolder,[get(gcf,'Name')]))
 
-figure('Name',['Cn7_Cn18_VRwholeEpochs==',figtitle],'units','normalized','outerposition',[0 0 1 1])
+figure('Name',['Cn7_Cn18_VRwholeEpochs==',figtitle],'Position',[15 24 745 923])
 set(gcf,'Position',[111 75 1000 500]);
 subplot(1,2,1)
 hold on
@@ -416,7 +416,7 @@ legend(trial_label)
 xlabel('Hz')
 ylabel('Log Power')
 sgtitle('VR Whole Epochs')
-saveas(gcf,fullfile(restvrfolder,[get(gcf,'Name'),'.jpg']))
+savefig(gcf,fullfile(restvrfolder,[get(gcf,'Name')]))
 
 
 % Create Beta Bar Graphs (Rest Epochs and VR Whole Epochs)
@@ -441,7 +441,7 @@ for j=1:length(Epochcompare_total)
 end
 bar_data=cellfun(@mean,bar_trial)';
 
-figure('Name',['Beta Bar Graph- Rest vs VR whole==',figtitle],'units','normalized','outerposition',[0 0 1 1])
+figure('Name',['Beta Bar Graph- Rest vs VR whole==',figtitle],'Position',[15 24 745 923])
 subplot(2,2,1:2)
 h1=bar(bar_data);
 set(gca,'XTickLabel',bar_trial_xlabel);
@@ -466,9 +466,9 @@ ylabel('Beta Power')
 title('VR')
 set(gca,'XTickLabel',trial_label)
 set(gca,'YLim',ylim_num)
-saveas(gcf,fullfile(restvrfolder,[get(gcf,'Name'),'.jpg']))
+savefig(gcf,fullfile(restvrfolder,[get(gcf,'Name')]))
 
-figure('Name',['Beta Bar Graph- Rest vs VR whole- per channel==',figtitle],'units','normalized','outerposition',[0 0 1 1])
+figure('Name',['Beta Bar Graph- Rest vs VR whole- per channel==',figtitle],'Position',[15 24 745 923])
 subplot(2,1,1)
 h1=bar(bar_data(:,1),'FaceColor','flat');
 ylabel('Beta Power')
@@ -513,7 +513,7 @@ hBB=bar(nan(2,2));
 hBB(1).FaceColor=[1 0 0]; 
 hBB(2).FaceColor=[0 1 0];
 legend(hBB,'Rest','VR');
-saveas(gcf,fullfile(restvrfolder,[get(gcf,'Name'),'.jpg']))
+savefig(gcf,fullfile(restvrfolder,[get(gcf,'Name')]))
 
 %% Figure Creation (Rest Epochs vs VR Event Epochs)
 
@@ -522,7 +522,7 @@ psd_vrevent_folder=fullfile(vrepochfolder,'psd_vrevent');
 mkdir(psd_vrevent_folder);
 
 for t=1:length(fieldnames(epochs.vrevents))
-    figure('Name',[trial_label{t} '-VR events==',figtitle],'units','normalized','outerposition',[0 0 1 1])
+    figure('Name',[trial_label{t} '-VR events==',figtitle],'Position',[15 24 745 923])
     for q=1:numel(epocheventtypes)
         tempdata=epochs.vrevents.(['t',num2str(t)]).(epocheventtypes{q}).psd;
         
@@ -549,11 +549,11 @@ for t=1:length(fieldnames(epochs.vrevents))
         title(epocheventlabels{q})
     end
     sgtitle(trial_label{t})
-    saveas(gcf,fullfile(psd_vrevent_folder,[get(gcf,'Name'),'.jpg']))
+    savefig(gcf,fullfile(psd_vrevent_folder,[get(gcf,'Name')]))
 end 
 
 % PSD VR event all trial
-figure('Name',['Channel 7 v 18 VR trials-Line plot==',figtitle],'units','normalized','outerposition',[0 0 1 1])
+figure('Name',['Channel 7 v 18 VR trials-Line plot==',figtitle],'Position',[15 24 745 923])
 for q=1:numel(epocheventtypes)
     for t=1:length(fieldnames(epochs.vrevents)) 
         tempdata=epochs.vrevents.(['t',num2str(t)]).(epocheventtypes{q}).psd;
@@ -579,7 +579,7 @@ for q=1:numel(epocheventtypes)
     subplot(3,2,q+1+(q-1))
     legend(trial_label)
 end 
-saveas(gcf,fullfile(vrepochfolder,[get(gcf,'Name'),'.jpg']))
+savefig(gcf,fullfile(vrepochfolder,[get(gcf,'Name')]))
 %%
 % Calculate beta power change (Line graph)
 reactivitydata=epochs.vrreactivity;
@@ -587,7 +587,7 @@ fn=fieldnames(reactivitydata);
 epocheventnames={'Hold','Prep','Move'};
 laterality=({'stimside','contraside'});
 for lat=1:numel(laterality)
-    figure('Name',[figtitle,'--beta reactivity-line-',laterality{lat}],'units','normalized','outerposition',[0 0 1 1]);
+    figure('Name',[figtitle,'--beta reactivity-line-',laterality{lat}],'Position',[15 24 745 923]);
     ax=[];
     for trial=1:numel(fn)
         tdat=reactivitydata.(fn{trial});
@@ -629,7 +629,7 @@ for lat=1:numel(laterality)
     sgtitle(laterality{lat})
     legend
     linkaxes(ax);
-    saveas(gcf,fullfile(vrepochfolder,[get(gcf,'Name'),'.jpg']))
+    savefig(gcf,fullfile(vrepochfolder,[get(gcf,'Name')]))
 end
 
 
@@ -640,7 +640,7 @@ epocheventnames={'Hold','Prep','Move'};
 laterality=({'stimside','contraside'});
 stats=true;
 
-figure('Name',[figtitle,'--beta reactivity--bar'],'units','normalized','outerposition',[0 0 1 1]);
+figure('Name',[figtitle,'--beta reactivity--bar'],'Position',[15 24 745 923]);
 for lat=1:numel(laterality)
     for et=1:numel(epocheventtypes)
         bardat=[];
@@ -725,7 +725,7 @@ for lat=1:numel(laterality)
     end
 end
 legend({'Pre','Post'})
-saveas(gcf,fullfile(vrepochfolder,[get(gcf,'Name'),'.jpg']))
+savefig(gcf,fullfile(vrepochfolder,[get(gcf,'Name')]))
 % linkaxes(ax);
 
 % %% 

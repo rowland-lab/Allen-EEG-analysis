@@ -1,5 +1,5 @@
 
-function S2_MetricPlot (sbjnum,protocolfolder,threshold)
+function nr_S2_MetricPlot (sbjnum,protocolfolder,threshold)
 
 %% Assigned Variables
 sbjname=['Subject-',extractAfter(sbjnum,'pro00087153_00')];
@@ -124,7 +124,7 @@ h3.LineWidth=1;
 xlim([0 100])
 legend([h1 h2 h3],{'Pre-stim','Stim','Post-stim'});
 title('coordinates')
-saveas(fh(2),fullfile(metricsfolder,'coordinates.jpeg'))
+savefig(fh(2),fullfile(metricsfolder,['coordinates_',sbjname]))
 
 
 figure(fh(2))
@@ -137,7 +137,7 @@ h3.LineWidth=1;
 xlim([0 100])
 legend([h1 h2 h3],{'Pre-stim','Stim','Post-stim'});
 title('velocity')
-saveas(fh(2),fullfile(metricsfolder,'velocity.jpeg'))
+savefig(fh(2),fullfile(metricsfolder,['velocity_',sbjname]))
 
 
 %% bar graphs
@@ -242,7 +242,7 @@ for i = 1:length(metricNames)
         title([metricDescriptions{i}," one-way Kruskal-Wallis test"])
     end
 end
-saveas(gcf,fullfile(metricsfolder,'metric bar graph.jpeg'))
+savefig(gcf,fullfile(metricsfolder,['metric_bar_graph',sbjname]))
 
 %% Box plots
 figure('units','normalized','outerposition',[0 0 1 1])
@@ -303,7 +303,7 @@ for i = 1:length(metricNames)
     title(metricDescriptions{i})    
 end
 
-saveas(gcf,fullfile(metricsfolder,'metric box graph.jpeg'))
+savefig(gcf,fullfile(metricsfolder,['metric_box_graph',sbjname]))
 
 %% Detect bad trials based on outlier reaction time
 
@@ -368,7 +368,7 @@ h1=plot([1 size(reactiontimes,2)],[2 2],'--');
 legend([h1],{[num2str(threshold),' second']})
 set(gca,'XTickLabel',importdata.sessioninfo.trialnames)
 title('Rejected Trials')
-saveas(gcf,fullfile(metricsfolder,'Rejected Trials Plot.jpeg'))
+savefig(gcf,fullfile(metricsfolder,['Rejected_Trials_Plot',sbjname]))
 
 %% Remove bad trials and rerun stats
 
@@ -488,8 +488,8 @@ for i = 1:length(metricNames)
 
     sgtitle([sbjname,' (Reject trials,>2 sec)'])
 end
-saveas(gcf,fullfile(metricsfolder,'metric bar graph reject, 2 sec.jpeg'))
-saveas(gcf,fullfile(metricsfolder,'metric bar graph reject, 2 sec'),'epsc')
+savefig(gcf,fullfile(metricsfolder,['metric_bar_graph_reject_2sec',sbjname]))
+%saveas(gcf,fullfile(metricsfolder,'metric bar graph reject, 2 sec'),'epsc')
 
 
 %% Remove rejected trials and save var
