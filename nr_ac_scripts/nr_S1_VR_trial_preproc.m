@@ -1,4 +1,4 @@
-function S1_VR_trial_preproc(sbjnum,protocolfolder)
+function nr_S1_VR_trial_preproc(sbjnum,protocolfolder)
 dbstop if error
 
 %% Preprocess VR Trials

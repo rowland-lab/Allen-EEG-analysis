@@ -74,16 +74,16 @@ sbj={sbj.name}';
 %% Run code
 for i=18:19%:21%:numel(sbj)
     % Preprocessing --> S1_VR_trial_preproc(sbjnum,protocolfolder)
-    S1_VR_trial_preproc(sbj{i},protocolfolder)
+    nr_S1_VR_trial_preproc(sbj{i},protocolfolder)
 end
 
-for i=29:numel(sbj)
+for i=1%29:numel(sbj)
     % Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
-    S2_MetricPlot(sbj{i},protocolfolder,2)
+    nr_S2_MetricPlot(sbj{i},protocolfolder,2)
 end
-for i=9:numel(sbj)
+for i=1%9:numel(sbj)
     % EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder)
-    S3_EEGanalysis(sbj{i},protocolfolder)
+    nr_S3_EEGanalysis(sbj{i},protocolfolder)
 end
 
 % Reconstruction --> S4_Reconstruction(sbjnum,protocolfolder,positionalplot,eegplot,tfplot,trial_num)
