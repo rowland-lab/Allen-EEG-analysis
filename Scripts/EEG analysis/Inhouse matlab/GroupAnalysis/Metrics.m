@@ -56,7 +56,7 @@ norm=false;
 
 clear vars shamdat stimdat
 
-for d=1
+for d=[1 3]
     
     % Create figure
     figure;
@@ -212,7 +212,7 @@ stim_type={0,2};
 metric_measures=metricdat.label;
 norm=false;
 
-for d=1:numel(dx_type)
+for d=[1 3]
     
     
     % Create figure

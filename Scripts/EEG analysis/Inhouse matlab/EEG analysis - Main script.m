@@ -63,7 +63,6 @@ cd(gitpath)
 % Enter in protocol folder
 protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
 
-protocolfolder='~/Downloads'
 % Add EEG related paths
 allengit_genpaths(gitpath,'EEG')
 
@@ -74,19 +73,19 @@ sbj={sbj.name}';
 %% Run code
 for i=18:19%:21%:numel(sbj)
     % Preprocessing --> S1_VR_trial_preproc(sbjnum,protocolfolder)
-    nr_S1_VR_trial_preproc(sbj{i},protocolfolder)
+    S1_VR_trial_preproc(sbj{i},protocolfolder)
 end
 
 for i=1%29:numel(sbj)
     % Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
-    nr_S2_MetricPlot(sbj{i},protocolfolder,2)
+    S2_MetricPlot(sbj{i},protocolfolder,2)
 end
-for i=1%9:numel(sbj)
-    % EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder)
-    nr_S3_EEGanalysis(sbj{i},protocolfolder)
+for i=1:numel(sbj)
+    % EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder,window,nooverlap,nfft)
+    S3_EEGanalysis(sbj{i},protocolfolder,256,0.5,256)
 end
 
 % Reconstruction --> S4_Reconstruction(sbjnum,protocolfolder,positionalplot,eegplot,tfplot,trial_num)
 for i=1:numel(sbj)
-    S4B_Reconstruction(sbj{i},protocolfolder,false,false,false,[4])
+    S4B_Reconstruction(sbj{i},protocolfolder,true,true,false,[1])
 end
