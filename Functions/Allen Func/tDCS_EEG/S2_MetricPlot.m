@@ -435,6 +435,9 @@ for i = 1:length(metricNames)
     metricdat.data{i}=mean(bardata,'omitnan');
     metricdat.label{i}=metricNames{i};
     
+    metricdatraw.data{i}=bardata;
+    metricdatraw.label{i}=metricNames{i};
+    
     hold on
 
     for z=1:size(bardata,2)
@@ -543,8 +546,6 @@ for i=1:numel(trials)
     s2rejecttrials=[s2rejecttrials; [repmat(trials(i),size(temp,1),1),temp]];
 end
 
-
-
-save(fullfile(metricsfolder,[sbjnum,'_S2-Metrics']),'trialData','metricdat','s2rejecttrials','movementstart');
+save(fullfile(metricsfolder,[sbjnum,'_S2-Metrics']),'trialData','metricdat','s2rejecttrials','movementstart','metricdatraw');
 close all
 end

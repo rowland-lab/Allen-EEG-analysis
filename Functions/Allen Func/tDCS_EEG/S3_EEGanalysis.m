@@ -1,6 +1,4 @@
-function S3_EEGanalysis(sbjnum,protocolfolder,window,nooverlap,nfft)
-
-
+function S3_EEGanalysis(sbjnum,protocolfolder,window,nooverlap,nfft,manual)
 %% Define variables and import data
 analysisfolder=fullfile(protocolfolder,sbjnum,'analysis');
 
@@ -214,10 +212,14 @@ while x~=1
 
     legend('C3','C4','EKG','VR','tDCS')
 
-    x=input('Correctly Epoched? [y=1,n=2]');
-    if x==2
-        epochlength=input(['Enter new Epoch Length (previous=',num2str(epochlength),')']);
-        buffer=input(['Enter new Buffer Length (previous=',num2str(buffer),')']);
+    if manual
+        x=input('Correctly Epoched? [y=1,n=2]');
+        if x==2
+            epochlength=input(['Enter new Epoch Length (previous=',num2str(epochlength),')']);
+            buffer=input(['Enter new Buffer Length (previous=',num2str(buffer),')']);
+        end
+    else
+        x=1;
     end
 end
 

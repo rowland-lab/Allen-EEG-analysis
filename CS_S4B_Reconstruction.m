@@ -1,6 +1,6 @@
 %% replay data collection
 
-function S4B_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,trial_num)
+function S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,trial_num)
 %% Generate variables
 subjectFolder=fullfile(protocol_folder,subjectName);
 
@@ -8,14 +8,30 @@ subjectFolder=fullfile(protocol_folder,subjectName);
 % Import S1 preprocessed data
 try
     disp('Importing S1 data')
-    import=load(fullfile(subjectFolder,'analysis','S1-VR_preproc',[subjectName,'_S1-VRdata_preprocessed.mat']));
+    s1=load(fullfile(subjectFolder,'analysis','S1-VR_preproc',[subjectName,'_S1-VRdata_preprocessed.mat']));
 catch
     error('Step 1 Preprocessing files NOT FOUND')
 end
 
+% Import S2 preprocessed data
+try
+    disp('Importing S2 data')
+    s2=load(fullfile(subjectFolder,'analysis','S2-metrics',[subjectName,'_S2-Metrics.mat']));
+catch
+    error('Step 2 Preprocessing files NOT FOUND')
+end
+
+% Import S3 preprocessed data
+try
+    disp('Importing S3 data')
+    s3=load(fullfile(subjectFolder,'analysis','S3-EEGanalysis','s3_dat.mat'));
+catch
+    error('Step 3 Preprocessing files NOT FOUND')
+end
+
 % Define folders
-eegfile=import.sessioninfo.path.edffile;
-reconFolder=fullfile(subjectFolder,'analysis','S2B-Reconstruction');
+eegfile=s1.sessioninfo.path.edffile;
+reconFolder=fullfile(subjectFolder,'analysis','S4-Reconstruction');
 
 
 % Make reconstruction folder
@@ -23,12 +39,14 @@ mkdir(reconFolder)
 
 
 if isempty(trial_num)
-    trial_num=1:numel(import.preprocessed_vr);
+    disp('Specific Trial Not selected. Running recon on all trials')
+    trial_num=1:numel(s1.trialData.vr);
 end
+
 %% Start Looping through all trials
 for trials=trial_num
     
-    trialFolder = fullfile(subjectFolder,'vr',import.trialData.vr(trials).information.trialName);
+    trialFolder = fullfile(subjectFolder,'vr',s1.trialData.vr(trials).information.trialName);
     addVideo = false;
     videoFile = '';
     videoFiles = dir(fullfile(trialFolder,'Camera Recording *.mp4'));
@@ -47,9 +65,8 @@ for trials=trial_num
     % load data
     dataFile = fullfile(trialFolder,'Data.csv');
     eventsFile = fullfile(trialFolder,'Events.csv');
-    trialData=loadVrTrialData_EEG(trialFolder,eegfile,{'DC1' 'DC2'},{'DC3' 'DC4'},false,import.sessioninfo.vrchan);
-    trialData.vr=import.trialData.vr(trials);
-    trackerData = trialData.vr.tracker;
+    trialData = s2.trialData;
+    trackerData = trialData.vr(trials).tracker;
     
    
     % get tested side
@@ -87,7 +104,7 @@ for trials=trial_num
         webcamWidth = round(reader.Width * webcamHeight/reader.Height);
 
         % set up replay figure
-        rFig = figure('Name',[subjectName,'          ',import.sessioninfo.trialnames{trials}]);
+        rFig = figure('Name',[subjectName,'          ',s1.sessioninfo.trialnames{trials}]);
         rFig.Color = [0 0 0]; % black background
         rFig.Units = 'pixels';
         rFig.Position = [20 100 webcamWidth+replayWidth replayHeight];
@@ -118,7 +135,7 @@ for trials=trial_num
         reader = [];
 
         % set up replay figure
-        rFig = figure('Name',[subjectName,'          ',import.sessioninfo.trialnames{trials}]);
+        rFig = figure('Name',[subjectName,'          ',s1.sessioninfo.trialnames{trials}]);
         rFig.Color = [0 0 0]; % black background
         rFig.Units = 'pixels';
         rFig.Position = [20 100 1024 768];
@@ -168,11 +185,12 @@ for trials=trial_num
 
     if eegplot
         % start and stop events
-        tStart = trialData.vr.events.start.time;
-        tStop = trialData.vr.events.stop.time;
+        tStart = trialData.vr(trials).events.start.time;
+        tStop = trialData.vr(trials).events(trials).stop.time;
+     
 
         % Plot eeg
-        fs=trialData.eeg.header.samplingrate;
+        fs=s1.trialData.eeg.header.samplingrate;
         eegtime=trackerData.time.*fs;
 
         eegAx = axes('parent',rFig);
@@ -180,48 +198,46 @@ for trials=trial_num
         eegAx.Visible = 'on';
 
 
-
-        cn7=plot(eegtime(1):eegtime(end),(trialData.eeg.data(eegtime(1):eegtime(end),7)-mean(trialData.eeg.data(eegtime(1):eegtime(end),7)))/std(trialData.eeg.data(eegtime(1):eegtime(end),7))); hold on;
-        cn18=plot(eegtime(1):eegtime(end),(trialData.eeg.data(eegtime(1):eegtime(end),18)-mean(trialData.eeg.data(eegtime(1):eegtime(end),18)))/std(trialData.eeg.data(eegtime(1):eegtime(end),18))-20);
+       
+        cn7=plot(eegtime(1):eegtime(end),(s1.trialData.eeg.data(eegtime(1):eegtime(end),7)-mean(s1.trialData.eeg.data(eegtime(1):eegtime(end),7)))/std(s1.trialData.eeg.data(eegtime(1):eegtime(end),7))); hold on;
+        cn18=plot(eegtime(1):eegtime(end),(s1.trialData.eeg.data(eegtime(1):eegtime(end),18)-mean(s1.trialData.eeg.data(eegtime(1):eegtime(end),18)))/std(s1.trialData.eeg.data(eegtime(1):eegtime(end),18))-20); hold on;
+       
         set(eegAx,'ylim',[-30 10])
 
         % EEG TimeStamps
         yl = get(gca,'ylim');
-    %     textpos=abs(max(trialData.eeg.data(eegtime(1):eegtime(end),7)/max(trialData.eeg.data(eegtime(1):eegtime(end),7))));
+        textpos=abs(max(s1.trialData.eeg.data(eegtime(1):eegtime(end),7)/max(s1.trialData.eeg.data(eegtime(1):eegtime(end),7))));
         textpos=-10;
         hold on
-        s1 = plot(tStart*[1 1]*fs,yl,'m-.','linewidth',2);
+        s1_line = plot(tStart*[1 1]*fs,yl,'m-.','linewidth',2);
         s1_text=text(tStart*fs,textpos,'START');
         set (s1_text, 'Clipping', 'on');
 
-        s2 = plot(tStop*[1 1]*fs,yl,'c-.','linewidth',2);
+        s2_line = plot(tStop*[1 1]*fs,yl,'c-.','linewidth',2);
         s2_text=text(tStop*fs,textpos,'STOP');
         set (s2_text, 'Clipping', 'on');
 
-        ylim=get(gca,'ylim');
-
-
         for i=1:12
             % a) at start position, waiting for target to come up - "waiting for cue"
-            event = trialData.vr.events.waitingForCue;
+            event = trialData.vr(trials).events.waitingForCue;
             e1 = plot(event.time(i)*[1 1]*fs,yl,'b');
             t1=text(event.time(i)*fs,textpos,['At Start Position (',num2str(i),')']);
             set (t1, 'Clipping', 'on');
 
             % b) at start position, target up, waiting for go sign - "waiting for go"
-            event = trialData.vr.events.waitingForGo;
+            event = trialData.vr(trials).events.waitingForGo;
             e2 = plot(event.time(i)*[1 1]*fs,yl,'r');
             t2=text(event.time(i)*fs,textpos,['Cue Event (',num2str(i),')']);
             set (t2, 'Clipping', 'on');
 
             % c) at start position, go sign received - "go event"
-            event = trialData.vr.events.goEvent;
+            event = trialData.vr(trials).events.goEvent;
             e3 = plot(event.time(i)*[1 1]*fs,yl,'g');
             t3 = text(event.time(i)*fs,textpos,['Target up(',num2str(i),')']);
             set (t3, 'Clipping', 'on');
 
             % d) target hit - "target Hit"
-            event = trialData.vr.events.targetHit;
+            event = trialData.vr(trials).events.targetHit;
             e4 = plot(event.time(i)*[1 1]*fs,yl,'m');
             t4 = text(event.time(i)*fs,textpos,['Target Hit(',num2str(i),')']);
             set (t4, 'Clipping', 'on');
@@ -315,105 +331,173 @@ for trials=trial_num
         axes(tfaAx_18);
         caxis([cbarmin cbarmax]);
     end
-
+       
+       
+       
+       
     % Reconstruction Video Creation
     wIM = [];
     rIM = [];
-
-    vw = VideoWriter(fullfile(reconFolder,[import.sessioninfo.trialnames{trials},'-Reconstruction.mp4']),'MPEG-4');
+    
+    videoname=fullfile(reconFolder,[s1.sessioninfo.trialnames{trials},'-reachepoch.mp4']);
+    if exist(videoname,'file') ~= 0
+        disp('Old file detected... Removing old file')
+        delete(videoname)
+    end
+    vw = VideoWriter(videoname,'MPEG-4');
     vw.FrameRate = round(1/mean(diff(trackerData.time(imageFrame))));
     open(vw);
-
-    for i = 1:length(imageFrame)
-
-        frameNumber = imageFrame(i);
-        frameTime = trackerData.time(frameNumber);
-
-
-        % update image
-        imageFile = fullfile(imageFolder,['frame ' num2str(frameNumber) '.png']);
-        IM = imread(imageFile);
-
-        if i==1
-            rIM = imshow(IM,'parent',rAx);
+     
+    %%% Reconstruct video for each reach
+    temptrialData=trialData.vr(trials);
+    tempepochs=s3.epochs.vrevents.(['t',num2str(trials)]);
+    
+    for r=1:size(tempepochs.atStartPosition.val,1)
+        
+        % Find reach start and end
+        if r==size(tempepochs.atStartPosition.val,1)
+            reachStart=tempepochs.atStartPosition.val(r,1);
+            reachEnd=temptrialData.events.stop.time*fs;
         else
-            rIM.CData = IM;
+            reachStart=tempepochs.atStartPosition.val(r,1);
+            reachEnd=tempepochs.atStartPosition.val(r+1,1);
         end
         
-        if positionalplot
-        % update positional plot
-            pathPlot.XData = trackerData.p.(testedSide)(1:frameNumber,1);
-            pathPlot.YData = trackerData.p.(testedSide)(1:frameNumber,3);
-            pathPlot.ZData = trackerData.p.(testedSide)(1:frameNumber,2);
-
-            pathMarker.XData = trackerData.p.(testedSide)(frameNumber,1);
-            pathMarker.YData = trackerData.p.(testedSide)(frameNumber,3);
-            pathMarker.ZData = trackerData.p.(testedSide)(frameNumber,2);
-
-            axis(plotAx,'equal')
-            plotAx.XLim = [xmin-delta xmax+delta];
-            plotAx.ZLim = [ymin-delta ymax+delta];
-            plotAx.YLim = [zmin-delta zmax+delta];
-        end
+        % Set eegplot title and xlim
+        t=title(eegAx,['Reach ',num2str(r)]);
+        t.Color='w';
+        t.FontSize=14;
+        xlim(eegAx,[reachStart reachEnd])
         
-        if eegplot
-            % EEG Data Stream
-            eegframetime = frameTime*fs;
+        % Set metrics
+        if metricplot
+            metricdat=s2.metricdatraw.data;
+            metriclabel=s2.metricdatraw.label;
+            pos=[1-fullwidth*1.2 .55 0.05 .1];
+            for m=1:numel(metriclabel)
+                
 
-            indiciator=plot(eegAx,eegframetime,eegAx.YLim,'-o','Color','w','MarkerFaceColor','k','MarkerSize',10);
-
-            eegTimeMin = eegframetime-1*fs;
-            eegTimeMax = eegframetime+1*fs;
-            eegAx.XLim = [eegTimeMin eegTimeMax];
-            eegAx.YLim = ylim;
-            legend([cn7 cn18],{'Channel 7 (C3)','Channel 18 (C4)'})
-        end
-        
-        if tfplot
-            % Time Freq Analysis Stream
-            tfaAx_7.XLim    = [eegTimeMin eegTimeMax];
-            axes(tfaAx_7);hold on; indiciator7=plot(tfaAx_7,eegframetime,tfaAx_7.YLim,'-o','Color','w','MarkerFaceColor','k','MarkerSize',10);
-
-            tfaAx_18.XLim   = [eegTimeMin eegTimeMax];
-            axes(tfaAx_18);hold on; indiciator18=plot(tfaAx_18,eegframetime,tfaAx_18.YLim, '-o','Color','w','MarkerFaceColor','k','MarkerSize',10);
-        end
-
-
-        if addVideo
-            % update webcam image
-            webcamTime = trackerData.time(frameNumber) - trackerData.time(1);
-            webcamTime = max(0,webcamTime);
-            webcamTime = min(webcamTime,reader.Duration);
-
-            reader.CurrentTime = webcamTime;
-            if reader.hasFrame
-                frm = reader.readFrame();
-
-                if i==1
-                    wIM = imshow(frm,'parent',wAx);
-                else
-                    wIM.CData = frm;
+                if r==1
+                    metricAx{m} = axes('parent',rFig);
+                    metricAx{m}.Visible = 'on';
+                    metricAx{m}.NextPlot='add';
+                    t=title(metricAx{m},metriclabel{m});
+                    t.Color='w';
+                    if m <=4
+                        temppos=pos;
+                        temppos(2)=pos(2)-(m-1)*0.15;
+                        metricAx{m}.Position = temppos;
+                    elseif m>4 && m<=8
+                        count=m-4;
+                        temppos=pos;
+                        temppos(2)=pos(2)-(count-1)*0.15;
+                        temppos(1)=pos(1)+0.065;
+                        metricAx{m}.Position = temppos;
+                    else
+                        count=m-8;
+                        temppos=pos;
+                        temppos(2)=pos(2)-(count-1)*0.15;
+                        temppos(1)=pos(1)+0.065*2;
+                        metricAx{m}.Position = temppos;
+                    end
                 end
+                trial_indicator{m,r}=text(metricAx{m},0.5+(0.25+(-0.25-0.25).*rand(1,1)),metricdat{m}(r,trials),num2str(r),'FontWeight','bold','Color','r');
+                ylim([0 max(max(metricdat{m}))])
             end
         end
-
-        drawnow
-        F = getframe(rFig);
-        writeVideo(vw,F);
         
-        if eegplot
-            delete(indiciator)
+        % Which frames are within each reach
+        reachTrackerTime=find(trackerData.time>reachStart/fs & trackerData.time<reachEnd/fs);
+        reachFrames=find(imageFrame>=reachTrackerTime(1)& imageFrame<=reachTrackerTime(end));
+        
+        for i = 1:length(reachFrames)
+            frameNumber=imageFrame(reachFrames(i));
+            frameTime=trackerData.time(frameNumber);
+            
+            % update image
+            imageFile = fullfile(imageFolder,['frame ' num2str(frameNumber) '.png']);
+            IM = imread(imageFile);
+
+            if i==1
+                rIM = imshow(IM,'parent',rAx);
+            else
+                rIM.CData = IM;
+            end
+        
+            if positionalplot
+            % update positional plot
+                pathPlot.XData = trackerData.p.(testedSide)(1:frameNumber,1);
+                pathPlot.YData = trackerData.p.(testedSide)(1:frameNumber,3);
+                pathPlot.ZData = trackerData.p.(testedSide)(1:frameNumber,2);
+
+                pathMarker.XData = trackerData.p.(testedSide)(frameNumber,1);
+                pathMarker.YData = trackerData.p.(testedSide)(frameNumber,3);
+                pathMarker.ZData = trackerData.p.(testedSide)(frameNumber,2);
+
+                axis(plotAx,'equal')
+                plotAx.XLim = [xmin-delta xmax+delta];
+                plotAx.ZLim = [ymin-delta ymax+delta];
+                plotAx.YLim = [zmin-delta zmax+delta];
+            end
+        
+            if eegplot
+                % EEG Data Stream
+                eegframetime = frameTime*fs;
+
+                indicatorLine = xline(eegAx,eegframetime,'-b','LineWidth',4);
+                legend([cn7 cn18],{'Channel 7 (C3)','Channel 18 (C4)'},'location','southoutside')
+            end
+        
+            if tfplot
+                % Time Freq Analysis Stream
+                tfaAx_7.XLim    = [eegTimeMin eegTimeMax];
+                axes(tfaAx_7);hold on; indiciator7=plot(tfaAx_7,eegframetime,tfaAx_7.YLim,'-o','Color','w','MarkerFaceColor','k','MarkerSize',10);
+
+                tfaAx_18.XLim   = [eegTimeMin eegTimeMax];
+                axes(tfaAx_18);hold on; indiciator18=plot(tfaAx_18,eegframetime,tfaAx_18.YLim, '-o','Color','w','MarkerFaceColor','k','MarkerSize',10);
+            end
+
+
+            if addVideo
+                % update webcam image
+                webcamTime = trackerData.time(frameNumber) - trackerData.time(1);
+                webcamTime = max(0,webcamTime);
+                webcamTime = min(webcamTime,reader.Duration);
+
+                reader.CurrentTime = webcamTime;
+                if reader.hasFrame
+                    frm = reader.readFrame();
+
+                    if i==1
+                        wIM = imshow(frm,'parent',wAx);
+                    else
+                        wIM.CData = frm;
+                    end
+                end
+            end
+
+            drawnow
+
+            % Saving figure as frame
+            F = getframe(rFig);
+            writeVideo(vw,F);
+
+            if eegplot
+                delete(indicatorLine)
+            end
+
+            if tfplot
+                delete(indiciator7)
+                delete(indiciator18)
+            end
         end
         
-        if tfplot
-            delete(indiciator7)
-            delete(indiciator18)
+        if metricplot
+           for m=1:numel(metriclabel)
+               set(trial_indicator{m,r},'FontWeight','normal','Color','k');
+           end
         end
-        
-        
-
     end
-
     close(vw)
-end
+end 
 end

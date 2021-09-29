@@ -80,12 +80,14 @@ for i=1%29:numel(sbj)
     % Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
     S2_MetricPlot(sbj{i},protocolfolder,2)
 end
+
+% EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder,window,nooverlap,nfft,manual)
 for i=1:numel(sbj)
-    % EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder,window,nooverlap,nfft)
-    S3_EEGanalysis(sbj{i},protocolfolder,256,0.5,256)
+    S3_EEGanalysis(sbj{i},protocolfolder,128,0.5,128,false)
 end
 
-% Reconstruction --> S4_Reconstruction(sbjnum,protocolfolder,positionalplot,eegplot,tfplot,trial_num)
+% Reconstruction --> S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,trial_num)
 for i=1:numel(sbj)
-    S4B_Reconstruction(sbj{i},protocolfolder,true,true,false,[1])
+    S4_Reconstruction(sbj{i},protocolfolder,true,true,false,true,[])
 end
+
