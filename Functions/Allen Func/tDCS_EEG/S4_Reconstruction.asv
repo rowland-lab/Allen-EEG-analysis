@@ -186,7 +186,7 @@ for trials=trial_num
     if eegplot
         % start and stop events
         tStart = trialData.vr(trials).events.start.time;
-        tStop = trialData.vr(trials).events.stop.time;
+        tStop = trialData.vr(trials).events(trials).stop.time;
      
 
         % Plot eeg
@@ -402,7 +402,7 @@ for trials=trial_num
                         metricAx{m}.Position = temppos;
                     end
                 end
-                trial_indicator{m,r}=text(metricAx{m},xtextpos,metricdat{m}(r,trials),num2str(r),'FontWeight','bold','Color','r');
+                trial_indicator{m,r}=text(metricAx{m},metricdat{m}(r,trials),num2str(r),'FontWeight','bold','Color','r');
                 ylim([0 max(max(metricdat{m}))])
             end
         end
@@ -500,6 +500,5 @@ for trials=trial_num
         end
     end
     close(vw)
-    close rFig
 end 
 end
