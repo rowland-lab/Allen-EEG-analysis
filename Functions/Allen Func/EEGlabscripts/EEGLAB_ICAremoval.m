@@ -101,7 +101,7 @@ elseif use_prev==0
         end
 
         % Run ICA label
-        EEG = iclabel(EEG);
+%         EEG = iclabel(EEG);
 
         % Visualize ICA labels
         pop_viewprops(EEG,0,[1:size(EEG.icaweights,1)],'freqrange', [2 80]);
