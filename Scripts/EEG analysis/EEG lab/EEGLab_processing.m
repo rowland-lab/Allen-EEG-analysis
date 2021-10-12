@@ -1,5 +1,6 @@
 %%
 % Note: Must have run S1,S2,S3 in EEG analysis - Main script
+clear
 
 % Enter in protocol folder
 protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';

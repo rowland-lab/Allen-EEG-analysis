@@ -9,7 +9,7 @@ mkdir(nii_path);
 % Run dcm2niix (DICOM -> nifti)
 disp('Converting DICOM files to nifti');
 cd(dcm2niix_path)
-command=['dcm2niix' ' -o ' nii_path ' -f %p_%s -z n ' fullfile(subjectfolder_path,'dicom')];
+command=[fullfile(dcm2niix_path,'dcm2niix') ' -o ' nii_path ' -f %p_%s -z n ' fullfile(subjectfolder_path,'dicom')];
 system(command);
 
 % go to nifti folder

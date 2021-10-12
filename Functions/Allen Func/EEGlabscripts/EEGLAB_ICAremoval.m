@@ -1,5 +1,4 @@
 function EEGLAB_ICAremoval(subject,protocolfolder)
-addpath('C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\eeglab-develop\plugins\ICLabel1.2.6\viewprops');
 
 subjectfolder=fullfile(protocolfolder,subject);
 analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
@@ -157,7 +156,7 @@ elseif use_prev==0
     %         goodIcIdx(goodIcIdx==heart_idx)=[];
     %     end      
     %     EEG = pop_subcomp(EEG, goodIcIdx, 0, 1);
-
+        
         % Save EEG structure
         eegevents.(fn{i})=EEG;    
 
@@ -166,6 +165,6 @@ elseif use_prev==0
 end
 
 
-save(fullfile(analysisfolder,'ICA-Removed'),'eegevents');
+save(fullfile(analysisfolder,'ICA-Removed'),'eegevents','-v7.3');
 
 end

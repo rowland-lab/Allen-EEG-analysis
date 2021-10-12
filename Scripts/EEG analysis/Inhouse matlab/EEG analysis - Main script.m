@@ -72,12 +72,11 @@ sbj={sbj.name}';
 
 %% Run code
 for i=18:19%:21%:numel(sbj)
-    % Preprocessing --> S1_VR_trial_preproc(sbjnum,protocolfolder)
     S1_VR_trial_preproc(sbj{i},protocolfolder)
 end
 
-for i=1%29:numel(sbj)
-    % Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
+% Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
+for i=1:numel(sbj)
     S2_MetricPlot(sbj{i},protocolfolder,2)
 end
 
@@ -88,6 +87,6 @@ end
 
 % Reconstruction --> S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,trial_num)
 for i=1:numel(sbj)
-    S4_Reconstruction(sbj{i},protocolfolder,true,true,false,true,[])
+    S4_Reconstruction(sbj{i},protocolfolder,true,true,false,true,true,[])
 end
 

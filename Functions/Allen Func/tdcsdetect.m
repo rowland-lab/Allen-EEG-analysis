@@ -6,9 +6,10 @@ function [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,VR_chan,tDCS_
 % tdcs_start = tDCS ramp up (begining, end)
 % tdcs_end = tDCS ramp down(begining, end)
 
-
-% % Define session position using session_detect function
-% Session_positions=session_detect(trialData,VR_chan,tDCS_chan);
+if nargin<5
+    % Define session position using session_detect function
+    Session_positions=session_detect(trialData,VR_chan,tDCS_chan);
+end
 
 % Detect VR
 Session_data=trialData.eeg.data(Session_positions{1}:Session_positions{2},VR_chan);
@@ -31,7 +32,7 @@ VR_sig=VR_sig+Session_positions{1};
 times=[];
 for vr=1:numel(vrfolder)
     tempxml=readtable(fullfile(vrfolder{vr},'Events.csv'));
-    times(vr,1)=tempxml.Time(end)*trialData.eeg.header.samplingrate;
+    times(vr,1)=tempxml.Time(end)*trialData.eeg.header.Fs;
 end
 vrsiglength=num2cell(diff(VR_sig,1,2));
 

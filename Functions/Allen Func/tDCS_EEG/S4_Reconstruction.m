@@ -1,6 +1,6 @@
 %% replay data collection
 
-function S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,trial_num)
+function S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,metriccurves,trial_num)
 %% Generate variables
 subjectFolder=fullfile(protocol_folder,subjectName);
 
@@ -332,7 +332,24 @@ for trials=trial_num
         caxis([cbarmin cbarmax]);
     end
        
-       
+    % Plot metric curves (velocity and acceleration)
+    if metriccurves
+        velAx = axes('parent',rFig);
+        velAx.Position = [0.80 0.77 0.15 0.1];
+        vecVel=sqrt(trackerData.v.(testedSide)(:,1).^2+trackerData.v.(testedSide)(:,2).^2+trackerData.v.(testedSide)(:,3).^2);
+        plot(velAx,vecVel)
+        t=title(velAx,'Velocity');
+        t.Color='w';
+        t.FontSize=14;
+
+        accAx = axes('parent',rFig);
+        accAx.Position = [0.80 0.57 0.15 0.1];
+        vecAcc=sqrt(trackerData.a.(testedSide)(:,1).^2+trackerData.a.(testedSide)(:,2).^2+trackerData.a.(testedSide)(:,3).^2);
+        plot(accAx,vecAcc)
+        t=title(accAx,'Acceleration');
+        t.Color='w';
+        t.FontSize=14;
+    end
        
        
     % Reconstruction Video Creation
@@ -370,14 +387,12 @@ for trials=trial_num
         xlim(eegAx,[reachStart reachEnd])
         
         % Set metrics
-        xtextpos=0.5+(0.25+(-0.25-0.25).*rand(1,1));
+        xtextpos=0.5;
         if metricplot
             metricdat=s2.metricdatraw.data;
             metriclabel=s2.metricdatraw.label;
-            pos=[1-fullwidth*1.2 .55 0.05 .1];
+            pos=[1-fullwidth*1.27 .55 0.05 .1];
             for m=1:numel(metriclabel)
-                
-
                 if r==1
                     metricAx{m} = axes('parent',rFig);
                     metricAx{m}.Visible = 'on';
@@ -388,17 +403,23 @@ for trials=trial_num
                         temppos=pos;
                         temppos(2)=pos(2)-(m-1)*0.15;
                         metricAx{m}.Position = temppos;
-                    elseif m>4 && m<=8
+                    elseif m>=5 && m<9
                         count=m-4;
                         temppos=pos;
                         temppos(2)=pos(2)-(count-1)*0.15;
                         temppos(1)=pos(1)+0.065;
                         metricAx{m}.Position = temppos;
-                    else
+                    elseif m>=9 && m<13
                         count=m-8;
                         temppos=pos;
                         temppos(2)=pos(2)-(count-1)*0.15;
                         temppos(1)=pos(1)+0.065*2;
+                        metricAx{m}.Position = temppos;
+                    else
+                        count=m-12;
+                        temppos=pos;
+                        temppos(2)=pos(2)-(count-1)*0.15;
+                        temppos(1)=pos(1)+0.065*3;
                         metricAx{m}.Position = temppos;
                     end
                 end
@@ -410,6 +431,12 @@ for trials=trial_num
         % Which frames are within each reach
         reachTrackerTime=find(trackerData.time>reachStart/fs & trackerData.time<reachEnd/fs);
         reachFrames=find(imageFrame>=reachTrackerTime(1)& imageFrame<=reachTrackerTime(end));
+        
+        % Adjust metric curves for each reach
+        if metriccurves
+            xlim(velAx,[imageFrame(reachFrames(1)) imageFrame(reachFrames(end))])
+            xlim(accAx,[imageFrame(reachFrames(1)) imageFrame(reachFrames(end))])
+        end
         
         for i = 1:length(reachFrames)
             frameNumber=imageFrame(reachFrames(i));
@@ -440,6 +467,12 @@ for trials=trial_num
                 plotAx.ZLim = [ymin-delta ymax+delta];
                 plotAx.YLim = [zmin-delta zmax+delta];
             end
+            
+            % Add metric curves indicator
+            if metriccurves
+                velIndicator = xline(velAx,frameNumber,'-b','LineWidth',4);
+                accIndicator = xline(accAx,frameNumber,'-b','LineWidth',4);
+            end
         
             if eegplot
                 % EEG Data Stream
@@ -451,10 +484,10 @@ for trials=trial_num
         
             if tfplot
                 % Time Freq Analysis Stream
-                tfaAx_7.XLim    = [eegTimeMin eegTimeMax];
+                tfaAx_7.XLim = [eegTimeMin eegTimeMax];
                 axes(tfaAx_7);hold on; indiciator7=plot(tfaAx_7,eegframetime,tfaAx_7.YLim,'-o','Color','w','MarkerFaceColor','k','MarkerSize',10);
 
-                tfaAx_18.XLim   = [eegTimeMin eegTimeMax];
+                tfaAx_18.XLim = [eegTimeMin eegTimeMax];
                 axes(tfaAx_18);hold on; indiciator18=plot(tfaAx_18,eegframetime,tfaAx_18.YLim, '-o','Color','w','MarkerFaceColor','k','MarkerSize',10);
             end
 
@@ -491,6 +524,12 @@ for trials=trial_num
                 delete(indiciator7)
                 delete(indiciator18)
             end
+            
+            if metriccurves
+                delete(velIndicator)
+                delete(accIndicator)
+            end
+                
         end
         
         if metricplot
@@ -500,6 +539,6 @@ for trials=trial_num
         end
     end
     close(vw)
-    close rFig
+    close(rFig)
 end 
 end

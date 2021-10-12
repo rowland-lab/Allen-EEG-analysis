@@ -31,6 +31,9 @@ end
 % Load EDF+ file
 [trialData,EEG]=loadVrTrialData_EEGlab(vrDataFolders,edf_file,{'DC1','DC2'},true,43);
 
+% Save processing data
+EEG.processingData{1}.data=EEG.data;
+EEG.processingData{1}.details='Import';
 
 % Detect and remove Bad/Non-VR task trials
 reject_trials=[];
@@ -94,7 +97,7 @@ end
 
 % Detect tDCS/VR signals
 sessioninfo=s1dat;
-[tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,s1dat.vrchan,s1dat.tdcschan,7000);
+[tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,sessioninfo.vrchan,sessioninfo.tdcschan,vrDataFolders);
 
 sessioninfo.tdcssig.time=tdcs_detect;
 sessioninfo.sessionperiod=Session_times;
@@ -115,7 +118,6 @@ for i=1:size(s2dat.s2rejecttrials,1)
     trialData.vr(s2dat.s2rejecttrials(i,1)).events.targetUp.time(s2dat.s2rejecttrials(i,2))=[];
 end
 
-% Detect Epochs
 
 % Epoch length in seconds
 epochlength=60;
@@ -249,8 +251,16 @@ EEG=pop_chanevent(EEG,46,'edge','leading');
 % Downsample to 256
 EEG=pop_resample(EEG,256,[],[]);
 
+% Save processing data
+EEG.processingData{2}.data=EEG.data;
+EEG.processingData{2}.details='Downsample to 256';
+
 % High Pass Filter at 0.5Hz
 EEG = pop_eegfilt( EEG, 0.5, 0, [], 0, 0, 0, 'fir1',0);
+
+% Save processing data
+EEG.processingData{3}.data=EEG.data;
+EEG.processingData{3}.details='High Pass Filter (0.5)';
 
 % Load Channel Locations
 EEG.chanlocs=pop_chanedit(EEG.chanlocs, 'load',{'C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\EEGLab\Electrode_Loc.ced', 'filetype', 'autodetect'}); 
@@ -259,7 +269,6 @@ EEG.chanlocs=pop_chanedit(EEG.chanlocs, 'load',{'C:\Users\allen\Box Sync\Desktop
 EEG.chanlocs([21 24:end])=[];
 EEG.data([21 24:end],:)=[];
 EEG.nbchan=numel(EEG.chanlocs);
-
 
 % Doesn't work for BIOSEMI??! EDF+
 % % Use CleanLine Function to remove line noise
@@ -274,6 +283,10 @@ EEG.nbchan=numel(EEG.chanlocs);
 
 % Notch filter at line noise
 EEG = pop_eegfilt( EEG, 59, 61, 35, 1 ,0 ,0);
+
+% Save processing data
+EEG.processingData{4}.data=EEG.data;
+EEG.processingData{4}.details='Notch Filter';
 
 % Find Bad Channels
 originalEEG=EEG;
@@ -293,8 +306,17 @@ else
     EEG=EEGremoval;
 end
 
+% Save processing data
+EEG.processingData{5}.data=EEG.data;
+EEG.processingData{5}.details='Removed Bad channels and interpolate';
+
+
 % Re-Reference Data (average)
 EEG=pop_reref(EEG,[],'exclude',23);
+
+% Save processing data
+EEG.processingData{6}.data=EEG.data;
+EEG.processingData{6}.details='Rereference to average';
 
 % Select Pre, Intra, Post epochs
 vrsig=EEG.sessioninfo.vrsig/4;
@@ -316,12 +338,26 @@ for i=1:size(vrsig,1)
         tempeeg.event(q).latency=tempeeg.event(q).latency-vrsig(i,1);
     end
     
+    % Save processing data
+    tempeeg.processingData{7}.data=tempeeg.data;
+    tempeeg.processingData{7}.VRsignal=vrsig(i,:);
+    tempeeg.processingData{7}.details={'Trial Epoch'};
+    
+    
     % Perform Artifact Subspace Reconstruction (ASR)
     tempeeg=clean_artifacts(tempeeg,'FlatlineCriterion','off','Highpass','off','ChannelCriterion','off','LineNoiseCriterion','off');
 
+    % Save processing data
+    tempeeg.processingData{8}.data=tempeeg.data;
+    tempeeg.processingData{8}.details={'Artifact Subspace Reconstruction'};
+    
     % Re-Reference Data (average) AGAIN
     tempeeg=pop_reref(tempeeg,[],'exclude',23);
-
+    
+     % Save processing data
+    tempeeg.processingData{9}.data=tempeeg.data;
+    tempeeg.processingData{9}.details={'Second Rereference'};
+    
     % Calculate ICA weights
     tempeeg= pop_runica(tempeeg,'icatype','runica');
     
@@ -333,11 +369,16 @@ for i=1:size(vrsig,1)
     % Extract Epochs
     tempeeg=pop_epoch(tempeeg,[],[-0.5 1]);
     
+    % Save processing data
+    tempeeg.processingData{10}.data=tempeeg.data;
+    tempeeg.processingData{10}.details={'Reach epoched'};
+
     eegevents.(['t',num2str(i)])=tempeeg;
 end
 
+
 % Save structure
-save(fullfile(analysisfolder,'Pre-ICA'),'eegevents');
+save(fullfile(analysisfolder,'Pre-ICA'),'eegevents','-v7.3');
 
 close all
 clear all
