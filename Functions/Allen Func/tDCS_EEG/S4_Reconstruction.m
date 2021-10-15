@@ -9,6 +9,7 @@ subjectFolder=fullfile(protocol_folder,subjectName);
 try
     disp('Importing S1 data')
     s1=load(fullfile(subjectFolder,'analysis','S1-VR_preproc',[subjectName,'_S1-VRdata_preprocessed.mat']));
+    fs=s1.trialData.eeg.header.samplingrate;
 catch
     error('Step 1 Preprocessing files NOT FOUND')
 end
@@ -190,7 +191,7 @@ for trials=trial_num
      
 
         % Plot eeg
-        fs=s1.trialData.eeg.header.samplingrate;
+        
         eegtime=trackerData.time.*fs;
 
         eegAx = axes('parent',rFig);
@@ -355,8 +356,7 @@ for trials=trial_num
     % Reconstruction Video Creation
     wIM = [];
     rIM = [];
-    
-    videoname=fullfile(reconFolder,[s1.sessioninfo.trialnames{trials},'-reachepoch.mp4']);
+    videoname=fullfile(reconFolder,[s1.sessioninfo.trialnames{trials}, num2str(double([positionalplot,eegplot,tfplot,metricplot,metriccurves])),'.mp4']);
     if exist(videoname,'file') ~= 0
         disp('Old file detected... Removing old file')
         delete(videoname)
@@ -380,15 +380,17 @@ for trials=trial_num
             reachEnd=tempepochs.atStartPosition.val(r+1,1);
         end
         
-        % Set eegplot title and xlim
-        t=title(eegAx,['Reach ',num2str(r)]);
-        t.Color='w';
-        t.FontSize=14;
-        xlim(eegAx,[reachStart reachEnd])
+        if eegplot
+            % Set eegplot title and xlim
+            t=title(eegAx,['Reach ',num2str(r)]);
+            t.Color='w';
+            t.FontSize=14;
+            xlim(eegAx,[reachStart reachEnd])
+        end
         
         % Set metrics
-        xtextpos=0.5;
         if metricplot
+            xtextpos=0.5;
             metricdat=s2.metricdatraw.data;
             metriclabel=s2.metricdatraw.label;
             pos=[1-fullwidth*1.27 .55 0.05 .1];

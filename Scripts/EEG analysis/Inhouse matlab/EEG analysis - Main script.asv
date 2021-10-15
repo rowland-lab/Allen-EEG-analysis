@@ -56,10 +56,6 @@
 % {'PR'  }
 
 %% Input
-clear all
-close all
-clc
-
 % Enter gitpath
 gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
 cd(gitpath)
@@ -93,6 +89,6 @@ end
 for i=1:numel(sbj)
     S4_Reconstruction(sbj{i},protocolfolder,false,false,false,false,false,[])
     S4_Reconstruction(sbj{i},protocolfolder,false,true,false,false,false,[])
-    S4_Reconstruction(sbj{i},protocolfolder,true,true,false,true,true,[])
+    S4_Reconstruction(sbj{i},protocolfolder,true,false,false,false,false,[])
 end
 
