@@ -2,17 +2,15 @@
 % Note: Must have run S1,S2,S3 in EEG analysis - Main script
 clear
 
+% Enter gitpath
+gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
+cd(gitpath)
+
 % Enter in protocol folder
 protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
 
-% Enter EEG lab path
-eeglabpath='C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\eeglab-develop';
-addpath(eeglabpath);
-
-% Start eeglab default settings
-eeglab
-close all
-clc
+% Add EEG related paths
+allengit_genpaths(gitpath,'EEG')
 
 % Detect subjects
 sbj=dir(fullfile(protocolfolder,'pro000*.'));

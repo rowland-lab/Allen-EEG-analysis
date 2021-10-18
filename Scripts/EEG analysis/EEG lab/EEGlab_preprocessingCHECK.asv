@@ -23,7 +23,7 @@ eventtime=(latency+processingData{7}.VRsignal(1,1))/fs;
 channel=18;
 %% Create figure
 figure;
-sgtitle([subject,' - ',trial,' - Channel ',num2str(channel)],'Interpreter','none')
+sgtitle([subject,' ',trial])
 
 % Plot import
 subplot(6,6,[1 2])
