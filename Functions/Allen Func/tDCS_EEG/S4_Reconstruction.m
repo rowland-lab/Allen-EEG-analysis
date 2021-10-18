@@ -66,7 +66,7 @@ for trials=trial_num
     % load data
     dataFile = fullfile(trialFolder,'Data.csv');
     eventsFile = fullfile(trialFolder,'Events.csv');
-    trialData = s2.trialData;
+    trialData = s1.trialData;
     trackerData = trialData.vr(trials).tracker;
     
    
