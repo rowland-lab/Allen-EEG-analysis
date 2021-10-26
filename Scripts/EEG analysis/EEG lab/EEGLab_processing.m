@@ -1,6 +1,6 @@
 %%
 % Note: Must have run S1,S2,S3 in EEG analysis - Main script
-clear
+clear all
 
 % Enter gitpath
 gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
@@ -24,17 +24,17 @@ for i=1:numel(sbj)
 end
 
 % Eliminate ICA components
-for i=1:numel(sbj)
+for i=[1 3]%1:numel(sbj)
     EEGLAB_ICAremoval(sbj{i},protocolfolder)
 end
 
 % Time Freq-Analysis (power)
-for i=26:numel(sbj)
+for i=[1 3]%:numel(sbj)
     EEGLAB_timefreq(sbj{i},protocolfolder)
 end
 
 % FieldTrip (imaginary Coherence)
-for i=26:numel(sbj)
+for i=[1 3]%1:numel(sbj)
     EEGLAB_imaginarycoh(sbj{i},protocolfolder)
 end
 

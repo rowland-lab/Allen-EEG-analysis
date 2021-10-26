@@ -6,6 +6,12 @@ clear all
 % Enter in protocol folder
 protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
 
+% Enter GitHub Path
+github_path='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
+cd(github_path)
+
+allengit_genpaths(github_path,'EEG')
+
 % Detect subjects
 sbj=dir(fullfile(protocolfolder,'pro000*.'));
 sbj={sbj.name}';
@@ -115,7 +121,7 @@ percent=false;
 % rm_sbj=[2 11];
 
 clear vars sham_contra sham_ip stim_contra stim_ip
-for d=3
+for d=1
     
     % Disease index
     dx_idx=strcmp(powerdat.dx,dx_type{d});

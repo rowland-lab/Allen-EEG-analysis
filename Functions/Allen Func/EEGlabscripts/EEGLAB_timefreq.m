@@ -133,6 +133,6 @@ end
     
 
 
-save(fullfile(analysisfolder,'EEGlab_power'),'eegevents');
+save(fullfile(analysisfolder,'EEGlab_power'),'eegevents','-v7.3');
 
 end

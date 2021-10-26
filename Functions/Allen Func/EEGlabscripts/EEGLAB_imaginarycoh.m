@@ -1,18 +1,12 @@
 function EEGLAB_imaginarycoh(subject,protocolfolder)
 
-% Add Fieldtrip
-addpath 'C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\fieldtrip-20200607'
-ft_defaults
-addpath 'C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\fieldtrip-20200607\external\spm12'
-addpath 'C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\fieldtrip-20200607\external\bsmart'
-
 subjectfolder=fullfile(protocolfolder,subject);
 analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
 
 % Import power calculated EEG structures
-powermatfile=fullfile(analysisfolder,'EEGlab_power.mat');
-if any(exist(powermatfile))
-    import=load(powermatfile);
+importmatfile=fullfile(analysisfolder,'EEGlab_power.mat');
+if any(exist(importmatfile))
+    import=load(importmatfile);
     eegepochs=import.eegevents;
 else
     disp([subject,' missing EEGlab power file'])
@@ -63,15 +57,24 @@ for i=1:numel(fn)
         cfg.keeptrials      = 'yes';
         cfg.tapsmofrq       = 1;
         cfg.channel         = [1:21];
+        cfg.keeptrials      = 'yes';
         freq_csd            = ft_freqanalysis(cfg, ft_EEG);
 
-        cfg                 = [];
-        cfg.method          = 'coh';
-        cfg.complex         = 'absimag';
-        conn                = ft_connectivityanalysis(cfg, freq_csd);
+        for t=1:size(freq_csd.powspctrm,1)
+            cfg                 = [];
+            cfg.method          = 'coh';
+            cfg.complex         = 'absimag';
+            cfg.trials          = t;
+            conn                = ft_connectivityanalysis(cfg, freq_csd);
 
-        % Save Coherence structure
-        peeg.ft_iCoh=conn;
+            % Save Coherence structure
+            if t==1
+                peeg.ft_iCoh=conn;
+            else
+                peeg.ft_iCoh.cohspctrm(:,:,t)=conn.cohspctrm;
+            end
+        end
+            
         
         % Save peeg to tempeeg structure
         tempeeg(phas,:)=peeg;
@@ -81,6 +84,6 @@ for i=1:numel(fn)
     eegepochs.(fn{i})=tempeeg;
 end
 
-save(fullfile(analysisfolder,'EEGlab_ftimagcoh'),'eegepochs');
+save(fullfile(analysisfolder,'EEGlab_ftimagcoh'),'eegepochs','-v7.3');
 
 end

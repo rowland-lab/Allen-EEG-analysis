@@ -90,9 +90,9 @@ for i=1:numel(sbj)
 end
 
 % Reconstruction --> S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,metriccurves,trial_num)
-for i=1:numel(sbj)
-    S4_Reconstruction(sbj{i},protocolfolder,false,false,false,false,false,[])
-    S4_Reconstruction(sbj{i},protocolfolder,false,true,false,false,false,[])
+for i=4:numel(sbj)
+%     S4_Reconstruction(sbj{i},protocolfolder,false,false,false,false,false,[])
+%     S4_Reconstruction(sbj{i},protocolfolder,false,true,false,false,false,[])
     S4_Reconstruction(sbj{i},protocolfolder,true,true,false,true,true,[])
 end
 
