@@ -486,6 +486,8 @@ for trials=trial_num
         
             if tfplot
                 % Time Freq Analysis Stream
+                eegTimeMin=eegframetime-(fs);
+                eegTimeMax=eegframetime+(fs);
                 tfaAx_7.XLim = [eegTimeMin eegTimeMax];
                 axes(tfaAx_7);hold on; indiciator7=plot(tfaAx_7,eegframetime,tfaAx_7.YLim,'-o','Color','w','MarkerFaceColor','k','MarkerSize',10);
 

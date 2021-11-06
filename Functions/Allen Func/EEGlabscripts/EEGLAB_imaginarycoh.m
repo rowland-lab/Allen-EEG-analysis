@@ -1,21 +1,21 @@
-function EEGLAB_imaginarycoh(subject,protocolfolder)
+function eegevents=EEGLAB_imaginarycoh(eegevents)
 
-subjectfolder=fullfile(protocolfolder,subject);
-analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
+% subjectfolder=fullfile(protocolfolder,subject);
+% analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
+% 
+% % Import power calculated EEG structures
+% importmatfile=fullfile(analysisfolder,'EEGlab_power.mat');
+% if any(exist(importmatfile))
+%     import=load(importmatfile);
+%     eegevents=import.eegevents;
+% else
+%     disp([subject,' missing EEGlab power file'])
+%     return
+% end
 
-% Import power calculated EEG structures
-importmatfile=fullfile(analysisfolder,'EEGlab_power.mat');
-if any(exist(importmatfile))
-    import=load(importmatfile);
-    eegepochs=import.eegevents;
-else
-    disp([subject,' missing EEGlab power file'])
-    return
-end
-
-fn=fieldnames(eegepochs);
+fn=fieldnames(eegevents.trials);
 for i=1:numel(fn)
-    wkEEG=eegepochs.(fn{i});
+    wkEEG=eegevents.trials.(fn{i});
     
     for phas=1:size(wkEEG,1)
         
@@ -37,10 +37,10 @@ for i=1:numel(fn)
         ft_EEG.hdr.nChans=peeg.nbchan;
         ft_EEG.hdr.labels={peeg.chanlocs.labels}';
         ft_EEG.hdr.nSamples=peeg.pnts;
-        ft_EEG.hdr.nTrials=peeg.trials;
+        ft_EEG.hdr.nTrials=size(peeg.data,3);
 
         ft_EEG.label=ft_EEG.hdr.labels;
-        ft_EEG.time=repmat({peeg.times/1000},1,peeg.trials);
+        ft_EEG.time=repmat({peeg.times/1000},1,ft_EEG.hdr.nTrials);
 
         for t=1:size(peeg.data,3)
             ft_EEG.trial{t}=double(peeg.data(:,:,t));
@@ -61,17 +61,30 @@ for i=1:numel(fn)
         freq_csd            = ft_freqanalysis(cfg, ft_EEG);
 
         for t=1:size(freq_csd.powspctrm,1)
+            
+            % Save Imaginary Coherence structure
             cfg                 = [];
             cfg.method          = 'coh';
             cfg.complex         = 'absimag';
             cfg.trials          = t;
             conn                = ft_connectivityanalysis(cfg, freq_csd);
 
-            % Save Coherence structure
             if t==1
                 peeg.ft_iCoh=conn;
             else
                 peeg.ft_iCoh.cohspctrm(:,:,t)=conn.cohspctrm;
+            end
+            
+            % Save Granger Causality
+            cfg                 = [];
+            cfg.method          = 'granger';
+            cfg.trials          = t;
+            conn                = ft_connectivityanalysis(cfg, freq_csd);
+            
+            if t==1
+                peeg.ft_GC=conn;
+            else
+                peeg.ft_GC.grangerspctrm(:,:,:,t)=conn.grangerspctrm;
             end
         end
             
@@ -80,10 +93,13 @@ for i=1:numel(fn)
         tempeeg(phas,:)=peeg;
     end
     
-    % Save tempeeg to eegepochs
-    eegepochs.(fn{i})=tempeeg;
+    % Save tempeeg to eegevents
+    eegevents.trials.(fn{i})=tempeeg;
 end
 
-save(fullfile(analysisfolder,'EEGlab_ftimagcoh'),'eegepochs','-v7.3');
+% FieldTrip step completion tag
+eegevents.pipeline.preprocessing=true;
+
+% save(fullfile(analysisfolder,'EEGlab_ftimagcoh'),'eegevents','-v7.3');
 
 end

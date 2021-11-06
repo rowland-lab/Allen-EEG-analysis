@@ -1,6 +1,0 @@
-repo: 22ef2ec4afd25de0a970f50c1d9a35e3a7fc8300
-node: c5404fa778c6d8418132dcce64ab8f217763c0fb
-branch: default
-latesttag: SIFT_1.5
-latesttagdistance: 9
-changessincelatesttag: 9

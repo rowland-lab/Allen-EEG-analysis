@@ -8,7 +8,7 @@ function [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,VR_chan,tDCS_
 
 if nargin<5
     % Define session position using session_detect function
-    Session_positions=session_detect(trialData,VR_chan,tDCS_chan);
+    Session_positions=session_detect(trialData,VR_chan,tDCS_chan,numel(vrfolder));
 end
 
 % Detect VR
@@ -16,7 +16,7 @@ Session_data=trialData.eeg.data(Session_positions{1}:Session_positions{2},VR_cha
 if mean(Session_data)<0
     Session_data=Session_data*-1;
 end
-[RowNrs,~]=find(Session_data>mean([min(Session_data(Session_data>=0)),max(Session_data)]));
+[RowNrs,~]=find(Session_data>mean([mode(Session_data),max(Session_data)]));
 [Row,~]=find(diff(RowNrs)>1000);
 
 VR_sig(1,1)=RowNrs(1);
@@ -37,7 +37,7 @@ end
 vrsiglength=num2cell(diff(VR_sig,1,2));
 
 tolerance=0.01; % default tolerance
-step=0.001; % default step
+step=0.0001; % default step
 x=1;
 while x==1
     vrsiglog= cellfun(@(x) ismembertol(x,times,tolerance),vrsiglength,'UniformOutput',false);
@@ -48,7 +48,8 @@ while x==1
         figure;
         plot(trialData.eeg.data(:,VR_chan))
         hold on
-        scatter(VR_sig(vrsiglog,2),ones(sum(vrsiglog),1)*mean(Session_data))
+        scatter(VR_sig(vrsiglog,2),ones(sum(vrsiglog),1)*mean(trialData.eeg.data(:,VR_chan)),'r')
+        scatter(VR_sig(vrsiglog,1),ones(sum(vrsiglog),1)*mean(trialData.eeg.data(:,VR_chan)),'g')
         error('error')
     elseif numel(vrfolder)<sum(vrsiglog)
         tolerance=tolerance-step
