@@ -1,4 +1,4 @@
-function [trialData,EEG] = loadVrTrialData_EEGlab(vrDataFolder,eegDataFile,eegSyncChannels,manualSyncReview,VR_chan)
+function [trialData,EEG,VR_chan] = loadVrTrialData_EEGlab(vrDataFolder,eegDataFile,eegSyncChannels,manualSyncReview,VR_chanLabel)
 % initialize output structure
 trialData = [];
 trialData.vr = [];
@@ -21,8 +21,8 @@ end
 % default sync review flag
 if nargin<4
     manualSyncReview = false;
-    VR_chan=[];
-end    
+    VR_chanLabel=[];
+end
 
 %% a) load VR data
 
@@ -93,13 +93,13 @@ if ~isempty(eegDataFile)
         % add time vector(s) to eeg data
         eegTime = (0:(size(eegData,1)-1)) * (1/EEG.srate);
         eegTime = eegTime';
-               
+        
         % update flag
         eegLoaded = true;
         
         % save data to structure
         trialData.eeg.header.Fs = EEG.srate;
-       
+        
         trialData.eeg.time = eegTime;
         trialData.eeg.data = eegData;
         trialData.eeg.channels = {EEG.chanlocs.labels};
@@ -149,7 +149,7 @@ if (vrLoaded && eegLoaded)
             [eegSync2, snr2] = processSyncSignal(eegSync2,trialData.eeg.header.Fs,sync_start);
             eegSync2 = movmean(eegSync2,round(trialData.eeg.header.Fs * 0.1));
         end
-
+        
         if snr1>snr2
             eeg_TTLsync = eegSync1;
             VR_chan_auto=find(strcmpi(trialData.eeg.channels,eegSyncChannels{1}));
@@ -158,6 +158,7 @@ if (vrLoaded && eegLoaded)
             VR_chan_auto=find(strcmpi(trialData.eeg.channels,eegSyncChannels{2}));
         end
     else
+        VR_chan = find(strcmp(trialData.eeg.channels,VR_chanLabel));
         eegSync = trialData.eeg.data(:,VR_chan);
         [eegSync, ~] = processSyncSignal(eegSync,trialData.eeg.header.Fs);
         eegSync = movmean(eegSync,round(trialData.eeg.header.Fs * 0.1));
@@ -184,7 +185,7 @@ if (vrLoaded && eegLoaded)
     eeg_ttl_pulse_duration = eeg_sync_offset-eeg_sync_onset;
     
     for it = 1:length(trialData.vr)
-               
+        
         if isempty(trialData.vr(it).information)
             trialData.vr(it).sync.success = false;
             trialData.vr(it).sync.deltaT = [];
@@ -216,15 +217,15 @@ if (vrLoaded && eegLoaded)
         eeg_available_ttl_pulse_duration = eeg_ttl_pulse_duration(eeg_available_ttl_pulses);
         vr_ttl_pulse_duration = vr_sync_offset-vr_sync_onset;
         ind_candidates = find((abs(vr_ttl_pulse_duration-eeg_available_ttl_pulse_duration)<0.5));
-
+        
         if ~isempty(ind_candidates)
             
             % get best eeg ttl pulse candidate
-%             eeg_ttl_pulse_candidates = eeg_available_ttl_pulses(ind_candidates);
-%             ttl_pulse_duration_difference = abs(vr_ttl_pulse_duration-eeg_available_ttl_pulse_duration(ind_candidates));
-%             [~, imin] = min(ttl_pulse_duration_difference);
-%             ind_selected_eeg_pulse = eeg_ttl_pulse_candidates(imin);
-
+            %             eeg_ttl_pulse_candidates = eeg_available_ttl_pulses(ind_candidates);
+            %             ttl_pulse_duration_difference = abs(vr_ttl_pulse_duration-eeg_available_ttl_pulse_duration(ind_candidates));
+            %             [~, imin] = min(ttl_pulse_duration_difference);
+            %             ind_selected_eeg_pulse = eeg_ttl_pulse_candidates(imin);
+            
             ind_selected_eeg_pulse = eeg_available_ttl_pulses(ind_candidates(1));
             eeg_available_ttl_pulses(eeg_available_ttl_pulses == ind_selected_eeg_pulse) = [];
             
@@ -262,40 +263,82 @@ if nargin>=3
     eegSync(1:syncStart-1) = 0;
 end
 
-% remove spikes
-s0 = abs(eegSync);
-ns = round(Fs * 0.1);
-sb = movmean(s0,[ns-1 0]);
-sa = (movmean(s0,[0 ns])*(ns+1)-s0)/ns;
-stb = movstd(s0,[ns-1 0]);
-
-risingCandidate = sa-sb > 5 * stb;
-fallingCandidate = sb-sa > 5 * stb;
-
-risingCandidate(1:ns) = 0;
-fallingCandidate(1:ns) = 0;
-
-risingCandidateStart = find([0; diff(risingCandidate)]>0);
-risingCandidateEnd = find(diff(risingCandidate)<0);
-fallingCandidateStart = find([0; diff(fallingCandidate)]>0);
-fallingCandidateEnd = find(diff(fallingCandidate)<0);
-
-rising = NaN(1,length(risingCandidateStart));
-falling = NaN(1,length(fallingCandidateStart));
-
-for i = 1:length(risingCandidateStart)
-    ind = risingCandidateStart(i):risingCandidateEnd(i);
-    si = sa(ind)-sb(ind);
-    [~, imax] = max(si);
-    rising(i) = imax-1+ind(1);
+x=1;
+thres=0.1;
+while x==1
+    try
+        % remove spikes
+        s0 = abs(eegSync);
+        ns = round(Fs * thres);
+        sb = movmean(s0,[ns-1 0]);
+        sa = (movmean(s0,[0 ns])*(ns+1)-s0)/ns;
+        stb = movstd(s0,[ns-1 0]);
+        
+        risingCandidate = sa-sb > 5 * stb;
+        fallingCandidate = sb-sa > 5 * stb;
+        
+        risingCandidate(1:ns) = 0;
+        fallingCandidate(1:ns) = 0;
+        
+        risingCandidateStart = find([0; diff(risingCandidate)]>0);
+        risingCandidateEnd = find(diff(risingCandidate)<0);
+        fallingCandidateStart = find([0; diff(fallingCandidate)]>0);
+        fallingCandidateEnd = find(diff(fallingCandidate)<0);
+        
+        rising = NaN(1,length(risingCandidateStart));
+        falling = NaN(1,length(fallingCandidateStart));
+        
+        for i = 1:length(risingCandidateStart)
+            ind = risingCandidateStart(i):risingCandidateEnd(i);
+            si = sa(ind)-sb(ind);
+            [~, imax] = max(si);
+            rising(i) = imax-1+ind(1);
+        end
+        
+        for i = 1:length(fallingCandidateStart)
+            ind = fallingCandidateStart(i):fallingCandidateEnd(i);
+            si = sb(ind)-sa(ind);
+            [~, imax] = max(si);
+            falling(i) = imax-1+ind(1);
+        end
+        
+        x=2;
+    catch
+        if thres > 1
+            figure;
+            nexttile
+            plot(eegSync)
+            title('eegSync')
+            nexttile
+            plot(s0)
+            title('s0')
+            nexttile
+            plot(sb)
+            title('sb')
+            nexttile
+            plot(sa)
+            title('sa')
+            nexttile
+            plot(stb)
+            title('stb')
+            nexttile
+            plot(risingCandidate)
+            title('risingCandidate')
+            hold on
+            scatter(risingCandidateStart,ones(1,numel(risingCandidateStart))*0.5,'g')
+            scatter(risingCandidateEnd,ones(1,numel(risingCandidateStart))*0.5,'r')
+            nexttile
+            plot(fallingCandidate)
+            title('fallingCandidate')
+            hold on
+            scatter(fallingCandidateStart,ones(1,numel(risingCandidateStart))*0.5,'g')
+            scatter(fallingCandidateEnd,ones(1,numel(risingCandidateStart))*0.5,'r')
+            error('Auto signal finding failed')
+        end
+        thres=0.1+0.1;
+    end
 end
 
-for i = 1:length(fallingCandidateStart)
-    ind = fallingCandidateStart(i):fallingCandidateEnd(i);
-    si = sb(ind)-sa(ind);
-    [~, imax] = max(si);
-    falling(i) = imax-1+ind(1);
-end
 
 for i = 1:length(rising)
     

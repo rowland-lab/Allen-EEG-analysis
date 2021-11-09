@@ -16,7 +16,7 @@ Session_data=trialData.eeg.data(Session_positions{1}:Session_positions{2},VR_cha
 if mean(Session_data)<0
     Session_data=Session_data*-1;
 end
-[RowNrs,~]=find(Session_data>mean([mode(Session_data),max(Session_data)]));
+[RowNrs,~]=find(Session_data>mean([median(Session_data),max(Session_data)]));
 [Row,~]=find(diff(RowNrs)>1000);
 
 VR_sig(1,1)=RowNrs(1);
@@ -32,29 +32,44 @@ VR_sig=VR_sig+Session_positions{1};
 times=[];
 for vr=1:numel(vrfolder)
     tempxml=readtable(fullfile(vrfolder{vr},'Events.csv'));
-    times(vr,1)=tempxml.Time(end)*trialData.eeg.header.Fs;
+    try
+        times(vr,1)=tempxml.Time(end)*trialData.eeg.header.Fs;
+    catch
+        times(vr,1)=tempxml.Time(end)*trialData.eeg.header.samplingrate;
+    end
 end
 vrsiglength=num2cell(diff(VR_sig,1,2));
 
 tolerance=0.01; % default tolerance
 step=0.0001; % default step
 x=1;
+toldec=false;
+tolinc=false;
 while x==1
     vrsiglog= cellfun(@(x) ismembertol(x,times,tolerance),vrsiglength,'UniformOutput',false);
     vrsiglog=cell2mat(vrsiglog);
     if numel(vrfolder)==sum(vrsiglog)
         x=2;
-    elseif tolerance>100
+    elseif tolerance>2
         figure;
         plot(trialData.eeg.data(:,VR_chan))
         hold on
         scatter(VR_sig(vrsiglog,2),ones(sum(vrsiglog),1)*mean(trialData.eeg.data(:,VR_chan)),'r')
         scatter(VR_sig(vrsiglog,1),ones(sum(vrsiglog),1)*mean(trialData.eeg.data(:,VR_chan)),'g')
-        error('error')
+        error('Error unable to match VR signal')
+    elseif toldec & tolinc
+        figure;
+        plot(trialData.eeg.data(:,VR_chan))
+        hold on
+        scatter(VR_sig(vrsiglog,2),ones(sum(vrsiglog),1)*mean(trialData.eeg.data(:,VR_chan)),'r')
+        scatter(VR_sig(vrsiglog,1),ones(sum(vrsiglog),1)*mean(trialData.eeg.data(:,VR_chan)),'g')
+        error('Error unable to match VR signal')
     elseif numel(vrfolder)<sum(vrsiglog)
         tolerance=tolerance-step
+        toldec=true;
     elseif numel(vrfolder)>sum(vrsiglog)
         tolerance=tolerance+step
+        tolinc=true;
     end
 end
 

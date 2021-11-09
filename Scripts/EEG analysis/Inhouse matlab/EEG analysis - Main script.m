@@ -75,9 +75,25 @@ sbj=dir(fullfile(protocolfolder,'pro000*'));
 sbj={sbj.name}';
 
 %% Run code
+
+% Preproc --> S1_VR_trial_preproc(sbjnum,protocolfolder,manual)
+clear manual status
+parfor i=1:numel(sbj)
+    try
+        S1_VR_trial_preproc(sbj{i},protocolfolder,false)
+    catch ME
+        manual{i}=i;
+        status{i}.message=ME.message; 
+        status{i}.stack=ME.stack;
+    end
+end
+
+for i=cell2mat(manual);
+     S1_VR_trial_preproc(sbj{i},protocolfolder,true)
+end
+
+
 for i=5
-    S1_VR_trial_preproc(sbj{i},protocolfolder)
-    
     % Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
     S2_MetricPlot(sbj{i},protocolfolder,2)
     

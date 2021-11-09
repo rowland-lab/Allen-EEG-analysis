@@ -33,7 +33,7 @@ end
 %% Preprocess EDF file for eeglab functions
 % Load EDF+ file
 disp('Loading EDF+ file...')
-[trialData,EEG]=loadVrTrialData_EEGlab(vrDataFolders,edf_file,{'DC1','DC2'},false,s1dat.vrchan);
+[trialData,EEG,VR_chan]=loadVrTrialData_EEGlab(vrDataFolders,edf_file,{'DC1','DC2'},false,s1dat.vrchanLabel);
 
 % Save processing data
 if save_procPipeline
@@ -109,13 +109,16 @@ buffer=1;
 % Detect tDCS/VR signals
 sessioninfo=s1dat;
 if manual
-    [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,sessioninfo.vrchan,sessioninfo.tdcschan,vrDataFolders);
+    [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,VR_chan,sessioninfo.tdcschan,vrDataFolders);
 else
     Session_positions{1}=1;
     Session_positions{2}=size(trialData.eeg.data,1);
-    [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,sessioninfo.vrchan,sessioninfo.tdcschan,vrDataFolders,Session_positions);
+    [tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,VR_chan,sessioninfo.tdcschan,vrDataFolders,Session_positions);
     Session_times{1}=VR_sig(1)-(epochlength*trialData.eeg.header.Fs);
     Session_times{2}=VR_sig(end)+(epochlength*trialData.eeg.header.Fs);
+    if Session_times{2}>size(trialData.eeg.data,1)
+        Session_times{2}=size(trialData.eeg.data,1);
+    end
 end
 
 sessioninfo.tdcssig.time=tdcs_detect;
@@ -198,7 +201,7 @@ while x~=1
     plot((trialData.eeg.data(:,7)-mean(trialData.eeg.data(:,7)))/std(trialData.eeg.data(:,7)))
     plot((trialData.eeg.data(:,18)-mean(trialData.eeg.data(:,18)))/std(trialData.eeg.data(:,18))-20)
     plot((trialData.eeg.data(:,23)-mean(trialData.eeg.data(:,18)))/std(trialData.eeg.data(:,23))-40)
-    plot((trialData.eeg.data(:,sessioninfo.vrchan)-mean(trialData.eeg.data(:,sessioninfo.vrchan)))/std(trialData.eeg.data(:,sessioninfo.vrchan))-60)
+    plot((trialData.eeg.data(:,VR_chan)-mean(trialData.eeg.data(:,VR_chan)))/std(trialData.eeg.data(:,VR_chan))-60)
     plot(((trialData.eeg.data(:,sessioninfo.tdcschan)-mean(trialData.eeg.data(:,sessioninfo.tdcschan)))/std(trialData.eeg.data(:,sessioninfo.tdcschan))*-1)-80,'LineWidth',2)
     xlim([Session_times{1} Session_times{2}]);
     yplotlim=get(gca,'ylim');
@@ -398,11 +401,11 @@ for i=1:size(vrsig,1)
     tempeeg= pop_runica(tempeeg,'icatype','runica');
     tempeeg.icaact = icaact(tempeeg.data,tempeeg.icaweights*tempeeg.icasphere);
     
-    % Dipole fitting with DIPFIT
-    tempeeg= pop_dipfit_settings(tempeeg,'hdmfile','C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\eeglab-develop\plugins\dipfit3.4\standard_BEM\standard_vol.mat','coordformat','MNI','mrifile','C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\eeglab-develop\plugins\dipfit3.4\standard_BEM\standard_mri.mat','chanfile','C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\eeglab-develop\plugins\dipfit3.4\standard_BEM\elec\standard_1005.elc','chansel',[1:21]);
-    tempeeg= pop_multifit(tempeeg,[],'threshold',100);
-    tempeeg= fitTwoDipoles(tempeeg,'LRR',35);
-    
+%     % Dipole fitting with DIPFIT
+%     tempeeg= pop_dipfit_settings(tempeeg,'hdmfile','C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\eeglab-develop\plugins\dipfit3.4\standard_BEM\standard_vol.mat','coordformat','MNI','mrifile','C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\eeglab-develop\plugins\dipfit3.4\standard_BEM\standard_mri.mat','chanfile','C:\Users\allen\Box Sync\Desktop\Functions\EEG_toolboxes\Matlab\eeglab-develop\plugins\dipfit3.4\standard_BEM\elec\standard_1005.elc','chansel',[1:21]);
+%     tempeeg= pop_multifit(tempeeg,[],'threshold',100);
+%     tempeeg= fitTwoDipoles(tempeeg,'LRR',35);
+%     
     % Calculate coherence between EKG channel and components
     figure;comp_data=pop_plotdata(tempeeg,0,[1:size(tempeeg.icawinv,2)]);
     heart_data=tempeeg.data(strcmp({tempeeg.chanlocs.labels},'EKG'),:);

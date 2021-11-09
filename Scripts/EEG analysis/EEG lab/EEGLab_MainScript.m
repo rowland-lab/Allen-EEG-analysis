@@ -18,8 +18,9 @@ sbj={sbj.name}';
 %% Run Code
 
 % Run EEG Lab Processing Pipeline
+clear status
 parfor i=1:numel(sbj)
-    status{i}=runEEGlab(sbj{i},protocolfolder,gitpath,false,false,true);
+    status{i,1}=runEEGlab(sbj{i},protocolfolder,gitpath,false,false,true);
 end
 
 

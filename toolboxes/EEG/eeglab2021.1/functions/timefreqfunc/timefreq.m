@@ -203,7 +203,7 @@ if g.cycles == 0
 end
 
 if (g.winsize > frame)
-    error('Value of winsize must be less than frame length.');
+  error('Value of winsize must be less than frame length.');
 end
 if (pow2(nextpow2(g.padratio)) ~= g.padratio)
     error('Value of padratio must be an integer power of two [1,2,4,8,16,...]');

@@ -13,132 +13,198 @@ allengit_genpaths(gitpath,'EEG')
 % Detect subjects
 sbj=dir(fullfile(protocolfolder,'pro000*.'));
 sbj={sbj.name}';
-%% 
-
-subject1='pro00087153_0003';
-subject2='pro00087153_0005';
-
-sbj1_coh=load('C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153\pro00087153_0003\analysis\EEGlab\EEGlab_ftimagcoh.mat');
-sbj2_coh=load('C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153\pro00087153_0005\analysis\EEGlab\EEGlab_ftimagcoh.mat');
-
-freqband{1}=sbj1_coh.eegepochs.t1(1).ft_iCoh.freq>=10 & sbj1_coh.eegepochs.t1(1).ft_iCoh.freq<=13;
-freqband{2}=sbj1_coh.eegepochs.t1(1).ft_iCoh.freq>=13 & sbj1_coh.eegepochs.t1(1).ft_iCoh.freq<=30;
-freqband{3}=sbj1_coh.eegepochs.t1(1).ft_iCoh.freq>=30 & sbj1_coh.eegepochs.t1(1).ft_iCoh.freq<=70;
-freqband{4}=sbj1_coh.eegepochs.t1(1).ft_iCoh.freq>=70;
-
-freqband_label{1}='Alpha';
-freqband_label{2}='Beta';
-freqband_label{3}='Gamma-L';
-freqband_label{4}='Gamma-B';
-
-
-trials={'t1','t2','t3','t4'};
-
-c3c4idx=116;
+%% Organize iCoh
+coh=[];
+disease=[];
+stimamp=[];
+subject=[];
+for s=1:numel(sbj)
+    try
+        tempdata=load(fullfile(protocolfolder,sbj{s},'analysis','EEGlab','EEGlab_Total.mat'));
+        temptrials=tempdata.eegevents_ft.trials;
+    catch
+        disp(['Unable to load EEGlab_ft for subject',sbj{s}])
+        continue
+    end
+    
+    tempinfo=load(fullfile(protocolfolder,sbj{s},'analysis','S1-VR_preproc',[sbj{s},'_S1-VRdata_preprocessed.mat']));
+    sessioninfo=tempinfo.sessioninfo;
+    trials_idx=find(~cellfun(@isempty,sessioninfo.trialidx));
+    
+    
+    
+    disease{s,1}=sessioninfo.dx;
+    stimamp{s,1}=sessioninfo.stimamp;
+    subject{s,1}=sbj{s};
+    
+    trial_names=fieldnames(tempdata.eegevents_ft.trials);
+    for t=1:numel(trial_names)
+        temptrialData=temptrials.(trial_names{t});
+        tempcoh=nan(12,3);
+        for p=1:size(temptrialData,1)
+            phasedat=temptrialData(p);
+            
+            % Calculate iCoh
+            labelcmb=phasedat.ft_iCoh.labelcmb;
+            m1_idx=find(sum(strcmp(phasedat.ft_iCoh.labelcmb,'C3')+strcmp(phasedat.ft_iCoh.labelcmb,'C4'),2)==2);
+            betafreq=phasedat.ft_iCoh.freq>=13&phasedat.ft_iCoh.freq<=30;
+            tempval=permute(mean(phasedat.ft_iCoh.cohspctrm(m1_idx,betafreq,:),2),[3 2 1]);
+            tempcoh(1:length(tempval),p)=tempval;
+            
+%             % Calculate GC
+%             C3Idx=find(strcmp(phasedat.ft_GC.label,'C3'));
+%             C4Idx=find(strcmp(phasedat.ft_GC.label,'C4'));
+%             
+%             betafreq=phasedat.ft_GC.freq>=13&phasedat.ft_GC.freq<=30;
+%             
+%             C3C4GC=permute(mean(phasedat.ft_GC.grangerspctrm(C3Idx,C4Idx,betafreq,:),3),[1 2 4 3]);
+%             C4C3GC=permute(mean(phasedat.ft_GC.grangerspctrm(C4Idx,C3Idx,betafreq,:),3),[1 2 4 3]);
+            
+        end
+        coh{s,trials_idx(t)}=tempcoh;
+    end
+end
+    
 %% Calculated iCoh
 phase={'hold','prep','move'};
-for fb=1:numel(freqband)
-    figure
-    sgtitle([freqband_label{fb},' iCoh (C3-C4)'])
+DOI={'stroke','healthy'};
+stimtype={0,2};
+figure
+sgtitle('Beta iCoh (C3-C4)');
+
+% Remove empty cells
+rm_idx=all(cellfun(@isempty,coh),2);
+coh(rm_idx,:)=[];
+disease(rm_idx,:)=[];
+stimamp(rm_idx,:)=[];
+subject(rm_idx,:)=[];
+
+
+for d=1:numel(DOI)
     for ph=1:numel(phase)
-        ax(ph+(ph-1))=subplot(3,2,ph+(ph-1));
+        ax=subplot(numel(phase),numel(DOI),d+(ph-1)*numel(DOI));
         hold on
-        coh=NaN(12,numel(trials));
-        for t=1:numel(trials)
-            tempcoh=reshape(mean(sbj1_coh.eegepochs.(trials{t})(ph).ft_iCoh.cohspctrm(c3c4idx,freqband{fb},:),2),[],1);
-            coh(1:numel(tempcoh),t)=tempcoh;
+        
+        anovaInput=[];
+        for s=1:numel(stimtype)
+            sbj_idx=cellfun(@(x) strcmp(x,DOI{d}),disease) & cellfun(@(x) x==stimtype{s},stimamp);
+            tempcoh=coh(sbj_idx,[1 2 3 5]);
+            tempcoh=cellfun(@(x) mean(x(:,ph),'omitnan'),tempcoh);
+            
+            bardat=mean(tempcoh,1);
+            sem=std(tempcoh,1,'omitnan')./sqrt(sum(~isnan(tempcoh),1));
+            
+            if s==1
+                xdat=(1:size(bardat,2))-0.2;
+            else
+                xdat=(1:size(bardat,2))+0.2;
+            end
+            errorbar(xdat,bardat,sem,'LineStyle','none')
+            
+            b(s)=bar(xdat,bardat,0.2);
+            
+            n(s)=size(tempcoh,1);
+            
+            anovaInput{s}=tempcoh;
         end
-        b=bar(mean(coh,1,'omitnan'));
-        sem=std(coh,[],1,'omitnan')./sum(~isnan(coh),1);
-        errorbar(b.YData,sem,'LineStyle','none')
-        title(subject1)
-        xlabel('trials')
-        xticklabels(trials)
-        xticks(1:4)
-        ylabel(phase{ph});
-        testKW(coh,trials,ax(ph+(ph-1)))
         
         
         
-        ax(ph+1+(ph-1))=subplot(3,2,ph+1+(ph-1));
-        hold on
-        coh=NaN(12,numel(trials));
-        for t=1:numel(trials)
-            tempcoh=reshape(mean(sbj2_coh.eegepochs.(trials{t})(ph).ft_iCoh.cohspctrm(c3c4idx,freqband{fb},:),2),[],1);
-            coh(1:numel(tempcoh),t)=tempcoh;
-        end
-        b=bar(mean(coh,1,'omitnan'));
-        sem=std(coh,[],1,'omitnan')./sum(~isnan(coh),1);
-        errorbar(b.YData,sem,'LineStyle','none')
-        title(subject2)
-        xlabel('trials')
-        xticklabels(trials)
-        xticks(1:4)
-        ylabel(phase{ph});
-        testKW(coh,trials,ax(ph+(ph-1)))
+        title(sprintf('%s - %s',DOI{d},phase{ph}))
+        xticks([1:4])
+        xticklabels({'Pre','Intra-5','Intra-15','Post-5'});
+        ylabel('Beta iCoh')
+        ylim([0 1])
+        mixANOVA(anovaInput,b);
+        
+        legend(b,{['Sham n=',num2str(n(1))],['Stim n=',num2str(n(2))]})
     end
-    linkaxes(ax)
 end
+
 %% Calculated Granger Causality
 phase={'hold','prep','move'};
-for fb=1:numel(freqband)
-    figure
-    sgtitle([freqband_label{fb},' iCoh (C3-C4)'])
+DOI={'stroke','healthy'};
+stimtype={0,2};
+figure
+sgtitle('Beta GC (C3-C4)');
+for d=1:numel(DOI)
     for ph=1:numel(phase)
-        ax(ph+(ph-1))=subplot(3,2,ph+(ph-1));
+        subplot(numel(phase),numel(DOI),d+(ph-1)*numel(DOI))
         hold on
-        coh=NaN(12,numel(trials));
-        for t=1:numel(trials)
-            tempcoh=reshape(mean(sbj1_coh.eegepochs.(trials{t})(ph).ft_iCoh.cohspctrm(c3c4idx,freqband{fb},:),2),[],1);
-            coh(1:numel(tempcoh),t)=tempcoh;
+        
+        for s=1:numel(stimtype)
+            sbj_idx=cellfun(@(x) strcmp(x,DOI{d}),disease) & cellfun(@(x) x==stimtype{s},stimamp);
+            tempcoh=coh(sbj_idx,[1 2 3 5]);
+            tempcoh=cellfun(@(x) mean(x(:,ph),'omitnan'),tempcoh);
+            
+            bardat=mean(tempcoh,1);
+            sem=std(tempcoh,1,'omitnan')./sqrt(sum(~isnan(tempcoh),1));
+            
+            if s==1
+                xdat=(1:size(bardat,2))-0.2;
+            else
+                xdat=(1:size(bardat,2))+0.2;
+            end
+            errorbar(xdat,bardat,sem,'LineStyle','none')
+            
+            b(s)=bar(xdat,bardat,0.2);
+            
+            n=sum(~isnan(tempcoh),1);
         end
-        b=bar(mean(coh,1,'omitnan'));
-        sem=std(coh,[],1,'omitnan')./sum(~isnan(coh),1);
-        errorbar(b.YData,sem,'LineStyle','none')
-        title(subject1)
-        xlabel('trials')
-        xticklabels(trials)
-        xticks(1:4)
-        ylabel(phase{ph});
-        testKW(coh,trials,ax(ph+(ph-1)))
         
-        
-        
-        ax(ph+1+(ph-1))=subplot(3,2,ph+1+(ph-1));
-        hold on
-        coh=NaN(12,numel(trials));
-        for t=1:numel(trials)
-            tempcoh=reshape(mean(sbj2_coh.eegepochs.(trials{t})(ph).ft_iCoh.cohspctrm(c3c4idx,freqband{fb},:),2),[],1);
-            coh(1:numel(tempcoh),t)=tempcoh;
-        end
-        b=bar(mean(coh,1,'omitnan'));
-        sem=std(coh,[],1,'omitnan')./sum(~isnan(coh),1);
-        errorbar(b.YData,sem,'LineStyle','none')
-        title(subject2)
-        xlabel('trials')
-        xticklabels(trials)
-        xticks(1:4)
-        ylabel(phase{ph});
-        testKW(coh,trials,ax(ph+(ph-1)))
+        title(sprintf('%s - %s',DOI{d},phase{ph}))
+        xticks([1:4])
+        xticklabels({['Pre (n=',num2str(n(1)),')'],['Intra-5 (n=',num2str(n(2)),')'],['Intra-15 (n=',num2str(n(3)),')'],['Post-5 (n=',num2str(n(4)),')']})
+        ylabel('Beta iCoh')
+        legend(b,cellfun(@num2str,stimtype,'UniformOutput',false))
     end
-    linkaxes(ax)
 end
 
+
 %%
-function testKW(input,trials,ax)
+function mixANOVA(input,b)
 
-[p,tbl,stats] = kruskalwallis(input,trials,'off');
+% Run Mixed Anova for contra
+[~,rm]=simple_mixed_anova(vertcat(input{:}),vertcat(ones(size(input{1},1),1)*0,ones(size(input{2},1),1)*2),{'Trial'},{'Stim'});
 
-if p<=0.05
-    m=max(ax.Children(2).YData);
-    [c,~]=multcompare(stats,'Display','off');
-    sigidx=find(c(:,6)<=0.05);
-    if any(sigidx)
-        for s=1:numel(sigidx)
-            hold(ax,'on')
-            line(ax,[c(sigidx(s),1),c(sigidx(s),2)],[m+0.1*s m+0.1*s]);
-            text(ax,mean([c(sigidx(s),1),c(sigidx(s),2)]),mean([m+0.1*s+0.05 m+0.1*s+0.05]),[num2str(c(sigidx(s),6)),'-kw'],'HorizontalAlignment','center');
-            ylim([0 m+0.1*s+0.1])
+% Compare stim vs sham
+Mrm1 = multcompare(rm,'Stim','By','Trial','ComparisonType','tukey-kramer');
+
+if any(Mrm1.pValue<=0.05)
+    sigidx=double(unique(Mrm1.Trial(find(Mrm1.pValue<=0.05))));
+    Ylimits=get(gca,'YLim');
+    for i=1:numel(sigidx)
+        text(sigidx(i),Ylimits(2)*0.8,num2str(unique(Mrm1.pValue(double(Mrm1.Trial)==sigidx(i)))),'FontSize',20,'HorizontalAlignment','center')
+    end
+end
+
+barpos(:,1)=b(1).XData;
+barpos(:,2)=b(2).XData;
+
+% Compare time points
+Mrm2 = multcompare(rm,'Trial','By','Stim','ComparisonType','bonferroni');
+if any(Mrm2.pValue<=0.05)
+    idx=find(Mrm2.pValue<=0.05);
+    for i=1:numel(idx)
+        t1=double(Mrm2.Trial_1(idx(i)));
+        t2=double(Mrm2.Trial_2(idx(i)));
+        pval=Mrm2.pValue(idx(i));
+        if t1<t2
+            if double(Mrm2.Stim(idx(i)))==1
+                sigpos=barpos(:,1);
+            else
+                sigpos=barpos(:,2);
+            end
+            Ylimits=get(gca,'YLim');
+            nYlimits=[Ylimits(1) Ylimits(2)+0.1*Ylimits(2)];
+            set(gca,'YLim',nYlimits)
+            l=line(gca,[sigpos(t1) sigpos(t2)],[1 1]*Ylimits(2));
+            text(gca,mean([sigpos(t1) sigpos(t2)]),Ylimits(2),num2str(pval),'HorizontalAlignment','center');
+            if double(Mrm2.Stim(idx(i)))==1
+                set(l,'linewidth',2,'Color','b')
+            else
+                set(l,'linewidth',2,'Color',[0.8500 0.3250 0.0980])
+            end
         end
     end
 end

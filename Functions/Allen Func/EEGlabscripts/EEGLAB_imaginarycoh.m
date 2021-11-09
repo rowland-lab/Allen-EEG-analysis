@@ -75,17 +75,17 @@ for i=1:numel(fn)
                 peeg.ft_iCoh.cohspctrm(:,:,t)=conn.cohspctrm;
             end
             
-            % Save Granger Causality
-            cfg                 = [];
-            cfg.method          = 'granger';
-            cfg.trials          = t;
-            conn                = ft_connectivityanalysis(cfg, freq_csd);
-            
-            if t==1
-                peeg.ft_GC=conn;
-            else
-                peeg.ft_GC.grangerspctrm(:,:,:,t)=conn.grangerspctrm;
-            end
+%             % Save Granger Causality
+%             cfg                 = [];
+%             cfg.method          = 'granger';
+%             cfg.trials          = t;
+%             conn                = ft_connectivityanalysis(cfg, freq_csd);
+%             
+%             if t==1
+%                 peeg.ft_GC=conn;
+%             else
+%                 peeg.ft_GC.grangerspctrm(:,:,:,t)=conn.grangerspctrm;
+%             end
         end
             
         

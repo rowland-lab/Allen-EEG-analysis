@@ -1,4 +1,4 @@
-function [status]=runEEGlab(sbj,protocolfolder,gitpath,save_procPipeline,manual,ica_auto)
+function status=runEEGlab(sbj,protocolfolder,gitpath,save_procPipeline,manual,ica_auto)
 try
     % Preprocess EEGLab (Epoch, Filter, ICA weights)
     eegevents_icarem=EEGLAB_preprocessing(sbj,protocolfolder,gitpath,save_procPipeline,manual,ica_auto);
@@ -11,9 +11,10 @@ try
     
     status='complete';
     
-    save(fullfile(protocolfolder,sbj,'analysis','EEGlab','EEGlab_Total'),'eegevents_preica','eegevents_tfa','eegevents_ft','-v7.3');
+    save(fullfile(protocolfolder,sbj,'analysis','EEGlab','EEGlab_Total'),'eegevents_icarem','eegevents_tfa','eegevents_ft','-v7.3');
 catch ME
-    status=ME;
+    status.message=ME.message;
+    status.stack=ME.stack;
 end
 
 end

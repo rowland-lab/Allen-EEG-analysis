@@ -31,25 +31,68 @@ function eegevents=EEGLAB_timefreq(eegevents)
 
 % Time-Freq analysis creation
 fn=fieldnames(eegevents.trials);
-for i=1:numel(fn)
-    EEG=eegevents.trials.(fn{i});
+for e=1:numel(fn)
+    EEG=eegevents.trials.(fn{e});
     
-    % Find eventtypes
-    if any(cellfun(@iscell,{EEG.epoch.eventtype}))
-        event_types=unique(cat(2,EEG.epoch.eventtype));
-    else
-        event_types=unique({EEG.epoch.eventtype});
+    % Fix Epoch field to numbers and non-cells
+    if iscell(EEG.epoch(1).eventlatency)
+        for i=1:size(EEG.epoch,2)
+            if any(cellfun(@ischar,EEG.epoch(i).eventtype))
+               EEG.epoch(i).eventtype=cellfun(@str2num,EEG.epoch(i).eventtype,'UniformOutput',false);
+            end
+            EEG.epoch(i).eventlatency=cell2mat(EEG.epoch(i).eventlatency);
+            EEG.epoch(i).eventtype=cell2mat(EEG.epoch(i).eventtype);
+            EEG.epoch(i).eventurevent=cell2mat(EEG.epoch(i).eventurevent);
+            EEG.epoch(i).eventtrial=cell2mat(EEG.epoch(i).eventtrial);
+            EEG.epoch(i).eventreach=cell2mat(EEG.epoch(i).eventreach);
+            EEG.epoch(i).eventphase=cell2mat(EEG.epoch(i).eventphase);
+        end
     end
+    
+    % Fix Epoch field into numbers if string
+    if ischar(EEG.epoch(1).eventtype)
+        for i=1:size(EEG.epoch,2)
+            EEG.epoch(i).eventtype=str2num(EEG.epoch(i).eventtype)
+        end
+    end
+    
+    event_types=cat(2,EEG.epoch.eventtype);
+    event_types=unique(event_types);
+    
     
     % Calculate Power for each phase
     for ph=1:numel(event_types)
-        phaseEEG= pop_selectevent(EEG,'type',event_types{ph});
+        phaseEEG= pop_selectevent(EEG,'type',event_types(ph));
         
+        % Fix Epoch field if cell
+        if iscell(phaseEEG.epoch(1).eventtype)
+            for i=1:size(phaseEEG.epoch,2)
+                if any(cellfun(@ischar,phaseEEG.epoch(i).eventtype))
+                    phaseEEG.epoch(i).eventtype=cellfun(@str2num,phaseEEG.epoch(i).eventtype,'UniformOutput',false);
+                end
+                phaseEEG.epoch(i).eventlatency=cell2mat(phaseEEG.epoch(i).eventlatency);
+                phaseEEG.epoch(i).eventtype=cell2mat(phaseEEG.epoch(i).eventtype);
+                phaseEEG.epoch(i).eventurevent=cell2mat(phaseEEG.epoch(i).eventurevent);
+                phaseEEG.epoch(i).eventtrial=cell2mat(phaseEEG.epoch(i).eventtrial);
+                phaseEEG.epoch(i).eventreach=cell2mat(phaseEEG.epoch(i).eventreach);
+                phaseEEG.epoch(i).eventphase=cell2mat(phaseEEG.epoch(i).eventphase);
+            end
+        end
+        
+        % Fix Epoch field into numbers if string
+        if ischar(phaseEEG.epoch(1).eventtype)
+            for i=1:size(phaseEEG.epoch,2)
+                phaseEEG.epoch(i).eventtype=str2num(phaseEEG.epoch(i).eventtype)
+            end
+        end
+
         % Check to see if double event epochs exist
-        rmIdx=find(cellfun(@(x) x(1)==1,cellfun(@(x) ~strcmp(x,event_types{ph}),{phaseEEG.epoch.eventtype},'UniformOutput',false)));
+        rmIdx=find(cellfun(@(x) x(1)==1,cellfun(@(x) x~=event_types(ph),{phaseEEG.epoch.eventtype},'UniformOutput',false)));
         
         phaseEEG.doubleeventlog=~isempty(rmIdx);
         phaseEEG.doubleevent=phaseEEG.event;
+        
+        
         
         % Fix double events
         if phaseEEG.doubleeventlog
@@ -75,13 +118,12 @@ for i=1:numel(fn)
         
         
         % Define phase number
-        pn=event_types{ph}(2);
-        pn=str2double(pn);
+        pn=mod(event_types(ph),10);
         
         % Calculate Power of each channel
         for elec = 1:EEG.nbchan
             % Calculate Difference in Power
-            [ersp,itc,powbase,times,freqs,erspboot,itcboot] = pop_newtimef(phaseEEG,1, elec,[-500,1000],0,'padratio',8, ...
+            [ersp,itc,powbase,times,freqs,erspboot,itcboot] = pop_newtimef(phaseEEG,1, elec,[phaseEEG.xmin*1000,phaseEEG.xmax*1000],0,'padratio',8, ...
                 'plotphase', 'off', 'timesout', 60, 'alpha', .01,'mcorrect','fdr','plotersp','off', 'plotitc','off');
             phaseEEG.power.ersp_diff(:,:,elec) = ersp;
             phaseEEG.power.times_diff(:,:,elec) = times;
@@ -99,7 +141,7 @@ for i=1:numel(fn)
             phaseEEG.power.significant_diff(:,:,elec)=tempdat;
             
             % Calculate Raw Power
-            [ersp,itc,powbase,times,freqs,erspboot,itcboot] = pop_newtimef(phaseEEG,1, elec,[-500,1000],0,'padratio',8, ...
+            [ersp,itc,powbase,times,freqs,erspboot,itcboot] = pop_newtimef(phaseEEG,1,elec,[phaseEEG.xmin*1000,phaseEEG.xmax*1000],0,'padratio',8, ...
                 'plotphase', 'off', 'timesout', 60,'plotersp','off', 'plotitc','off','baseline',nan);
             phaseEEG.power.ersp(:,:,elec) = ersp;
             phaseEEG.power.times(:,:,elec) = times;
@@ -151,7 +193,7 @@ for i=1:numel(fn)
     end
     
     %     Save tempphaseeg back to eegevents structure
-    eegevents.trials.(fn{i})=tempphaseeg;
+    eegevents.trials.(fn{e})=tempphaseeg;
 end
 
 % Preprocessing step completion tag
