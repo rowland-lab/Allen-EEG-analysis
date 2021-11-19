@@ -14,10 +14,8 @@ allengit_genpaths(gitpath,'EEG')
 sbj=dir(fullfile(protocolfolder,'pro000*.'));
 sbj={sbj.name}';
 %% Organize iCoh
-coh=[];
-disease=[];
-stimamp=[];
-subject=[];
+clear coh diseases stimamp subject
+
 for s=1:numel(sbj)
     try
         tempdata=load(fullfile(protocolfolder,sbj{s},'analysis','EEGlab','EEGlab_Total.mat'));
@@ -31,25 +29,23 @@ for s=1:numel(sbj)
     sessioninfo=tempinfo.sessioninfo;
     trials_idx=find(~cellfun(@isempty,sessioninfo.trialidx));
     
-    
-    
     disease{s,1}=sessioninfo.dx;
     stimamp{s,1}=sessioninfo.stimamp;
     subject{s,1}=sbj{s};
     
     trial_names=fieldnames(tempdata.eegevents_ft.trials);
+    tempdata=[];
     for t=1:numel(trial_names)
         temptrialData=temptrials.(trial_names{t});
-        tempcoh=nan(12,3);
+        tempcoh=[];
         for p=1:size(temptrialData,1)
             phasedat=temptrialData(p);
             
             % Calculate iCoh
             labelcmb=phasedat.ft_iCoh.labelcmb;
             m1_idx=find(sum(strcmp(phasedat.ft_iCoh.labelcmb,'C3')+strcmp(phasedat.ft_iCoh.labelcmb,'C4'),2)==2);
-            betafreq=phasedat.ft_iCoh.freq>=13&phasedat.ft_iCoh.freq<=30;
-            tempval=permute(mean(phasedat.ft_iCoh.cohspctrm(m1_idx,betafreq,:),2),[3 2 1]);
-            tempcoh(1:length(tempval),p)=tempval;
+            tempval=permute(phasedat.ft_iCoh.cohspctrm(m1_idx,:,:),[2 3 1]);
+            tempcoh{p}=tempval;
             
 %             % Calculate GC
 %             C3Idx=find(strcmp(phasedat.ft_GC.label,'C3'));
@@ -59,18 +55,17 @@ for s=1:numel(sbj)
 %             
 %             C3C4GC=permute(mean(phasedat.ft_GC.grangerspctrm(C3Idx,C4Idx,betafreq,:),3),[1 2 4 3]);
 %             C4C3GC=permute(mean(phasedat.ft_GC.grangerspctrm(C4Idx,C3Idx,betafreq,:),3),[1 2 4 3]);
-            
         end
         coh{s,trials_idx(t)}=tempcoh;
     end
 end
-    
+
 %% Calculated iCoh
 phase={'hold','prep','move'};
 DOI={'stroke','healthy'};
 stimtype={0,2};
-figure
-sgtitle('Beta iCoh (C3-C4)');
+FOI={{8 12};{13 30};{31 70}};
+FOI_names={'alpha','beta','gamma'};
 
 % Remove empty cells
 rm_idx=all(cellfun(@isempty,coh),2);
@@ -79,48 +74,48 @@ disease(rm_idx,:)=[];
 stimamp(rm_idx,:)=[];
 subject(rm_idx,:)=[];
 
+for f=1:numel(FOI_names)
+    figure
+    for d=1:numel(DOI)
+        for ph=1:numel(phase)
+            ax=subplot(numel(phase),numel(DOI),d+(ph-1)*numel(DOI));
+            hold on
 
-for d=1:numel(DOI)
-    for ph=1:numel(phase)
-        ax=subplot(numel(phase),numel(DOI),d+(ph-1)*numel(DOI));
-        hold on
-        
-        anovaInput=[];
-        for s=1:numel(stimtype)
-            sbj_idx=cellfun(@(x) strcmp(x,DOI{d}),disease) & cellfun(@(x) x==stimtype{s},stimamp);
-            tempcoh=coh(sbj_idx,[1 2 3 5]);
-            tempcoh=cellfun(@(x) mean(x(:,ph),'omitnan'),tempcoh);
-            
-            bardat=mean(tempcoh,1);
-            sem=std(tempcoh,1,'omitnan')./sqrt(sum(~isnan(tempcoh),1));
-            
-            if s==1
-                xdat=(1:size(bardat,2))-0.2;
-            else
-                xdat=(1:size(bardat,2))+0.2;
+            anovaInput=[];
+            for s=1:numel(stimtype)
+                sbj_idx=cellfun(@(x) strcmp(x,DOI{d}),disease) & cellfun(@(x) x==stimtype{s},stimamp);
+                tempcoh=coh(sbj_idx,[1 2 3 5]);
+                tempcoh=cellfun(@(x) mean(x{1,ph}(FOI{f}{1}:FOI{f}{2},:),'all','omitnan'),tempcoh);
+
+                bardat=mean(tempcoh,1);
+                sem=std(tempcoh,1,'omitnan')./sqrt(sum(~isnan(tempcoh),1));
+
+                if s==1
+                    xdat=(1:size(bardat,2))-0.2;
+                else
+                    xdat=(1:size(bardat,2))+0.2;
+                end
+                errorbar(xdat,bardat,sem,'LineStyle','none')
+
+                b(s)=bar(xdat,bardat,0.2);
+
+                n(s)=size(tempcoh,1);
+
+                anovaInput{s}=tempcoh;
             end
-            errorbar(xdat,bardat,sem,'LineStyle','none')
-            
-            b(s)=bar(xdat,bardat,0.2);
-            
-            n(s)=size(tempcoh,1);
-            
-            anovaInput{s}=tempcoh;
-        end
-        
-        
-        
-        title(sprintf('%s - %s',DOI{d},phase{ph}))
-        xticks([1:4])
-        xticklabels({'Pre','Intra-5','Intra-15','Post-5'});
-        ylabel('Beta iCoh')
-        ylim([0 1])
-        mixANOVA(anovaInput,b);
-        
-        legend(b,{['Sham n=',num2str(n(1))],['Stim n=',num2str(n(2))]})
-    end
-end
 
+            title(sprintf('%s - %s',DOI{d},phase{ph}))
+            xticks([1:4])
+            xticklabels({'Pre','Intra-5','Intra-15','Post-5'});
+            ylabel('Beta iCoh')
+            ylim([0 1])
+            mixANOVA(anovaInput,b);
+
+            legend(b,{['Sham n=',num2str(n(1))],['Stim n=',num2str(n(2))]})
+        end
+    end
+    sgtitle(FOI_names{f})
+end
 %% Calculated Granger Causality
 phase={'hold','prep','move'};
 DOI={'stroke','healthy'};
