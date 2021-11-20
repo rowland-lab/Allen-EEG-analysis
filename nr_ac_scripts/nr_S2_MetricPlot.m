@@ -141,7 +141,7 @@ savefig(fh(2),fullfile(metricsfolder,['velocity_',sbjname]))
 
 
 %% bar graphs
-figure('units','normalized','outerposition',[0 0 1 1])
+figure('Position',[15 24 745 923])
 for i = 1:length(metricNames)
     
     % Organize Information
@@ -245,7 +245,7 @@ end
 savefig(gcf,fullfile(metricsfolder,['metric_bar_graph',sbjname]))
 
 %% Box plots
-figure('units','normalized','outerposition',[0 0 1 1])
+figure('Position',[15 24 745 923])
 for i = 1:length(metricNames)
     
     % Organize Data
@@ -354,7 +354,7 @@ rej_col_2=[];
 [rej_row_2,rej_col_2]=find(reactiontimes>threshold);
 
 % plot reaction time threshold
-figure('units','normalized','outerposition',[0 0 1 1]);
+figure('Position',[15 24 745 923]);
 boxplot(reactiontimes);
 hold on
 for z=1:size(reactiontimes,2)
@@ -372,7 +372,7 @@ savefig(gcf,fullfile(metricsfolder,['Rejected_Trials_Plot',sbjname]))
 
 %% Remove bad trials and rerun stats
 
-figure('units','normalized','outerposition',[0 0 1 1])
+figure('Position',[15 24 745 923])
 for i = 1:length(metricNames)
     subplot(2,6,i)
 
