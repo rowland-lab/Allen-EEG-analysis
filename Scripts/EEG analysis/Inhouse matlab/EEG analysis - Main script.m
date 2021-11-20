@@ -56,6 +56,10 @@
 % {'PR'  }
 
 %% Input
+clear all
+close all
+clc
+
 % Enter gitpath
 gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
 cd(gitpath)
@@ -63,7 +67,6 @@ cd(gitpath)
 % Enter in protocol folder
 protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
 
-protocolfolder='~/Downloads'
 % Add EEG related paths
 allengit_genpaths(gitpath,'EEG')
 
@@ -72,21 +75,36 @@ sbj=dir(fullfile(protocolfolder,'pro000*'));
 sbj={sbj.name}';
 
 %% Run code
-for i=18:19%:21%:numel(sbj)
-    % Preprocessing --> S1_VR_trial_preproc(sbjnum,protocolfolder)
-    nr_S1_VR_trial_preproc(sbj{i},protocolfolder)
+
+% Preproc --> S1_VR_trial_preproc(sbjnum,protocolfolder,manual)
+clear manual status
+parfor i=1:numel(sbj)
+    try
+        S1_VR_trial_preproc(sbj{i},protocolfolder,false)
+    catch ME
+        manual{i}=i;
+        status{i}.message=ME.message; 
+        status{i}.stack=ME.stack;
+    end
 end
 
-for i=1%29:numel(sbj)
+for i=cell2mat(manual);
+     S1_VR_trial_preproc(sbj{i},protocolfolder,true)
+end
+
+
+for i=5
     % Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
-    nr_S2_MetricPlot(sbj{i},protocolfolder,2)
-end
-for i=1%9:numel(sbj)
-    % EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder)
-    nr_S3_EEGanalysis(sbj{i},protocolfolder)
+    S2_MetricPlot(sbj{i},protocolfolder,2)
+    
+    % EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder,window,nooverlap,nfft,manual)
+    S3_EEGanalysis(sbj{i},protocolfolder,128,0.5,128,false)
 end
 
-% Reconstruction --> S4_Reconstruction(sbjnum,protocolfolder,positionalplot,eegplot,tfplot,trial_num)
-for i=1:numel(sbj)
-    S4B_Reconstruction(sbj{i},protocolfolder,false,false,false,[4])
+% Reconstruction --> S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,metriccurves,trial_num)
+for i=4:numel(sbj)
+%     S4_Reconstruction(sbj{i},protocolfolder,false,false,false,false,false,[])
+%     S4_Reconstruction(sbj{i},protocolfolder,false,true,false,false,false,[])
+    S4_Reconstruction(sbj{i},protocolfolder,true,true,true,false,false,[])
 end
+

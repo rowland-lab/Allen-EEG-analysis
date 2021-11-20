@@ -1,4 +1,4 @@
-function S3_EEGanalysis(sbjnum,protocolfolder)
+function S3_EEGanalysis(sbjnum,protocolfolder,window,nooverlap,nfft,manual)
 %% Define variables and import data
 analysisfolder=fullfile(protocolfolder,sbjnum,'analysis');
 
@@ -129,7 +129,28 @@ while x~=1
         end
     end
     min_epochlength=min(diff(sort(min_epochlength)));
-
+    
+    % Calculate full epochs
+    fn=fieldnames(epochs.vrevents);
+    for i=1:length(fn)
+        for z=1:length(epocheventtypes)
+            switch epocheventtypes{z}
+                case 'atStartPosition'
+                    epochs.epochsWhole.(fn{i}).(epocheventtypes{z}).val(:,1)=epochs.vrevents.(fn{i}).(epocheventtypes{z}).val(:,1);
+                    epochs.epochsWhole.(fn{i}).(epocheventtypes{z}).val(:,2)=epochs.vrevents.(fn{i}).(epocheventtypes{z+1}).val(:,1);
+                case 'cueEvent'
+                    epochs.epochsWhole.(fn{i}).(epocheventtypes{z}).val(:,1)=epochs.vrevents.(fn{i}).(epocheventtypes{z}).val(:,1);
+                    epochs.epochsWhole.(fn{i}).(epocheventtypes{z}).val(:,2)=epochs.vrevents.(fn{i}).(epocheventtypes{z+1}).val(:,1);
+                case 'targetUp'
+                    epochs.epochsWhole.(fn{i}).(epocheventtypes{z}).val(:,1)=epochs.vrevents.(fn{i}).(epocheventtypes{z}).val(:,1);
+                    epochs.epochsWhole.(fn{i}).(epocheventtypes{z}).val(1:end-1,2)=epochs.vrevents.(fn{i}).(epocheventtypes{z-2}).val(2:end,1);
+                    epochs.epochsWhole.(fn{i}).(epocheventtypes{z}).val(end,2)=trialData.vr(i).events.taskEnd.time*fs;
+            end
+        end
+    end
+    
+    
+    % Calculate epochs based on min epoch length
     for i=1:length(fieldnames(epochs.vrevents))
         fn=fieldnames(epochs.vrevents);
         for z=1:length(epocheventtypes)
@@ -191,10 +212,14 @@ while x~=1
 
     legend('C3','C4','EKG','VR','tDCS')
 
-    x=input('Correctly Epoched? [y=1,n=2]');
-    if x==2
-        epochlength=input(['Enter new Epoch Length (previous=',num2str(epochlength),')']);
-        buffer=input(['Enter new Buffer Length (previous=',num2str(buffer),')']);
+    if manual
+        x=input('Correctly Epoched? [y=1,n=2]');
+        if x==2
+            epochlength=input(['Enter new Epoch Length (previous=',num2str(epochlength),')']);
+            buffer=input(['Enter new Buffer Length (previous=',num2str(buffer),')']);
+        end
+    else
+        x=1;
     end
 end
 
@@ -206,12 +231,12 @@ close all
 
 % PSD VR whole trials epochs
 for i=1:length(epochs.vrwhole.val)
-    [epochs.vrwhole.psd.saw(:,:,i),epochs.vrwhole.psd.freq]=pwelch(trialData.eeg.data(epochs.vrwhole.val(i,1):epochs.vrwhole.val(i,2),chan_num),fs,[],[],fs);
+    [epochs.vrwhole.psd.saw(:,:,i),epochs.vrwhole.psd.freq]=pwelch(trialData.eeg.data(epochs.vrwhole.val(i,1):epochs.vrwhole.val(i,2),chan_num),window,nooverlap,nfft,fs);
 end
 
 % PSD Rest epochs
 for i=1:length(epochs.rest.val)
-    [epochs.rest.psd.saw(:,:,i),epochs.rest.psd.freq]=pwelch(trialData.eeg.data(epochs.rest.val(i,1):epochs.rest.val(i,2),chan_num),fs,[],[],fs);
+    [epochs.rest.psd.saw(:,:,i),epochs.rest.psd.freq]=pwelch(trialData.eeg.data(epochs.rest.val(i,1):epochs.rest.val(i,2),chan_num),window,nooverlap,nfft,fs);
 end
 
 % PSD VR events
@@ -220,7 +245,18 @@ for i=1:length(fieldnames(epochs.vrevents))
     for z=1:length(epocheventtypes)
         temp_data=epochs.vrevents.(fn{i}).(epocheventtypes{z}).val;
         for q=1:length(temp_data)
-            [epochs.vrevents.(fn{i}).(epocheventtypes{z}).psd.saw(:,:,q),epochs.vrevents.(fn{i}).(epocheventtypes{z}).psd.freq]=pwelch(trialData.eeg.data(temp_data(q,1):temp_data(q,2),chan_num),[],[],[],fs);
+            [epochs.vrevents.(fn{i}).(epocheventtypes{z}).psd.saw(:,:,q),epochs.vrevents.(fn{i}).(epocheventtypes{z}).psd.freq]=pwelch(trialData.eeg.data(temp_data(q,1):temp_data(q,2),chan_num),window,nooverlap,nfft,fs);
+        end
+    end
+end
+
+% PSD VR whole
+for i=1:length(fieldnames(epochs.vrevents))
+    fn=fieldnames(epochs.vrevents);
+    for z=1:length(epocheventtypes)
+        temp_data=epochs.epochsWhole.(fn{i}).(epocheventtypes{z}).val;
+        for q=1:length(temp_data)
+            [epochs.epochsWhole.(fn{i}).(epocheventtypes{z}).psd.saw(:,:,q),epochs.epochsWhole.(fn{i}).(epocheventtypes{z}).psd.freq]=pwelch(trialData.eeg.data(temp_data(q,1):temp_data(q,2),chan_num),window,nooverlap,nfft,fs);
         end
     end
 end
@@ -231,8 +267,8 @@ for t=1:length(fn)
     for ev=1:length(epocheventtypes)
         temp_data=epochs.vrevents.(fn{t}).(epocheventtypes{ev}).val;
         for re=1:length(temp_data)
-            [epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.saw{re,1},epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.freq{re,1}]=pwelch(trialData.eeg.data(temp_data(re,1)-fs:temp_data(re,1),chan_num),[],[],[],fs);
-            [epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.saw{re,2},epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.freq{re,2}]=pwelch(trialData.eeg.data(temp_data(re,1):temp_data(re,1)+fs,chan_num),[],[],[],fs);
+            [epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.saw{re,1},epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.freq{re,1}]=pwelch(trialData.eeg.data(temp_data(re,1)-fs:temp_data(re,1),chan_num),window,nooverlap,nfft,fs);
+            [epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.saw{re,2},epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.freq{re,2}]=pwelch(trialData.eeg.data(temp_data(re,1):temp_data(re,1)+fs,chan_num),window,nooverlap,nfft,fs);
         end
     end
 end
@@ -245,13 +281,13 @@ end
 % gamma_low  30-50 Hz
 % gamma_bb   70-200 Hz
 
-freq_idx_100=find(epochs.vrwhole.psd.freq==100);
-freq_idx_delta=find(epochs.vrwhole.psd.freq==1|epochs.vrwhole.psd.freq==4);
-freq_idx_theta=find(epochs.vrwhole.psd.freq==4|epochs.vrwhole.psd.freq==8);
-freq_idx_alpha=find(epochs.vrwhole.psd.freq==8|epochs.vrwhole.psd.freq==12);
-freq_idx_beta=find(epochs.vrwhole.psd.freq==13|epochs.vrwhole.psd.freq==30);
-freq_idx_gammal=find(epochs.vrwhole.psd.freq==30|epochs.vrwhole.psd.freq==50);
-freq_idx_gammabb=find(epochs.vrwhole.psd.freq==70|epochs.vrwhole.psd.freq==200);
+freq_idx_100=epochs.vrwhole.psd.freq<=100;
+freq_idx_delta=epochs.vrwhole.psd.freq>=1&epochs.vrwhole.psd.freq<=4;
+freq_idx_theta=epochs.vrwhole.psd.freq>=4&epochs.vrwhole.psd.freq<=8;
+freq_idx_alpha=epochs.vrwhole.psd.freq>=8&epochs.vrwhole.psd.freq<=13;
+freq_idx_beta=epochs.vrwhole.psd.freq>=13&epochs.vrwhole.psd.freq<=30;
+freq_idx_gammal=epochs.vrwhole.psd.freq>=30&epochs.vrwhole.psd.freq<=50;
+freq_idx_gammabb=epochs.vrwhole.psd.freq>=70&epochs.vrwhole.psd.freq<=200;
 
 %% Figure Creation (Rest Epochs vs VR Whole Epochs)
 %%%%%%%%%%%% Power Spectral Density Analysis (all channels per epoch)[psd_allepoch_allchan] %%%%%%%%%%%% 
@@ -265,7 +301,7 @@ for i=1:size(epochs.vrwhole.psd.saw,3)
     figure('Name',[trial_label{i},'_VR_whole==',figtitle],'units','normalized','outerposition',[0 0 1 1])
     hold on
     subplot(2,1,1)
-    plot(epochs.vrwhole.psd.freq(1:freq_idx_100),log10(epochs.vrwhole.psd.saw(1:freq_idx_100,chan_num,i)),'LineWidth',1.5)
+    plot(epochs.vrwhole.psd.freq(freq_idx_100),log10(epochs.vrwhole.psd.saw(freq_idx_100,chan_num,i)),'LineWidth',1.5)
     ylabel('log power')
     xlabel('Hz')
     legend
@@ -274,8 +310,8 @@ for i=1:size(epochs.vrwhole.psd.saw,3)
 
     subplot(2,1,2)
     hold on
-    plot(epochs.vrwhole.psd.freq(1:freq_idx_100),log10(epochs.vrwhole.psd.saw(1:freq_idx_100,7,i)),'LineWidth',1.5)
-    plot(epochs.vrwhole.psd.freq(1:freq_idx_100),log10(epochs.vrwhole.psd.saw(1:freq_idx_100,18,i)),'LineWidth',1.5)
+    plot(epochs.vrwhole.psd.freq(freq_idx_100),log10(epochs.vrwhole.psd.saw(freq_idx_100,7,i)),'LineWidth',1.5)
+    plot(epochs.vrwhole.psd.freq(freq_idx_100),log10(epochs.vrwhole.psd.saw(freq_idx_100,18,i)),'LineWidth',1.5)
     ylabel('log power')
     xlabel('Hz')
     legend('Channel 7 (C3)','Channel 18(C4)')
@@ -321,7 +357,7 @@ figure('Name',['Cn7_Cn18_RestEpochs==',figtitle],'units','normalized','outerposi
 subplot(1,2,1)
 hold on
 for i=1:length(Epochcompare)
-    plot(epochs.rest.psd.freq(1:freq_idx_100),log10(epochs.rest.psd.saw(1:freq_idx_100,7,Epochcompare(i,1))),'LineWidth',1.5)
+    plot(epochs.rest.psd.freq(freq_idx_100),log10(epochs.rest.psd.saw(freq_idx_100,7,Epochcompare(i,1))),'LineWidth',1.5)
 end
 title('Channel 7 (C3)')
 ylim([-4,4])
@@ -344,7 +380,7 @@ ylabel('Log Power')
 subplot(1,2,2)
 hold on
 for i=1:length(Epochcompare)
-    plot(epochs.rest.psd.freq(1:freq_idx_100),log10(epochs.rest.psd.saw(1:freq_idx_100,18,Epochcompare(i,1))),'LineWidth',1.5)
+    plot(epochs.rest.psd.freq(freq_idx_100),log10(epochs.rest.psd.saw(freq_idx_100,18,Epochcompare(i,1))),'LineWidth',1.5)
 end
 title('Channel 18 (C4)')
 ylim([-4,4])
@@ -372,7 +408,7 @@ set(gcf,'Position',[111 75 1000 500]);
 subplot(1,2,1)
 hold on
 for i=1:length(Epochcompare)
-    plot(epochs.vrwhole.psd.freq(1:freq_idx_100),log10(epochs.vrwhole.psd.saw(1:freq_idx_100,7,Epochcompare(i,2))),'LineWidth',1.5)
+    plot(epochs.vrwhole.psd.freq(freq_idx_100),log10(epochs.vrwhole.psd.saw(freq_idx_100,7,Epochcompare(i,2))),'LineWidth',1.5)
 end
 title('Channel 7 (C3)')
 ylim([-4,4])
@@ -395,7 +431,7 @@ ylabel('Log Power')
 subplot(1,2,2)
 hold on
 for i=1:length(Epochcompare)
-    plot(epochs.vrwhole.psd.freq(1:freq_idx_100),log10(epochs.vrwhole.psd.saw(1:freq_idx_100,18,Epochcompare(i,2))),'LineWidth',1.5)
+    plot(epochs.vrwhole.psd.freq(freq_idx_100),log10(epochs.vrwhole.psd.saw(freq_idx_100,18,Epochcompare(i,2))),'LineWidth',1.5)
 end
 title('Channel 18 (C4)')
 ylim([-4,4])
@@ -428,13 +464,13 @@ bar_trial_color=[];
 for j=1:length(Epochcompare_total)
     switch rem(j,2)
         case 1
-                bar_trial{1,j}=(epochs.rest.psd.saw(freq_idx_beta(1):freq_idx_beta(2),7,Epochcompare_total(j)));
-                bar_trial{2,j}=(epochs.rest.psd.saw(freq_idx_beta(1):freq_idx_beta(2),18,Epochcompare_total(j)));
+                bar_trial{1,j}=(epochs.rest.psd.saw(freq_idx_beta,7,Epochcompare_total(j)));
+                bar_trial{2,j}=(epochs.rest.psd.saw(freq_idx_beta,18,Epochcompare_total(j)));
                 bar_trial_xlabel{1,j}=[trial_label{Epochcompare_total(j)} '\newlineRest' ];
                 bar_trial_color{1,j}=[1, 0, 0];
         case 0
-                bar_trial{1,j}=(epochs.vrwhole.psd.saw(freq_idx_beta(1):freq_idx_beta(2),7,Epochcompare_total(j)));
-                bar_trial{2,j}=(epochs.vrwhole.psd.saw(freq_idx_beta(1):freq_idx_beta(2),18,Epochcompare_total(j)));
+                bar_trial{1,j}=(epochs.vrwhole.psd.saw(freq_idx_beta,7,Epochcompare_total(j)));
+                bar_trial{2,j}=(epochs.vrwhole.psd.saw(freq_idx_beta,18,Epochcompare_total(j)));
                 bar_trial_xlabel{1,j}=[trial_label{Epochcompare_total(j)} '\newlineVR Whole' ];
                 bar_trial_color{1,j}=[1, 0, 0];
     end
@@ -528,8 +564,8 @@ for t=1:length(fieldnames(epochs.vrevents))
         
         subplot(3,1,q)
         hold on
-        plot(tempdata.freq(1:freq_idx_100),log10(mean(tempdata.saw(1:freq_idx_100,7,:),3)),'LineWidth',2)
-        plot(tempdata.freq(1:freq_idx_100),log10(mean(tempdata.saw(1:freq_idx_100,18,:),3)),'LineWidth',2)
+        plot(tempdata.freq(freq_idx_100),log10(mean(tempdata.saw(freq_idx_100,7,:),3)),'LineWidth',2)
+        plot(tempdata.freq(freq_idx_100),log10(mean(tempdata.saw(freq_idx_100,18,:),3)),'LineWidth',2)
         ylabel('log power')
         xlabel('Hz')
         ylim([-4 4]);
@@ -557,10 +593,9 @@ figure('Name',['Channel 7 v 18 VR trials-Line plot==',figtitle],'units','normali
 for q=1:numel(epocheventtypes)
     for t=1:length(fieldnames(epochs.vrevents)) 
         tempdata=epochs.vrevents.(['t',num2str(t)]).(epocheventtypes{q}).psd;
-        freq_idx_100=find(tempdata.freq<=200,1,'last');
         subplot(3,2,q+(q-1))
         hold on
-        plot(tempdata.freq(1:freq_idx_100),log10(mean(tempdata.saw(1:freq_idx_100,7,:),3)),'LineWidth',2);
+        plot(tempdata.freq(freq_idx_100),log10(mean(tempdata.saw(freq_idx_100,7,:),3)),'LineWidth',2);
         title(['Channel 7 (C3)-' epocheventlabels{q}])
         ylim([-4 6])
         xlabel('Hz')
@@ -568,7 +603,7 @@ for q=1:numel(epocheventtypes)
         
         subplot(3,2,q+1+(q-1))
         hold on
-        plot(tempdata.freq(1:freq_idx_100),log10(mean(tempdata.saw(1:freq_idx_100,18,:),3)),'LineWidth',2);
+        plot(tempdata.freq(freq_idx_100),log10(mean(tempdata.saw(freq_idx_100,18,:),3)),'LineWidth',2);
         title(['Channel 18 (C4)-' epocheventlabels{q}])
         ylim([-4 6])
         xlabel('Hz')

@@ -1,4 +1,4 @@
-function Session_positions=session_detect(trialData,VR_chan,tDCS_chan)
+function Session_positions=session_detect(trialData,VR_chan,tDCS_chan,nVR)
 % Function to define session START and session END
 
 
@@ -13,7 +13,6 @@ try
     xlabel('Samples')
     ylabel('Z-score')
     legend('Fp1','VR','tDCS')
-    title('PRESS START AND THEN END OF SESSION');
 catch
     disp('ERROR,incorrect data structure: must use ''loadVrTrialData_EEG'' function to load edf structure')
     return
@@ -33,9 +32,11 @@ clc
 for i = 1:2
     shg
     if i==1
-        disp(['Press START of Session '])
+        disp(['Press START of Session'])
+        title(['PRESS START OF THE SESSION - Number of VR trials (',num2str(nVR),')']);
     else
         disp(['Press END of Session '])
+        title(['PRESS END OF THE SESSION - Number of VR trials (',num2str(nVR),')']);
     end
     [x, ~] = ginput(1);
     Session_info{i} = x;

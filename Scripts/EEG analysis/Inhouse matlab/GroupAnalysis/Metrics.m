@@ -1,4 +1,9 @@
-allengit_genpaths('C:\Users\allen\Documents\GitHub\Allen-EEG-analysis','tDCS')
+clear all
+clc
+
+gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
+cd(gitpath)
+allengit_genpaths(gitpath,'tDCS')
 
 
 % Enter in protocol folder
@@ -52,10 +57,14 @@ end
 dx_type={'stroke','pd','healthy'};
 stim_type={0,2};
 metric_measures=metricdat.label;
-norm=false;
+norm=true;
+export_xml=true;
+
 
 clear vars shamdat stimdat
 
+temp_xml=[];
+tempnames=[];
 for d=1
     
     % Create figure
@@ -115,7 +124,7 @@ for d=1
             sem=std(tempdat,[],1)./sqrt(sum(~isnan(tempdat)));
             
             % Plot line
-            subplot(2,6,measure)
+            subplot(2,7,measure)
             hold on
             x=ones(size(tempdat)).*(1:size(tempdat,2));
             y=tempdat;
@@ -130,7 +139,7 @@ for d=1
                 ersham.LineWidth=1;
                 shamnum=size(tempdat,1);
                 inputmat=[inputmat;tempdat];
-                between_factors=[between_factors;ones(size(tempdat,1),1)];
+                between_factors=[between_factors;ones(size(tempdat,1),1)*stim_type{stim}];
             else
                 sc.Marker='o';
                 sc.MarkerEdgeColor='g';
@@ -139,10 +148,20 @@ for d=1
                 erstim.LineWidth=1;
                 stimnum=size(tempdat,1);
                 inputmat=[inputmat;tempdat];
-                between_factors=[between_factors;2*ones(size(tempdat,1),1)];
+                between_factors=[between_factors;ones(size(tempdat,1),1)*stim_type{stim}];
+            end
+            
+            if measure==1
+                tempnames=[tempnames;subjectnames];
             end
         end
-                
+
+        if export_xml
+            temp_xml.(metric_measures{measure})(:,1)=between_factors;
+            temp_xml.(metric_measures{measure})=[temp_xml.(metric_measures{measure}) inputmat];
+            
+        end
+        
         % Run Mixed Anova
         [tbl,rm]=simple_mixed_anova(inputmat,between_factors,{'Time'},{'Modality'});
 %         tbl = mauchly(rm)
@@ -205,14 +224,21 @@ end
 stimdat_con=[stimdat{:}];
 shamdat_con=[shamdat{:}];
 
+if export_xml
+    filename = fullfile(figfolder,'metric.xlsx');
+    fn=fieldnames(temp_xml);
+    for m=1:numel(fn)
+        writetable(array2table([str2num(cell2mat(tempnames)) temp_xml.(fn{m})],'VariableNames',{'Subject Number','Stimulation Type','Pre','Intra-5','Intra-15','Post-5'}),filename,'Sheet',fn{m})
+    end
+end
 %% Plot Metric data (individual)
 
 dx_type={'stroke','pd','healthy'};
 stim_type={0,2};
 metric_measures=metricdat.label;
-norm=false;
+norm=true;
 
-for d=1:numel(dx_type)
+for d=1
     
     
     % Create figure
@@ -261,7 +287,7 @@ for d=1:numel(dx_type)
             tempdat=tempdat(:,[1:3 5]);
             
             % Plot line
-            subplot(2,6,measure)
+            subplot(2,7,measure)
             hold on
             x=ones(size(tempdat)).*(1:size(tempdat,2));
             y=tempdat;

@@ -44,9 +44,9 @@ end
 
 
 % Bar graph vars
-metricNames = {'reactionTime' 'handpathlength' 'avgVelocity' 'maxVelocity' 'velocityPeaks' 'timeToMaxVelocity' 'timeToMaxVelocity_n' 'avgAcceleration' 'maxAcceleration' 'accuracy' 'normalizedJerk' 'IOC'};
-metricDescriptions = {'Reaction Time' 'Hand Path Length' 'Average Velocity' 'Maximum Hand Velocity' 'Velocity Peaks' 'Time to Max Velocity' 'Time to Max Velocity - Normalized' 'Average Acceleration' 'Max Acceleration' 'Accuracy' 'Normalized Jerk' 'Index of Curvature' 'Straight Line Distance'};
-metricYlabel = {'time [s]' 'hand path length[m]' 'Average Velocity [m/s]' '|V| [m/s]' 'peaks []' 'time [s]' '% movement []' 'Average Acceleration [m/s^2]' 'Max Acceleration [m/s^2]' 'accuracy score [1/mm]' 'normalized jerk []' 'IOC []' 'straight line distance[m]'};
+metricNames = {'movementDuration' 'reactionTime' 'handpathlength' 'avgVelocity' 'maxVelocity' 'velocityPeaks' 'timeToMaxVelocity' 'timeToMaxVelocity_n' 'avgAcceleration' 'maxAcceleration' 'accuracy' 'normalizedJerk' 'IOC'};
+metricDescriptions = {'Reach Duration' 'Reaction Time' 'Hand Path Length' 'Average Velocity' 'Maximum Hand Velocity' 'Velocity Peaks' 'Time to Max Velocity' 'Time to Max Velocity - Normalized' 'Average Acceleration' 'Max Acceleration' 'Accuracy' 'Normalized Jerk' 'Index of Curvature'};
+metricYlabel = {'time [s]' 'time [s]' 'hand path length[m]' 'Average Velocity [m/s]' '|V| [m/s]' 'peaks []' 'time [s]' '% movement []' 'Average Acceleration [m/s^2]' 'Max Acceleration [m/s^2]' 'accuracy score [1/mm]' 'normalized jerk []' 'IOC []' 'straight line distance[m]'};
 
 %% Calculate data 
 
@@ -184,7 +184,7 @@ for i = 1:length(metricNames)
     end
     
     % Create bar graph
-    subplot(2,6,i)
+    subplot(2,7,i)
     bar([mean(v_pre,'omitnan') mean(v_stim,'omitnan') mean(v_post,'omitnan')],'FaceColor',[0.8 0.8 0.8]);
     hold on
     
@@ -288,7 +288,7 @@ for i = 1:length(metricNames)
     end
     
     % Create box plot
-    subplot(2,6,i)
+    subplot(2,7,i)
     boxplot(boxdata);
     hold on
     for z=1:size(boxdata,2)
@@ -374,7 +374,7 @@ saveas(gcf,fullfile(metricsfolder,'Rejected Trials Plot.jpeg'))
 
 figure('units','normalized','outerposition',[0 0 1 1])
 for i = 1:length(metricNames)
-    subplot(2,6,i)
+    subplot(2,7,i)
 
     v_pre=[];
     for z=1:numel(fieldnames(vrMetrics_pre))        
@@ -434,6 +434,9 @@ for i = 1:length(metricNames)
     bar(mean(bardata,'omitnan'),'FaceColor',[0.8 0.8 0.8]);
     metricdat.data{i}=mean(bardata,'omitnan');
     metricdat.label{i}=metricNames{i};
+    
+    metricdatraw.data{i}=bardata;
+    metricdatraw.label{i}=metricNames{i};
     
     hold on
 
@@ -543,8 +546,6 @@ for i=1:numel(trials)
     s2rejecttrials=[s2rejecttrials; [repmat(trials(i),size(temp,1),1),temp]];
 end
 
-
-
-save(fullfile(metricsfolder,[sbjnum,'_S2-Metrics']),'trialData','metricdat','s2rejecttrials','movementstart');
+save(fullfile(metricsfolder,[sbjnum,'_S2-Metrics']),'trialData','metricdat','s2rejecttrials','movementstart','metricdatraw');
 close all
 end

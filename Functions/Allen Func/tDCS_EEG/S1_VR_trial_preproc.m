@@ -1,4 +1,4 @@
-function S1_VR_trial_preproc(sbjnum,protocolfolder)
+function S1_VR_trial_preproc(sbjnum,protocolfolder,manual)
 dbstop if error
 
 %% Preprocess VR Trials
@@ -21,7 +21,13 @@ for i=1:length(filePattern)
 end
 
 % Load VR file
-[trialData,vr_chan,tdcs_channels,Session_times] = loadVrTrialData_EEG(vrDataFolders,eegDataFile,{'DC1','DC2'},{'DC3','DC4'},true); % Double-check that all your paths are added
+if manual
+    % Manual
+    [trialData,vr_chan,tdcs_channels,Session_times,VR_sig,tdcs_detect] = loadVrTrialData_EEG(vrDataFolders,eegDataFile,{'DC1','DC2'},{'DC3','DC4'},true); % Double-check that all your paths are added
+else
+    % Auto
+    [trialData,vr_chan,tdcs_channels,Session_times,VR_sig,tdcs_detect] = loadVrTrialData_EEG(vrDataFolders,eegDataFile,{'DC1','DC2'},{'DC3','DC4'},false); % Double-check that all your paths are added
+end
 tdcs_chan=tdcs_channels{1};
 
 % % Double check correct channel selection
@@ -142,11 +148,6 @@ end
 savefig(gcf,fullfile(analysisfolder,'EEG_tDCS_VR Plot'));
 close all
 
-%% Detect tDCS signal
-
-% Use tdcsdetect function to detect vr signal and tDCS signal
-[tdcs_detect,Session_times,VR_sig] = tdcsdetect(trialData,vr_chan,tdcs_chan,vrDataFolders,Session_times);
-
 sessioninfo.tdcssig.time=tdcs_detect;
 sessioninfo.sessionperiod=Session_times;
 
@@ -176,7 +177,9 @@ end
 % Save session info
 sessioninfo.s1rejecttrials=reject_trials;
 sessioninfo.vrchan=vr_chan;
+sessioninfo.vrchanLabel=trialData.eeg.channels{vr_chan};
 sessioninfo.tdcschan=tdcs_chan;
+sessioninfo.tdcschanLabel=trialData.eeg.channels{tdcs_chan};
 sessioninfo.path.vrfolder=vrDataFolder;
 sessioninfo.path.edffile=eegDataFile;
 sessioninfo.path.sbjfolder=subjectfolder;

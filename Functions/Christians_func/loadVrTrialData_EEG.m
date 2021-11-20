@@ -1,4 +1,4 @@
-function [trialData,VR_chan_auto,tDCS_default,Session_positions] = loadVrTrialData_EEG(vrDataFolder,eegDataFile,eegSyncChannels,tDCSchannellabels,manualSyncReview,VR_chan)
+function [trialData,VR_chan_auto,tDCS_default,Session_positions,VR_sig,tdcs_detect] = loadVrTrialData_EEG(vrDataFolder,eegDataFile,eegSyncChannels,tDCSchannellabels,manualSyncReview,VR_chan)
 
 
 % initialize output structure
@@ -142,6 +142,7 @@ if (vrLoaded && eegLoaded)
     snr2 = 0;
     
     sync_start = 1;
+    eegSyncChannels_idx={find(strcmpi(trialData.eeg.channels,eegSyncChannels{1})),find(strcmpi(trialData.eeg.channels,eegSyncChannels{2}))};
     if manualSyncReview
         if ~isempty(eegSyncChannels{1})
            eegSync1 = trialData.eeg.data(:,strcmpi(trialData.eeg.channels,eegSyncChannels{1}));
@@ -150,7 +151,6 @@ if (vrLoaded && eegLoaded)
            eegSync2 = trialData.eeg.data(:,strcmpi(trialData.eeg.channels,eegSyncChannels{2}));
         end
         
-        eegSyncChannels_idx={find(strcmpi(trialData.eeg.channels,eegSyncChannels{1})),find(strcmpi(trialData.eeg.channels,eegSyncChannels{2}))};
         fig = figure;
         plot(1:size(trialData.eeg.data,1),trialData.eeg.data(:,eegSyncChannels_idx{1}),1:size(trialData.eeg.data,1),trialData.eeg.data(:,eegSyncChannels_idx{2}))
         xlabel('samples')
@@ -227,14 +227,39 @@ if (vrLoaded && eegLoaded)
             end
         end
         close all
+        [tdcs_detect,Session_positions,VR_sig] = tdcsdetect(trialData,VR_chan_auto,tDCS_default{1},vrDataFolder,Session_positions);
     else
-        eegSync = trialData.eeg.data(:,VR_chan);
-        [eegSync, ~] = processSyncSignal(eegSync,trialData.eeg.header.samplingrate);
-        eegSync = movmean(eegSync,round(trialData.eeg.header.samplingrate * 0.1));
-        eeg_TTLsync = eegSync;
+        Session_positions={1,size(trialData.eeg.data,1)};
+        sync_start = find(eeg_time>=Session_positions{1}/trialData.eeg.header.samplingrate,1,'first');
+        
+        if ~isempty(eegSyncChannels_idx{1})
+            eegSync1 = trialData.eeg.data(:,eegSyncChannels_idx{1});
+            [eegSync1, snr1] = processSyncSignal(eegSync1,trialData.eeg.header.samplingrate,sync_start);
+            eegSync1 = movmean(eegSync1,round(trialData.eeg.header.samplingrate * 0.1));
+        end
+        if ~isempty(eegSyncChannels_idx{2})
+            eegSync2 = trialData.eeg.data(:,eegSyncChannels_idx{2});
+            [eegSync2, snr2] = processSyncSignal(eegSync2,trialData.eeg.header.samplingrate,sync_start);
+            eegSync2 = movmean(eegSync2,round(trialData.eeg.header.samplingrate * 0.1));
+        end
+
+        if snr1>snr2
+           VR_chan_auto=eegSyncChannels_idx{1};
+           eeg_TTLsync=eegSync1;
+        else
+           VR_chan_auto=eegSyncChannels_idx{2};
+           eeg_TTLsync=eegSync2;
+        end
+
+        % Use tdcsdetect function to detect vr signal and tDCS signal
+        [tdcs_detect,Session_positions,VR_sig] = tdcsdetect(trialData,VR_chan_auto,tDCS_default{1},vrDataFolder,Session_positions);
+        Session_positions{1}=VR_sig(1)-(60*trialData.eeg.header.samplingrate);
+        Session_positions{2}=VR_sig(end)+(60*trialData.eeg.header.samplingrate);
+        if VR_sig(end)+(60*trialData.eeg.header.samplingrate)>size(trialData.eeg.data,1)
+            Session_positions{2}=size(trialData.eeg.data,1);
+        end
     end
-    
-    
+
     trialData.eeg.sync = eeg_TTLsync;
     
     % threshold sync signal
