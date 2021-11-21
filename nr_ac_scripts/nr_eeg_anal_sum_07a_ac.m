@@ -1,22 +1,26 @@
 %function nr_eeg_anal_sum_07_ac(sbjfolder)
 
 sbjfolder='~/nr_data_analysis/data_analyzed/eeg/gen_02/data/pro00087153_0003'
+%sbjfolder='Z:\pro00087153_0003'
 sbjfind=strfind(sbjfolder,'pro')
 sbjname=sbjfolder(sbjfind:sbjfind+15)
 
 %cd(sbjfolder)
 load([sbjfolder,'/analysis/S1-VR_preproc/',sbjname,'_S1-VRdata_preprocessed.mat'])
+%load([sbjfolder,'\analysis\S1-VR_preproc\',sbjname,'_S1-VRdata_preprocessed.mat'])
+
 load([sbjfolder,'/analysis/S3-EEGanalysis/s3_dat.mat'])
+%load([sbjfolder,'\analysis\S3-EEGanalysis\s3_dat.mat'])
 phase={'atStartPosition';'cueEvent';'targetUp'}
-colors={'m','c','r','g','y','k','m','c','r','g','y','k'}
-linestyle={'-','-','-','-','-','-','--','--','--','--','--','--'}
+colors={'m','c','r','g','y','k','m','c','r','g','m','k'}
+linestyle={'-','-','-','-','-','-','--','--','--','--','.','--'}
 sp=[2,3,4,6,7,8,10,11,12,14,15,16]
 sp11=[2,3,4,6,7,8,10,11,12,14,15,16]
 
 
-for l=[18 7]%i=1:3
-    for j=1:4
-        for i=1:3%l=[7 18]%i=1:3
+for l=[7 18]%i=1:3
+    for j=4:-1:1
+        for i=3:-1:1%l=[7 18]%i=1:3
 %             figure; set(gcf,'Position',[335 20 754 891])
 %             figure; set(gcf,'Position',[1119 25 744 898])
             figure; set(gcf,'Position',[1948 40 754 891])
@@ -54,7 +58,8 @@ for l=[18 7]%i=1:3
 end
 
 %%%%%%%%%%%%%%%%%% plotting outlier epochs %%%%%%%%%%%%%%%%%%
-figure('Position',[15 24 1618 923]); 
+f1=figure('Position',[15 24 1618 923]); 
+title(sbjname)
 hold on
 plot((trialData.eeg.data(:,7)-mean(trialData.eeg.data(:,7)))/std(trialData.eeg.data(:,7)))
 plot((trialData.eeg.data(:,18)-mean(trialData.eeg.data(:,18)))/std(trialData.eeg.data(:,18))-20)
@@ -126,11 +131,11 @@ for i=1:length(trialData.vr)
         eval(['eventtimes=trialData.vr(i).events.',fieldnamesevents{t+1},'.time;'])
         for q=1:length(eventtimes)
             if any(eventtimelist==eventtimes(q))
-                text(eventtimes(q)*fs,0,['\leftarrow',fieldnamesevents{t+1},' ',num2str(q)],'FontSize',11,'Rotation',-90)
-                text(eventtimes(q)*fs,-20,['\leftarrow',fieldnamesevents{t+1},' ',num2str(q)],'FontSize',11,'Rotation',-90)
+                text(eventtimes(q)*fs,0,['\leftarrow',fieldnamesevents{t+1},' ',num2str(q),'(',num2str(i),')'],'FontSize',11,'Rotation',-90,'FontWeight','bold')
+                text(eventtimes(q)*fs,-20,['\leftarrow',fieldnamesevents{t+1},' ',num2str(q),'(',num2str(i),')'],'FontSize',11,'Rotation',-90,'FontWeight','bold')
             else
-                text(eventtimes(q)*fs,0,['\leftarrow',fieldnamesevents{t+1},' ',num2str(q)],'FontSize',11,'Rotation',90)
-                text(eventtimes(q)*fs,-20,['\leftarrow',fieldnamesevents{t+1},' ',num2str(q)],'FontSize',11,'Rotation',90)
+                text(eventtimes(q)*fs,0,['\leftarrow',fieldnamesevents{t+1},' ',num2str(q),'(',num2str(i),')'],'FontSize',11,'Rotation',90,'FontWeight','bold')
+                text(eventtimes(q)*fs,-20,['\leftarrow',fieldnamesevents{t+1},' ',num2str(q),'(',num2str(i),')'],'FontSize',11,'Rotation',90,'FontWeight','bold')
             end
             eventtimelist=[eventtimelist eventtimes(q)];
         end
@@ -190,7 +195,80 @@ for l=[18 7]%i=1:3
     end
 end
 
-    
+%scroll through outliers
+for l=[18 7]%i=1:3
+    for j=1:4
+        for i=1:3
+            if eval(['isempty(out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),')'])==1
+            else
+                for k=1:eval(['size(out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),',2)'])
+                    if l==18
+                        input('press enter for next outlier')
+                        eval(['set(gca(f1),''ylim'',[-25 -16],''xlim'',[epoch_st_out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),...
+                                '_',num2str(eval(['out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),'(',num2str(k),')'])),...
+                                '-20000 epoch_st_out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),...
+                                '_',num2str(eval(['out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),'(',num2str(k),')'])),...
+                                '+20000])'])
+                    elseif l==7
+                        input('press enter for next outlier')
+                         eval(['set(gca(f1),''ylim'',[-6 6],''xlim'',[epoch_st_out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),...
+                                '_',num2str(eval(['out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),'(',num2str(k),')'])),...
+                                '-20000 epoch_st_out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),...
+                                '_',num2str(eval(['out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),'(',num2str(k),')'])),...
+                                '+20000])'])
+                    end
+                end
+            end
+        end
+    end
+end
+
+count=0
+for l=[18 7]%i=1:3
+    for j=1:4
+        
+        for i=1:3
+            count=count+1
+            if eval(['isempty(out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),')'])==1
+                eval([sbjname,'_reaches_wo_outliers{count}=[1:',num2str(eval(['size(epochs.vrevents.t',num2str(j),'.',phase{i},'.val,1)'])),']'])
+            else
+                eval([sbjname,'_reaches_wo_outliers{count}=setdiff([1:',num2str(eval(['size(epochs.vrevents.t',num2str(j),'.',phase{i},'.val,1)'])),...
+                    '],out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),')'])
+            end
+        end
+    end
+end
+
+save(['~/nr_data_analysis/data_analyzed/eeg/gen_02//data/',sbjname,'/analysis/S3-EEGanalysis/s3_dat.mat'],[sbjname,'_reaches_wo_outliers1'],'-append')
+
+%could make the background black perhaps to see the yellow outliers
+%better(?)
+%put subject number as title
+%things to do - make figure an object
+%make description bold
+
+                            
+                         eval(['epoch_st_out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),...
+                                '_',num2str(eval(['out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),'(',num2str(k),')']))],...
+                                ':epoch_ed_out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),...
+                                '_',num2str(eval(['out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),'(',num2str(k),')'])),...
+                                ',(trialData.eeg.data(epoch_st_out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),...
+                                '_',num2str(eval(['out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),'(',num2str(k),')'])),...
+                                ':epoch_ed_out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),...
+                                '_',num2str(eval(['out_mean_beta_c',num2str(l),'_t',num2str(j),'_p',num2str(i),'(',num2str(k),')'])),...
+                                ',',num2str(l),')-mean(trialData.eeg.data(:,',num2str(l),')))/std(trialData.eeg.data(:,',num2str(l),'))-20,''r'')'])
+                        set(gca,'ylim',[-25 -16],'xlim',[6.31e6 6.36e6])
+
+
+
+-14 -26 for 18
+    for 11 its 10 to 12
+
+for 
+set(gca,'ylim',[-25 -16],'xlim',[6.31e6 6.36e6])
+
+zoom_str_listbox = uicontrol(gcf,'Style','listbox','Position', [900 75 300 100],'BackgroundColor',[1 1 1]);
+
 %     plot(epochs.vrevents.t1.atStartPosition.val(11,1):epochs.vrevents.t1.atStartPosition.val(11,2),...
 %         figure
 %     epoch_st=epochs.vrevents.t1.atStartPosition.val(11,1)
