@@ -4,6 +4,11 @@ function allengit_genpaths(gitpath,type)
 % type = string input ('imaging','tDCS',or 'EEG')
 warning('off','all')
 
+if nargin<2
+    type='none';
+    disp('No toolboxes selected, Only scripts/functions added')
+end
+
 disp(['Adding Allens GitHub paths'])
 
 % Add Scripts
@@ -47,6 +52,7 @@ elseif strcmp(type,'EEG')
     ft_defaults
     addpath(fullfile(gitpath,'toolboxes','EEG','fieldtrip-20200607','external','spm12'))
     addpath(fullfile(gitpath,'toolboxes','EEG','fieldtrip-20200607','external','bsmart'))
+elseif strcmp(type,'none')
 else
     error('unknown genpath type. acceptable inputs [imaging, tDCS, or EEG]')
 end

@@ -78,7 +78,7 @@ sbj={sbj.name}';
 
 % Preproc --> S1_VR_trial_preproc(sbjnum,protocolfolder,manual)
 clear manual status
-parfor i=1:numel(sbj)
+parfor i=1:3
     try
         S1_VR_trial_preproc(sbj{i},protocolfolder,false)
     catch ME
