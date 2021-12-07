@@ -146,7 +146,6 @@ else
    title([sbjnum,'-',num2str(sessioninfo.stimamp),'mA-ANODAL']);
 end
 savefig(gcf,fullfile(analysisfolder,'EEG_tDCS_VR Plot'));
-close all
 
 sessioninfo.tdcssig.time=tdcs_detect;
 sessioninfo.sessionperiod=Session_times;

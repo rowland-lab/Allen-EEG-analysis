@@ -58,6 +58,7 @@ else
 end
 
 clc
+disp('Allens GitHub paths completed')
 
 end
     
