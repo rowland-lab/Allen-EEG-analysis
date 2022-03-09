@@ -106,15 +106,80 @@ analysisFolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087
 % columnscatter(subjectData,datlabel,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
 iCohFolder=fullfile(analysisFolder,'iCoh');
 mkdir(iCohFolder);
-columnscatter(subjectData,'iCoh',TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,iCohFolder)
+exportData=columnscatter(subjectData,'iCoh',TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,iCohFolder);
 
 %%
 % linreg(subjectData,datlabel,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
 linReg_folder=fullfile(analysisFolder,'linReg');
 mkdir(linReg_folder);
-linreg(subjectData,{'iCoh','avgAcceleration'},TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,linReg_folder)
+linreg_dat=linreg(subjectData,{'iCoh','avgAcceleration'},TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,linReg_folder);
 
 
+%% iCoh Bar 
+TOI={'pre-stim (baseline)','intrastim (5 min)','intrastim (15 min)','post-stim (5 min)'};
+FOI_label={'Alpha','Beta'};
+FOI_freq={{8,12},{13,30}};
+phases={'Hold','Prep','Reach'};
+DOI={'stroke','healthy'};
+stimtypes=[0,2];
+stimname={'Sham','Stim'};
+analysisFolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153\Analysis';
+
+export=[];
+for f=2%1:numel(FOI_label)
+    figure
+    ax_count=1;
+    for ph=1:numel(phases)
+        for d=1:numel(DOI)
+            ax=subplot(numel(phases),numel(DOI),ax_count);
+            ax_count=ax_count+1;
+            hold on
+            
+            clear b n
+            n=[];
+            anovaInput=[];
+            for s=1:numel(stimtypes)
+                session_data={subjectData.sessioninfo};
+                sbj_idx=cellfun(@(x) x.stimamp==stimtypes(s),session_data) & cellfun(@(x) strcmp(x.dx,DOI{d}),session_data);
+                tempdata=subjectData(sbj_idx);
+                
+                tempcoh=[];
+                for i=1:numel(tempdata)
+                    freq_idx=tempdata(i).iCoh.freq>=FOI_freq{f}{1}&tempdata(i).iCoh.freq<=FOI_freq{f}{2};
+                    electrode_idx=all(strcmp(tempdata(i).iCoh.label,'C3')+strcmp(tempdata(i).iCoh.label,'C4'),2);
+                    trial_idx=cellfun(@(x) any(strcmp(x,TOI)),tempdata(i).sessioninfo.trialnames);
+                    tempcoh(i,:)=permute(mean(mean(tempdata(i).iCoh.data(electrode_idx,freq_idx,:,ph,trial_idx),2,'omitnan'),3,'omitnan'),[5 4 3 2 1]);
+                end
+                bardat=mean(tempcoh,1);
+                sem=std(tempcoh,1,'omitnan')./sqrt(sum(~isnan(tempcoh),1));
+
+                if s==1
+                    xdat=(1:size(bardat,2))-0.2;
+                else
+                    xdat=(1:size(bardat,2))+0.2;
+                end
+                errorbar(xdat,bardat,sem,'LineStyle','none')
+
+                b(s)=bar(xdat,bardat,0.2);
+
+                n(s)=size(tempcoh,1);
+
+                anovaInput{s}=tempcoh;
+            end
+            
+            title(sprintf('%s - %s',DOI{d},phases{ph}))
+            xticks([1:4])
+            xticklabels({'Pre','Intra-5','Intra-15','Post-5'});
+            ylabel('Beta iCoh')
+            ylim([0 1])
+            mixANOVA(anovaInput,b);
+            export.(FOI_label{f}).(DOI{d})(ph,:)=anovaInput;
+
+            legend(b,{['Sham n=',num2str(n(1))],['Stim n=',num2str(n(2))]})
+        end
+    end
+    sgtitle(FOI_label{f})
+end
 
 %% Coherence matrix
 
@@ -123,8 +188,8 @@ phases={'Hold','Prep','Reach'};
 DOI={'stroke','healthy'};
 stimtypes=[0,2];
 stimname={'Sham','Stim'};
-electrodes={'F7','T3','T5','O1','F3','C3','P3','A1','Fz','Cz','Fp2','F8','T4','T6','O2','F4','C4','P4','A2','Pz','Fp1'};
-norm=true;
+electrodes={'A1','Fp1','F7','T3','T5','O1','F3','C3','P3','Fz','Cz','Pz','A2','Fp2','F8','T4','T6','O2','F4','C4','P4'};
+norm=false;
 FOI_label={'Alpha','Beta'};
 FOI_freq={{8,12},{13,30}};
 savefigures=true;
@@ -132,7 +197,8 @@ outpath='C:\Users\allen\Desktop\RowlandFigs_11_22_21\Coh';
 
 for f=1:numel(FOI_freq)
     for d=1:numel(DOI)
-        figure
+        figure('WindowState','Maximized');
+        set(gcf,'color','w');
         ax_count=1;
         clear h
         for t=1:numel(TOI)
@@ -177,9 +243,10 @@ for f=1:numel(FOI_freq)
                         imagescDat=mat2gray(imagescDat);
                         imagescDat(logical(diag(ones(size(imagescDat,1),1))))=nan;
                     end
-                    imagesc(imagescDat,[0 1])
+                    imagesc(imagescDat,[0.4 0.7])
+                    axis square
                     
-                    colormap jet
+                    colormap('jet');
                     xticks([1:numel(electrodes)])
                     xticklabels(electrodes)
                     yticks([1:numel(electrodes)])
@@ -447,8 +514,8 @@ DOI={'stroke','healthy'};
 stimtypes=[0,2];
 stimname={'Sham','Stim'};
 electrodes={'F7','T3','T5','O1','F3','C3','P3','A1','Fz','Cz','Fp2','F8','T4','T6','O2','F4','C4','P4','A2','Pz','Fp1'};
-FOI_label={'Alpha','Beta'};
-FOI_freq={{8,12},{13,30}};
+FOI_label={'Alpha','Beta','Gamma-L','Gamma-B'};
+FOI_freq={{8,12},{13,30},{30,70},{70,120}};
 savefigures=false;
 outpath='C:\Users\allen\Desktop\RowlandFigs_11_22_21\Coh';
 exportdata=true;
@@ -498,10 +565,12 @@ for f=1:numel(FOI_freq)
                 % Find diff
                 matcoh=(matcoh2-matcoh1)./matcoh1*100;
                 
+                sbjname=[];
                 plotdat=nan(10,2);
                 for s=1:numel(stimtypes)
                     idx=tempstim==stimtypes(s)&strcmp(tempdisease,DOI{d});
                     plotdat(1:sum(idx),s)=matcoh(idx);
+                    sbjname=[sbjname;sbj(idx)];
                 end
                 plotdat=plotdat(any(~isnan(plotdat),2),:);
                 
@@ -535,7 +604,7 @@ end
 cd(outpath)
 %% Functions
 
-function columnscatter(subjectData,datlabel,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
+function exportData=columnscatter(subjectData,datlabel,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
 
 count_ax=1;
 ax=[];
@@ -575,6 +644,8 @@ for f=1:numel(FOI_freq)
             count=1;
             axislabel=[];
             kwdat=nan(10,numel(DOI)*numel(stimtypes));
+            sbj_name=cell(10,numel(DOI)*numel(stimtypes));
+            sbjcount=1;
             for d=1:numel(DOI)
                 for s=1:numel(stimtypes)
                     idx=strcmp(tempdisease,DOI{d})&tempstim==stimtypes(s);
@@ -583,6 +654,8 @@ for f=1:numel(FOI_freq)
                     hold on
                     ydat=tempdat(idx);
                     sbjs=extractAfter({subjectData(idx).SubjectName},'pro00087153_00');
+                    sbj_name(1:numel(sbjs),sbjcount)=sbjs;
+                    sbjcount=sbjcount+1;
                     
                     % Column Scatter plot
                     xshift=-.2;
@@ -620,6 +693,11 @@ for f=1:numel(FOI_freq)
                     text(mean([c(sigIdx(si),1) c(sigIdx(si),2)]),maxy,num2str(c(sigIdx(si),6)),'HorizontalAlignment','center')
                 end
             end
+            
+            % Export data
+            exportData.(FOI_label{f}).(phases{p}).data{t,1}=kwdat;
+            exportData.(FOI_label{f}).(phases{p}).columnLabel=axislabel;
+            exportData.(FOI_label{f}).(phases{p}).SubjectNames=sbj_name(any(~cellfun(@isempty,(sbj_name)),2),:);
         end
     end
     linkaxes(ax)
@@ -629,7 +707,7 @@ end
 end
 
 
-function linreg(subjectData,cmpdata,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
+function export=linreg(subjectData,cmpdata,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
 kinlabel={'movementDuration','reactionTime','handpathlength','avgVelocity','maxVelocity','velocityPeaks','timeToMaxVelocity','timeToMaxVelocity_n','avgAcceleration','maxAcceleration','accuracy','normalizedJerk','IOC'};
 
 colors={'g','b','c','m'};
@@ -692,6 +770,8 @@ for f=1:numel(FOI_freq)
                     xdat=tempdat(idx,1);
                     ydat=tempdat(idx,2);
                     
+                    export.(FOI_label{f}).(phases{p}).(DOI{d}){t,s}=[xdat;ydat];
+                    
                     
                     
                     
@@ -745,4 +825,54 @@ for f=1:numel(FOI_freq)
     linkaxes(ax)
     savefig(gcf,fullfile(savefolder,[axislabel{1},' vs ',axislabel{2}]))
 end
+end
+
+
+function mixANOVA(input,b)
+
+% Run Mixed Anova for contra
+[stat,rm]=simple_mixed_anova(vertcat(input{:}),vertcat(ones(size(input{1},1),1)*0,ones(size(input{2},1),1)*2),{'Trial'},{'Stim'});
+
+% Compare stim vs sham
+Mrm1 = multcompare(rm,'Stim','By','Trial','ComparisonType','tukey-kramer');
+
+if any(Mrm1.pValue<=0.05)
+    sigidx=double(unique(Mrm1.Trial(find(Mrm1.pValue<=0.05))));
+    Ylimits=get(gca,'YLim');
+    for i=1:numel(sigidx)
+        text(sigidx(i),Ylimits(2)*0.8,num2str(unique(Mrm1.pValue(double(Mrm1.Trial)==sigidx(i)))),'FontSize',20,'HorizontalAlignment','center')
+    end
+end
+
+barpos(:,1)=b(1).XData;
+barpos(:,2)=b(2).XData;
+
+% Compare time points
+Mrm2 = multcompare(rm,'Trial','By','Stim','ComparisonType','bonferroni');
+if any(Mrm2.pValue<=0.05)
+    idx=find(Mrm2.pValue<=0.05);
+    for i=1:numel(idx)
+        t1=double(Mrm2.Trial_1(idx(i)));
+        t2=double(Mrm2.Trial_2(idx(i)));
+        pval=Mrm2.pValue(idx(i));
+        if t1<t2
+            if double(Mrm2.Stim(idx(i)))==1
+                sigpos=barpos(:,1);
+            else
+                sigpos=barpos(:,2);
+            end
+            Ylimits=get(gca,'YLim');
+            nYlimits=[Ylimits(1) Ylimits(2)+0.1*Ylimits(2)];
+            set(gca,'YLim',nYlimits)
+            l=line(gca,[sigpos(t1) sigpos(t2)],[1 1]*Ylimits(2));
+            text(gca,mean([sigpos(t1) sigpos(t2)]),Ylimits(2),num2str(pval),'HorizontalAlignment','center');
+            if double(Mrm2.Stim(idx(i)))==1
+                set(l,'linewidth',2,'Color','b')
+            else
+                set(l,'linewidth',2,'Color',[0.8500 0.3250 0.0980])
+            end
+        end
+    end
+end
+
 end
