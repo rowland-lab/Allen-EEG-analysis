@@ -86,6 +86,11 @@ chan_num=1:22;
 % Sample Frequency
 fs=trialData.eeg.header.samplingrate;
 
+% Normalize window and nfft to sampling frequency
+window=window*fs;
+nfft=nfft*fs;
+
+% Save session info
 Session_times= sessioninfo.sessionperiod;
 VR_sig=sessioninfo.vrsig;
 

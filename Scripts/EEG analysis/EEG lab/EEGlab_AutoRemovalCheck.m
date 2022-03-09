@@ -14,13 +14,10 @@ allengit_genpaths(gitpath,'EEG')
 sbj=dir(fullfile(protocolfolder,'pro000*.'));
 sbj={sbj.name}';
 %% Organize data
-heartdat=[];
-heart=[];
-rcmp=[];
-badchannels=[];
-ASRrmvIdx=[];
-for s=1:numel(sbj)
+clear heartdat heart rcmp badchannels ASRrmvIdx
+parfor s=1:numel(sbj)
     try
+        disp(['Loading EEGlab_Total.mat for ',sbj{s}])
         tempdata=load(fullfile(protocolfolder,sbj{s},'analysis','EEGlab','EEGlab_Total.mat'));
         temptrials=tempdata.eegevents_icarem.trials  ;
     catch
@@ -39,7 +36,9 @@ for s=1:numel(sbj)
         rcmp{s}{trials_idx(t)}=temptrialData.rcmp;
         badchannels{s}{trials_idx(t)}=temptrialData.badChannels;
         ASRrmvIdx{s}{trials_idx(t)}=temptrialData.ASRrmvIdx;
+        channel_names={temptrialData.chanlocs.labels};
     end
+    
 end
 
 %% Analyze Heart
@@ -92,15 +91,39 @@ for i=1:numel(badchannels)
     badchannels{i}(cellfun(@isempty,badchannels{i}))=[];
 end
 
-% Extract Bad channels
+% Organize Data
 badcn=[];
 orgcndata=[];
 intercndata=[];
-
 for i=1:numel(heart)
     badcn=[badcn cellfun(@(x) x.channels,badchannels{i},'UniformOutput',false)];
+    orgcndata=[orgcndata cellfun(@(x) x.data,badchannels{i},'UniformOutput',false)];
+    intercndata=[intercndata cellfun(@(x) x.data_inter,badchannels{i},'UniformOutput',false)];
 end
+
+nanidx=cellfun(@(x) any(isnan(x),'all'),orgcndata);
+orgcndata(nanidx)=[];
+intercndata(nanidx)=[];
+
+
+% Create figures
+figure;
+title('Bad Channel')
 badcn=vertcat(badcn{:});
 histogram(badcn,'BinWidth',1)
-xticks([1:22])
+xticks([1.5:22.5]);
+xticklabels(channel_names);
+
+figure;
+for i=1:numel(orgcndata)
+    for ii=1:numel(orgcndata{i})
+        if isnan(orgcndata{i})
+            continue
+        end
+        nexttile
+        hold on
+        plot(orgcndata{i}(i,:));
+        plot(intercndata{i}(i,:));
+    end
+end
 

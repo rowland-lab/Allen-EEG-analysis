@@ -52,7 +52,7 @@ for e=1:numel(fn)
     % Fix Epoch field into numbers if string
     if ischar(EEG.epoch(1).eventtype)
         for i=1:size(EEG.epoch,2)
-            EEG.epoch(i).eventtype=str2num(EEG.epoch(i).eventtype)
+            EEG.epoch(i).eventtype=str2num(EEG.epoch(i).eventtype);
         end
     end
     

@@ -76,9 +76,11 @@ sbj={sbj.name}';
 
 %% Run code
 
-% Preproc --> S1_VR_trial_preproc(sbjnum,protocolfolder,manual)
+%%%%%%%%%%%%%%%% Preproc --> S1_VR_trial_preproc(sbjnum,protocolfolder,manual)
+
+% Try autorun S1
 clear manual status
-parfor i=1:numel(sbj)
+parfor i=1:3
     try
         S1_VR_trial_preproc(sbj{i},protocolfolder,false)
     catch ME
@@ -88,20 +90,27 @@ parfor i=1:numel(sbj)
     end
 end
 
+% Manual run failed auto S1
 for i=cell2mat(manual);
      S1_VR_trial_preproc(sbj{i},protocolfolder,true)
 end
 
 
-for i=5
-    % Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
+%%%%%%%%%%%%%%%% Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
+parfor i=5
     S2_MetricPlot(sbj{i},protocolfolder,2)
-    
-    % EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder,window,nooverlap,nfft,manual)
-    S3_EEGanalysis(sbj{i},protocolfolder,128,0.5,128,false)
 end
 
-% Reconstruction --> S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,metriccurves,trial_num)
+
+
+%%%%%%%%%%%%%%%% EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder,window(seconds),nooverlap,nfft(seconds),manual)
+parfor i=5
+    S3_EEGanalysis(sbj{i},protocolfolder,0.1250,0.5,0.1250,false)
+end
+
+
+
+%%%%%%%%%%%%%%% Reconstruction --> S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,metriccurves,trial_num)
 for i=4:numel(sbj)
 %     S4_Reconstruction(sbj{i},protocolfolder,false,false,false,false,false,[])
 %     S4_Reconstruction(sbj{i},protocolfolder,false,true,false,false,false,[])

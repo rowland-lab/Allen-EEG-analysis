@@ -57,7 +57,7 @@ end
 dx_type={'stroke','pd','healthy'};
 stim_type={0,2};
 metric_measures=metricdat.label;
-norm=true;
+norm=false;
 export_xml=true;
 
 
@@ -219,18 +219,21 @@ for d=1
     
     % Title figure
     sgtitle(dx_type{d})
-end
+    
+    stimdat_con=[stimdat{:}];
+    shamdat_con=[shamdat{:}];
 
-stimdat_con=[stimdat{:}];
-shamdat_con=[shamdat{:}];
-
-if export_xml
-    filename = fullfile(figfolder,'metric.xlsx');
-    fn=fieldnames(temp_xml);
-    for m=1:numel(fn)
-        writetable(array2table([str2num(cell2mat(tempnames)) temp_xml.(fn{m})],'VariableNames',{'Subject Number','Stimulation Type','Pre','Intra-5','Intra-15','Post-5'}),filename,'Sheet',fn{m})
+    if export_xml
+        filename = fullfile(figfolder,[dx_type{d},' metric.xlsx']);
+        fn=fieldnames(temp_xml);
+        for m=1:numel(fn)
+            writetable(array2table([str2num(cell2mat(tempnames)) temp_xml.(fn{m})],'VariableNames',{'Subject Number','Stimulation Type','Pre','Intra-5','Intra-15','Post-5'}),filename,'Sheet',fn{m})
+        end
     end
+    cd(figfolder)
 end
+
+
 %% Plot Metric data (individual)
 
 dx_type={'stroke','pd','healthy'};
