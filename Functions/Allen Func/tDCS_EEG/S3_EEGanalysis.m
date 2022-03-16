@@ -409,7 +409,7 @@ sgtitle('Rest Epochs')
 saveas(gcf,fullfile(restvrfolder,[get(gcf,'Name'),'.jpg']))
 
 figure('Name',['Cn7_Cn18_VRwholeEpochs==',figtitle],'units','normalized','outerposition',[0 0 1 1])
-set(gcf,'Position',[111 75 1000 500]);
+%set(gcf,'Position',[111 75 1000 500]);
 subplot(1,2,1)
 hold on
 for i=1:length(Epochcompare)
