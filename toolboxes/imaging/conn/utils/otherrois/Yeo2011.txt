@@ -1,7 +1,0 @@
-Visual
-Somatosensory
-Dorsal Attention
-Ventral Attention
-Limbic
-Frontoparietal
-Default
