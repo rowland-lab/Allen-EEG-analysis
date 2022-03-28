@@ -101,14 +101,10 @@ parfor i=5
     S2_MetricPlot(sbj{i},protocolfolder,2)
 end
 
-
-
 %%%%%%%%%%%%%%%% EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder,window(seconds),nooverlap,nfft(seconds),manual)
 parfor i=5
     S3_EEGanalysis(sbj{i},protocolfolder,0.1250,0.5,0.1250,false)
 end
-
-
 
 %%%%%%%%%%%%%%% Reconstruction --> S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,metriccurves,trial_num)
 for i=4:numel(sbj)
