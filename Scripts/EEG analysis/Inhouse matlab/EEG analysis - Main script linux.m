@@ -61,11 +61,15 @@ close all
 clc
 
 % Enter gitpath
-gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
+gitpath='/home/rowlandn/nr_data_analysis/data_scripts/ac/Allen-EEG-analysis';
+
+%gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
 cd(gitpath)
 
 % Enter in protocol folder
-protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
+protocolfolder='/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data';
+
+%protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
 
 % Add EEG related paths
 allengit_genpaths(gitpath,'EEG')
@@ -80,7 +84,7 @@ sbj={sbj.name}';
 
 % Try autorun S1
 clear manual status
-parfor i=1%:3
+parfor i=2:21
     try
         S1_VR_trial_preproc(sbj{i},protocolfolder,false)
     catch ME
@@ -97,14 +101,18 @@ end
 
 
 %%%%%%%%%%%%%%%% Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
-parfor i=1%5
+parfor i=2:21%5
     S2_MetricPlot(sbj{i},protocolfolder,2)
 end
 
+
+
 %%%%%%%%%%%%%%%% EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder,window(seconds),nooverlap,nfft(seconds),manual)
-parfor i=5
+parfor i=2:21%5
     S3_EEGanalysis(sbj{i},protocolfolder,0.1250,0.5,0.1250,false)
 end
+
+
 
 %%%%%%%%%%%%%%% Reconstruction --> S4_Reconstruction(subjectName,protocol_folder,positionalplot,eegplot,tfplot,metricplot,metriccurves,trial_num)
 for i=4:numel(sbj)

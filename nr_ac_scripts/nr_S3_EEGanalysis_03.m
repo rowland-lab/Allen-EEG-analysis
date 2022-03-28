@@ -1,4 +1,4 @@
-function S3_EEGanalysis(sbjnum,protocolfolder,window,nooverlap,nfft,manual)
+function nr_S3_EEGanalysis_03(sbjnum,protocolfolder,window,nooverlap,nfft,manual)
 %% Define variables and import data
 analysisfolder=fullfile(protocolfolder,sbjnum,'analysis');
 
@@ -86,11 +86,6 @@ chan_num=1:22;
 % Sample Frequency
 fs=trialData.eeg.header.samplingrate;
 
-% Normalize window and nfft to sampling frequency
-window=window*fs;
-nfft=nfft*fs;
-
-% Save session info
 Session_times= sessioninfo.sessionperiod;
 VR_sig=sessioninfo.vrsig;
 
@@ -409,7 +404,7 @@ sgtitle('Rest Epochs')
 saveas(gcf,fullfile(restvrfolder,[get(gcf,'Name'),'.jpg']))
 
 figure('Name',['Cn7_Cn18_VRwholeEpochs==',figtitle],'units','normalized','outerposition',[0 0 1 1])
-%set(gcf,'Position',[111 75 1000 500]);
+set(gcf,'Position',[111 75 1000 500]);
 subplot(1,2,1)
 hold on
 for i=1:length(Epochcompare)
