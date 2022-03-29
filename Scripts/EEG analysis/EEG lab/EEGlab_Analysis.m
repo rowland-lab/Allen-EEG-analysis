@@ -126,7 +126,7 @@ stimname={'Sham','Stim'};
 analysisFolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153\Analysis';
 
 export=[];
-for f=2%1:numel(FOI_label)
+for f=1:numel(FOI_label)
     figure
     ax_count=1;
     for ph=1:numel(phases)
