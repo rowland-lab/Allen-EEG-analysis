@@ -1,4 +1,4 @@
-function eegevents=EEGLAB_timefreq(eegevents)
+function eegevents=EEGLAB_timefreq(eegevents,subject)
 
 % subjectfolder=fullfile(protocolfolder,subject);
 % analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
@@ -155,41 +155,41 @@ for e=1:numel(fn)
         
         
         
-        %         % Plot C3 power
-        %         figure('units','normalized','outerposition',[0 0 1 1])
-        %         c3elec=find(strcmp({phaseEEG.chanlocs.labels},'C3'));
-        %         pop_newtimef(phaseEEG,1, c3elec,[-500,1000],0,'padratio',8, ...
-        %             'timesout', 60, 'alpha', .05,'mcorrect','fdr','plotitc','off','plotphase', 'off');
-        %         temptitle=[subject,' - ',phases{ph},' - ',trialnames{i},' --- Left Motor Cortex (C3), 0.05 alpha (fdr correct)'];
-        %         sgtitle(temptitle,'Interpreter', 'none')
-        %         graphchild=get(gcf,'Children');
-        %         graph=graphchild(5);
-        %         graph.CLim=[-5 5];
-        %         cb=graphchild(4);
-        %         cb.YLim=[-5 5];
-        %         cb.Children.YData=[-5 5];
-        %
-        % %         saveas(gcf,fullfile(spectrogramfolder,[temptitle,'.jpeg']),'jpeg')
-        %         saveas(gcf,fullfile(spectrogramfolder,[temptitle]),'epsc')
-        %         close all
-        %
-        %
-        %         % Plot C4 power
-        %         figure('units','normalized','outerposition',[0 0 1 1])
-        %         c4elec=find(strcmp({phaseEEG.chanlocs.labels},'C4'));
-        %         pop_newtimef(phaseEEG,1, c4elec,[-500,1000],0,'padratio',8, ...
-        %             'timesout', 60, 'alpha', .05,'mcorrect','fdr','plotitc','off','plotphase', 'off');
-        %         temptitle=[subject,' - ',phases{ph},' - ',trialnames{i},' --- Right Motor Cortex (C4), 0.05 alpha (fdr correct)'];
-        %         sgtitle(temptitle,'Interpreter', 'none')
-        %         graphchild=get(gcf,'Children');
-        %         graph=graphchild(5);
-        %         graph.CLim=[-5 5];
-        %         cb=graphchild(4);
-        %         cb.YLim=[-5 5];
-        %         cb.Children.YData=[-5 5];
+                % Plot C3 power
+                figure('units','normalized','outerposition',[0 0 1 1])
+                c3elec=find(strcmp({phaseEEG.chanlocs.labels},'C3'));
+                pop_newtimef(phaseEEG,1, c3elec,[-500,1000],0,'padratio',8, ...
+                    'timesout', 60, 'alpha', .05,'mcorrect','fdr','plotitc','off','plotphase', 'off');
+                temptitle=[subject,' - ',phases{ph},' - ',trialnames{i},' --- Left Motor Cortex (C3), 0.05 alpha (fdr correct)'];
+                sgtitle(temptitle,'Interpreter', 'none')
+                graphchild=get(gcf,'Children');
+                graph=graphchild(5);
+                graph.CLim=[-5 5];
+                cb=graphchild(4);
+                cb.YLim=[-5 5];
+                cb.Children.YData=[-5 5];
+        
         %         saveas(gcf,fullfile(spectrogramfolder,[temptitle,'.jpeg']),'jpeg')
-        % %         saveas(gcf,fullfile(spectrogramfolder,[temptitle]),'epsc')
-        %         close all
+                saveas(gcf,fullfile(spectrogramfolder,[temptitle]),'epsc')
+                close all
+        
+        
+                % Plot C4 power
+                figure('units','normalized','outerposition',[0 0 1 1])
+                c4elec=find(strcmp({phaseEEG.chanlocs.labels},'C4'));
+                pop_newtimef(phaseEEG,1, c4elec,[-500,1000],0,'padratio',8, ...
+                    'timesout', 60, 'alpha', .05,'mcorrect','fdr','plotitc','off','plotphase', 'off');
+                temptitle=[subject,' - ',phases{ph},' - ',trialnames{i},' --- Right Motor Cortex (C4), 0.05 alpha (fdr correct)'];
+                sgtitle(temptitle,'Interpreter', 'none')
+                graphchild=get(gcf,'Children');
+                graph=graphchild(5);
+                graph.CLim=[-5 5];
+                cb=graphchild(4);
+                cb.YLim=[-5 5];
+                cb.Children.YData=[-5 5];
+                saveas(gcf,fullfile(spectrogramfolder,[temptitle,'.jpeg']),'jpeg')
+        %         saveas(gcf,fullfile(spectrogramfolder,[temptitle]),'epsc')
+                close all
     end
     
     %     Save tempphaseeg back to eegevents structure

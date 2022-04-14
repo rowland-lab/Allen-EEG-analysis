@@ -131,23 +131,51 @@ save([iCohFolder,'/',['data_grp_icoh_colscat_',date]],['data_grp_icoh_colscat_',
 % linreg(subjectData,datlabel,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
 linReg_folder=fullfile(analysisfolder,'iCohlinReg');
 mkdir(linReg_folder);
-linreg_dat=linreg(subjectData,{'iCoh','maxAcceleration'},TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,linReg_folder);
-data_grp_icoh=exportData;
-c=clock;
-y=sprintf('%0.5g',[c(1)]);
-m=sprintf('%0.5g',[c(2)]);
-d=sprintf('%0.5g',[c(3)]);
-if str2num(m)<10
-    m=['0',m];
-end
-if str2num(d)<10
-    d=['0',d];
-end
-date=[y,'_',m,'_',d];
+linreg_dat=linreg(subjectData,{'iCoh','IOC'},TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,linReg_folder);
+% data_grp_icoh=exportData;
+% c=clock;
+% y=sprintf('%0.5g',[c(1)]);
+% m=sprintf('%0.5g',[c(2)]);
+% d=sprintf('%0.5g',[c(3)]);
+% if str2num(m)<10
+%     m=['0',m];
+% end
+% if str2num(d)<10
+%     d=['0',d];
+% end
+% date=[y,'_',m,'_',d];
+% 
+% eval([['data_grp_icoh_linreg_',date],'=linreg_dat']);
+% save([linReg_folder,'/',['data_grp_icoh_linreg_',date]],['data_grp_icoh_linreg_',date])
 
-eval([['data_grp_icoh_linreg_',date],'=linreg_dat']);
-save([linReg_folder,'/',['data_grp_icoh_linreg_',date]],['data_grp_icoh_linreg_',date])
+%  %hits
+%  movement duration
+%  reaction time
+%  velocity peaks
+%  avg acceleration
 
+
+% {'movementDuration'}
+% {'reactionTime'}
+% {'handpathlength'}
+% {'avgVelocity'}
+% {'maxVelocity'}
+% {'velocityPeaks'}
+% {'timeToMaxVelocity'}
+% {'timeToMaxVelocity_n'}
+% {'avgAcceleration'}
+% {'maxAcceleration'}
+% {'accuracy'}
+% {'normalizedJerk'}
+% {'IOC'}
+
+
+%%
+linReg_folder=fullfile(analysisfolder,'iCohlinReg');
+mkdir(linReg_folder);
+linreg_dat=linreg2(subjectData,{'iCoh','IOC'},TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,linReg_folder);
+
+%not much here, just confirm that code is correct and move on
 
 
 %% iCoh Bar 
@@ -222,59 +250,59 @@ for f=1:numel(FOI_label)
 end
 
 %reformat into barplot structure
-data_grp_icoh_barmat.stroke.hold(:,1)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{1}(:,1)
-data_grp_icoh_barmat.stroke.hold(:,2)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{1}(:,2)
-data_grp_icoh_barmat.stroke.hold(:,3)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{2}(:,1)
-data_grp_icoh_barmat.stroke.hold(:,4)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{2}(:,2)
-data_grp_icoh_barmat.stroke.hold(:,5)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{3}(:,1)
-data_grp_icoh_barmat.stroke.hold(:,6)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{3}(:,2)
-data_grp_icoh_barmat.stroke.hold(:,7)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{4}(:,1)
-data_grp_icoh_barmat.stroke.hold(:,8)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{4}(:,2)
+data_grp_icoh_barmat.stroke.hold(:,1)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{1}(:,1)
+data_grp_icoh_barmat.stroke.hold(:,2)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{1}(:,2)
+data_grp_icoh_barmat.stroke.hold(:,3)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{2}(:,1)
+data_grp_icoh_barmat.stroke.hold(:,4)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{2}(:,2)
+data_grp_icoh_barmat.stroke.hold(:,5)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{3}(:,1)
+data_grp_icoh_barmat.stroke.hold(:,6)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{3}(:,2)
+data_grp_icoh_barmat.stroke.hold(:,7)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{4}(:,1)
+data_grp_icoh_barmat.stroke.hold(:,8)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{4}(:,2)
 
-data_grp_icoh_barmat.stroke.prep(:,1)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{1}(:,1)
-data_grp_icoh_barmat.stroke.prep(:,2)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{1}(:,2)
-data_grp_icoh_barmat.stroke.prep(:,3)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{2}(:,1)
-data_grp_icoh_barmat.stroke.prep(:,4)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{2}(:,2)
-data_grp_icoh_barmat.stroke.prep(:,5)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{3}(:,1)
-data_grp_icoh_barmat.stroke.prep(:,6)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{3}(:,2)
-data_grp_icoh_barmat.stroke.prep(:,7)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{4}(:,1)
-data_grp_icoh_barmat.stroke.prep(:,8)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{4}(:,2)
+data_grp_icoh_barmat.stroke.prep(:,1)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{1}(:,1)
+data_grp_icoh_barmat.stroke.prep(:,2)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{1}(:,2)
+data_grp_icoh_barmat.stroke.prep(:,3)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{2}(:,1)
+data_grp_icoh_barmat.stroke.prep(:,4)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{2}(:,2)
+data_grp_icoh_barmat.stroke.prep(:,5)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{3}(:,1)
+data_grp_icoh_barmat.stroke.prep(:,6)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{3}(:,2)
+data_grp_icoh_barmat.stroke.prep(:,7)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{4}(:,1)
+data_grp_icoh_barmat.stroke.prep(:,8)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{4}(:,2)
 
-data_grp_icoh_barmat.stroke.reach(:,1)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{1}(:,1)
-data_grp_icoh_barmat.stroke.reach(:,2)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{1}(:,2)
-data_grp_icoh_barmat.stroke.reach(:,3)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{2}(:,1)
-data_grp_icoh_barmat.stroke.reach(:,4)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{2}(:,2)
-data_grp_icoh_barmat.stroke.reach(:,5)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{3}(:,1)
-data_grp_icoh_barmat.stroke.reach(:,6)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{3}(:,2)
-data_grp_icoh_barmat.stroke.reach(:,7)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{4}(:,1)
-data_grp_icoh_barmat.stroke.reach(:,8)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{4}(:,2)
+data_grp_icoh_barmat.stroke.reach(:,1)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{1}(:,1)
+data_grp_icoh_barmat.stroke.reach(:,2)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{1}(:,2)
+data_grp_icoh_barmat.stroke.reach(:,3)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{2}(:,1)
+data_grp_icoh_barmat.stroke.reach(:,4)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{2}(:,2)
+data_grp_icoh_barmat.stroke.reach(:,5)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{3}(:,1)
+data_grp_icoh_barmat.stroke.reach(:,6)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{3}(:,2)
+data_grp_icoh_barmat.stroke.reach(:,7)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{4}(:,1)
+data_grp_icoh_barmat.stroke.reach(:,8)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{4}(:,2)
 
-data_grp_icoh_barmat.healthy.hold(:,1)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{1}(:,3)
-data_grp_icoh_barmat.healthy.hold(:,2)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{1}(:,4)
-data_grp_icoh_barmat.healthy.hold(:,3)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{2}(:,3)
-data_grp_icoh_barmat.healthy.hold(:,4)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{2}(:,4)
-data_grp_icoh_barmat.healthy.hold(:,5)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{3}(:,3)
-data_grp_icoh_barmat.healthy.hold(:,6)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{3}(:,4)
-data_grp_icoh_barmat.healthy.hold(:,7)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{4}(:,3)
-data_grp_icoh_barmat.healthy.hold(:,8)=data_grp_icoh_colscat_2022_03_16.Beta.Hold.data{4}(:,4)
+data_grp_icoh_barmat.healthy.hold(:,1)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{1}(:,3)
+data_grp_icoh_barmat.healthy.hold(:,2)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{1}(:,4)
+data_grp_icoh_barmat.healthy.hold(:,3)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{2}(:,3)
+data_grp_icoh_barmat.healthy.hold(:,4)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{2}(:,4)
+data_grp_icoh_barmat.healthy.hold(:,5)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{3}(:,3)
+data_grp_icoh_barmat.healthy.hold(:,6)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{3}(:,4)
+data_grp_icoh_barmat.healthy.hold(:,7)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{4}(:,3)
+data_grp_icoh_barmat.healthy.hold(:,8)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Hold.data{4}(:,4)
 
-data_grp_icoh_barmat.healthy.prep(:,1)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{1}(:,3)
-data_grp_icoh_barmat.healthy.prep(:,2)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{1}(:,4)
-data_grp_icoh_barmat.healthy.prep(:,3)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{2}(:,3)
-data_grp_icoh_barmat.healthy.prep(:,4)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{2}(:,4)
-data_grp_icoh_barmat.healthy.prep(:,5)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{3}(:,3)
-data_grp_icoh_barmat.healthy.prep(:,6)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{3}(:,4)
-data_grp_icoh_barmat.healthy.prep(:,7)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{4}(:,3)
-data_grp_icoh_barmat.healthy.prep(:,8)=data_grp_icoh_colscat_2022_03_16.Beta.Prep.data{4}(:,4)
+data_grp_icoh_barmat.healthy.prep(:,1)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{1}(:,3)
+data_grp_icoh_barmat.healthy.prep(:,2)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{1}(:,4)
+data_grp_icoh_barmat.healthy.prep(:,3)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{2}(:,3)
+data_grp_icoh_barmat.healthy.prep(:,4)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{2}(:,4)
+data_grp_icoh_barmat.healthy.prep(:,5)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{3}(:,3)
+data_grp_icoh_barmat.healthy.prep(:,6)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{3}(:,4)
+data_grp_icoh_barmat.healthy.prep(:,7)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{4}(:,3)
+data_grp_icoh_barmat.healthy.prep(:,8)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Prep.data{4}(:,4)
 
-data_grp_icoh_barmat.healthy.reach(:,1)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{1}(:,3)
-data_grp_icoh_barmat.healthy.reach(:,2)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{1}(:,4)
-data_grp_icoh_barmat.healthy.reach(:,3)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{2}(:,3)
-data_grp_icoh_barmat.healthy.reach(:,4)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{2}(:,4)
-data_grp_icoh_barmat.healthy.reach(:,5)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{3}(:,3)
-data_grp_icoh_barmat.healthy.reach(:,6)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{3}(:,4)
-data_grp_icoh_barmat.healthy.reach(:,7)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{4}(:,3)
-data_grp_icoh_barmat.healthy.reach(:,8)=data_grp_icoh_colscat_2022_03_16.Beta.Reach.data{4}(:,4)
+data_grp_icoh_barmat.healthy.reach(:,1)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{1}(:,3)
+data_grp_icoh_barmat.healthy.reach(:,2)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{1}(:,4)
+data_grp_icoh_barmat.healthy.reach(:,3)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{2}(:,3)
+data_grp_icoh_barmat.healthy.reach(:,4)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{2}(:,4)
+data_grp_icoh_barmat.healthy.reach(:,5)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{3}(:,3)
+data_grp_icoh_barmat.healthy.reach(:,6)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{3}(:,4)
+data_grp_icoh_barmat.healthy.reach(:,7)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{4}(:,3)
+data_grp_icoh_barmat.healthy.reach(:,8)=data_grp_icoh_colscat_2022_04_10_acdata.Beta.Reach.data{4}(:,4)
 data_grp_icoh_barmat.labels.soi={'sham';'stim';'sham';'stim';'sham';'stim';'sham';'stim'};
 data_grp_icoh_barmat.labels.poi={'pre';'pre';'intra5';'intra5';'intra15';'intra15';'post5';'post5'};
 
@@ -309,6 +337,7 @@ nanmean(data_grp_icoh_barmat.stroke.hold(:,7)),nanmean(data_grp_icoh_barmat.stro
 nanstd(data_grp_icoh_barmat.stroke.hold(:,3))/sqrt(5),nanstd(data_grp_icoh_barmat.stroke.hold(:,4))/sqrt(5),0,...
 nanstd(data_grp_icoh_barmat.stroke.hold(:,5))/sqrt(5),nanstd(data_grp_icoh_barmat.stroke.hold(:,6))/sqrt(5),0,...
 nanstd(data_grp_icoh_barmat.stroke.hold(:,7))/sqrt(5),nanstd(data_grp_icoh_barmat.stroke.hold(:,8))/sqrt(5)],'.k')
+title('stroke hold')
 
 subplot(3,2,3); hold on
 bar([nanmean(data_grp_icoh_barmat.stroke.prep(:,1)),nanmean(data_grp_icoh_barmat.stroke.prep(:,2)),0,...
@@ -324,6 +353,7 @@ nanmean(data_grp_icoh_barmat.stroke.prep(:,7)),nanmean(data_grp_icoh_barmat.stro
 nanstd(data_grp_icoh_barmat.stroke.prep(:,3))/sqrt(5),nanstd(data_grp_icoh_barmat.stroke.prep(:,4))/sqrt(5),0,...
 nanstd(data_grp_icoh_barmat.stroke.prep(:,5))/sqrt(5),nanstd(data_grp_icoh_barmat.stroke.prep(:,6))/sqrt(5),0,...
 nanstd(data_grp_icoh_barmat.stroke.prep(:,7))/sqrt(5),nanstd(data_grp_icoh_barmat.stroke.prep(:,8))/sqrt(5)],'.k')
+title('stroke prep')
 
 subplot(3,2,5); hold on
 bar([nanmean(data_grp_icoh_barmat.stroke.reach(:,1)),nanmean(data_grp_icoh_barmat.stroke.reach(:,2)),0,...
@@ -339,6 +369,7 @@ nanmean(data_grp_icoh_barmat.stroke.reach(:,7)),nanmean(data_grp_icoh_barmat.str
 nanstd(data_grp_icoh_barmat.stroke.reach(:,3))/sqrt(5),nanstd(data_grp_icoh_barmat.stroke.reach(:,4))/sqrt(5),0,...
 nanstd(data_grp_icoh_barmat.stroke.reach(:,5))/sqrt(5),nanstd(data_grp_icoh_barmat.stroke.reach(:,6))/sqrt(5),0,...
 nanstd(data_grp_icoh_barmat.stroke.reach(:,7))/sqrt(5),nanstd(data_grp_icoh_barmat.stroke.reach(:,8))/sqrt(5)],'.k')
+title('stroke reach')
 
 subplot(3,2,2); hold on
 bar([nanmean(data_grp_icoh_barmat.healthy.hold(:,1)),nanmean(data_grp_icoh_barmat.healthy.hold(:,2)),0,...
@@ -354,6 +385,7 @@ nanmean(data_grp_icoh_barmat.healthy.hold(:,7)),nanmean(data_grp_icoh_barmat.hea
 nanstd(data_grp_icoh_barmat.healthy.hold(:,3))/sqrt(5),nanstd(data_grp_icoh_barmat.healthy.hold(:,4))/sqrt(6),0,...
 nanstd(data_grp_icoh_barmat.healthy.hold(:,5))/sqrt(5),nanstd(data_grp_icoh_barmat.healthy.hold(:,6))/sqrt(6),0,...
 nanstd(data_grp_icoh_barmat.healthy.hold(:,7))/sqrt(5),nanstd(data_grp_icoh_barmat.healthy.hold(:,8))/sqrt(6)],'.k')
+title('healthy hold')
 
 subplot(3,2,4); hold on
 bar([nanmean(data_grp_icoh_barmat.healthy.prep(:,1)),nanmean(data_grp_icoh_barmat.healthy.prep(:,2)),0,...
@@ -369,6 +401,7 @@ nanmean(data_grp_icoh_barmat.healthy.prep(:,7)),nanmean(data_grp_icoh_barmat.hea
 nanstd(data_grp_icoh_barmat.healthy.prep(:,3))/sqrt(5),nanstd(data_grp_icoh_barmat.healthy.prep(:,4))/sqrt(6),0,...
 nanstd(data_grp_icoh_barmat.healthy.prep(:,5))/sqrt(5),nanstd(data_grp_icoh_barmat.healthy.prep(:,6))/sqrt(6),0,...
 nanstd(data_grp_icoh_barmat.healthy.prep(:,7))/sqrt(5),nanstd(data_grp_icoh_barmat.healthy.prep(:,8))/sqrt(6)],'.k')
+title('healthy prep')
 
 subplot(3,2,6); hold on
 bar([nanmean(data_grp_icoh_barmat.healthy.reach(:,1)),nanmean(data_grp_icoh_barmat.healthy.reach(:,2)),0,...
@@ -384,7 +417,7 @@ nanmean(data_grp_icoh_barmat.healthy.reach(:,7)),nanmean(data_grp_icoh_barmat.he
 nanstd(data_grp_icoh_barmat.healthy.reach(:,3))/sqrt(5),nanstd(data_grp_icoh_barmat.healthy.reach(:,4))/sqrt(6),0,...
 nanstd(data_grp_icoh_barmat.healthy.reach(:,5))/sqrt(5),nanstd(data_grp_icoh_barmat.healthy.reach(:,6))/sqrt(6),0,...
 nanstd(data_grp_icoh_barmat.healthy.reach(:,7))/sqrt(5),nanstd(data_grp_icoh_barmat.healthy.reach(:,8))/sqrt(6)],'.k')
-
+title('healthy reach')
 %
 %% Coherence matrix
 
@@ -714,6 +747,7 @@ for sbj=1:numel(sbj_name)
     end
 end
 
+clear data_grp_icohmat_*
 
 %This is for ind c3-4 plots
 figure; set(gcf,'Position',[2133 109 1214 834])
@@ -864,6 +898,67 @@ for i=1:size(distype,1)
     end
 end
 
+%stats - friedman
+%across timetype
+for i=1:size(distype,1)
+    for j=1:size(stimtype,1)
+        %for k=1:size(timetype,1)
+            for l=1:size(phasetype,1)
+                eval(['[p_friedman_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',phasetype{l},',',...
+                    'tab_friedman_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',phasetype{l},',',...
+                    'stats_friedman_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',phasetype{l},']',...
+                    '=friedman([all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_pre_',phasetype{l},';',...
+                              'all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_i05_',phasetype{l},';',...
+                              'all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_i15_',phasetype{l},';',...
+                              'all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_pos_',phasetype{l},']'');'])
+                eval(['mc_friedman_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',phasetype{l},...
+                      '=multcompare(stats_friedman_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',phasetype{l},');'])
+                          
+%                 eval(['se_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+%                     '=std(all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},')',...
+%                     '/sqrt(size(all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},',2))'])
+            end
+        %end
+    end
+end
+
+%across phasetype
+for i=1:size(distype,1)
+    for j=1:size(stimtype,1)
+        for k=1:size(timetype,1)
+            %for l=1:size(phasetype,1)
+                eval(['[p_friedman_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},',',...
+                    'tab_friedman_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},',',...
+                    'stats_friedman_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},']',...
+                    '=friedman([all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_hold;',...
+                              'all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_prep;',...
+                              'all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_reac]'');'])
+                eval(['mc_friedman_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},...
+                      '=multcompare(stats_friedman_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},',''display'',''off'');'])
+                          
+%                 eval(['se_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+%                     '=std(all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},')',...
+%                     '/sqrt(size(all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},',2))'])
+            %end
+        end
+    end
+end
+
+
+% [p,table,stats]=friedman([all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_reac;all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_reac;...
+%                           all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_reac;all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_reac]')
+% COMPARISON = multcompare(stats)
+%                       
+% BL=[0.5968740907125;0.60956363056717;0.64248700082649;0.62456119385797;0.65382116439671]
+% ES=[0.60447079436641;0.62848175223161;0.62651855710951;0.59707599354251;0.59279576383614]
+% LS=[0.57004871516244;0.63022053788203;0.63314978680261;0.62036362893798;0.60171930518002]
+% Post=[0.65474435031108;0.63926509577160;0.66380602712918;0.66638809071409;0.61612567126317]
+% 
+% ac_data_grp_icohmat_Beta_stroke_prestim_Reach_Stim(8,20,1)
+% 
+% 
+% [p,table,stats]=friedman([BL,ES,LS,Post])
+
 figure; set(gcf,'Position',[2133 109 1214 834])
 %Stroke sham
 subplot(7,4,1); hold on
@@ -876,6 +971,12 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_hold mean_all_image
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Sham Hold')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_hold < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_hold),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_hold),'Rotation',270)
+end
+    
 
 subplot(7,4,5); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_prep mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_prep ,...
@@ -887,6 +988,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_prep mean_all_image
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Sham Prep')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_prep < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_prep),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_prep),'Rotation',270)
+end
 
 subplot(7,4,9); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_reac mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_reac ,...
@@ -898,6 +1004,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_reac mean_all_image
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Sham Reach')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_reac < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_reac),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_reac),'Rotation',270)
+end
 
 subplot(7,4,13); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_prep ,...
@@ -909,6 +1020,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_hold mean_all_image
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Sham Pre')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre),'Rotation',270)
+end
 
 subplot(7,4,17); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_prep ,...
@@ -920,6 +1036,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_hold mean_all_image
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Sham i05')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05 < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05),'Rotation',270)
+end
 
 subplot(7,4,21); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15_prep ,...
@@ -931,6 +1052,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15_hold mean_all_image
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Sham i15')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15 < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15),'Rotation',270)
+end
 
 subplot(7,4,25); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos_prep ,...
@@ -942,6 +1068,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos_hold mean_all_image
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Sham pos')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos),'Rotation',270)
+end
 
 %stroke stim
 subplot(7,4,2); hold on
@@ -954,6 +1085,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_hold mean_all_image
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Stim Hold')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_hold < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_hold),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_hold),'Rotation',270)
+end
 
 subplot(7,4,6); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_prep mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_prep ,...
@@ -965,6 +1101,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_prep mean_all_image
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Stim Prep')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_prep < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_prep),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_prep),'Rotation',270)
+end
 
 subplot(7,4,10); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_reac mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_reac ,...
@@ -976,7 +1117,12 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_reac mean_all_image
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Stim Reach')
-
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_reac < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_reac),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_reac),'Rotation',270)
+end
+                   
 subplot(7,4,14); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_prep ,...
     mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_reac])
@@ -987,6 +1133,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_hold mean_all_image
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Stim Pre')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre),'Rotation',270)
+end
 
 subplot(7,4,18); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_prep ,...
@@ -998,6 +1149,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_hold mean_all_image
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Stim i05')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05 < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05),'Rotation',270)
+end
 
 subplot(7,4,22); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_prep ,...
@@ -1009,6 +1165,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_hold mean_all_image
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Stim i15')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15 < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15),'Rotation',270)
+end
 
 subplot(7,4,26); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_prep ,...
@@ -1020,6 +1181,12 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_hold mean_all_image
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Stroke Stim pos')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos),'Rotation',270)
+end
+
 
 %healthy sham
 subplot(7,4,3); hold on
@@ -1032,6 +1199,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_hold mean_all_imag
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Sham Hold')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_hold < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_hold),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_hold),'Rotation',270)
+end
 
 subplot(7,4,7); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_prep mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_prep ,...
@@ -1043,6 +1215,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_prep mean_all_imag
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Sham Prep')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_prep < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_prep),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_prep),'Rotation',270)
+end
 
 subplot(7,4,11); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_reac mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_reac ,...
@@ -1054,6 +1231,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_reac mean_all_imag
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Sham Reach')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_reac < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_reac),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_reac),'Rotation',270)
+end
 
 subplot(7,4,15); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_hold mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_prep ,...
@@ -1065,6 +1247,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_hold mean_all_imag
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Sham Pre')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre),'Rotation',270)
+end
 
 subplot(7,4,19); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_hold mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_prep ,...
@@ -1076,6 +1263,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_hold mean_all_imag
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Sham i05')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05 < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05),'Rotation',270)
+end
 
 subplot(7,4,23); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15_hold mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15_prep ,...
@@ -1087,6 +1279,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15_hold mean_all_imag
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Sham i15')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15 < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15),'Rotation',270)
+end
 
 subplot(7,4,27); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos_hold mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos_prep ,...
@@ -1098,6 +1295,12 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos_hold mean_all_imag
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Sham pos')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos),'Rotation',270)
+end
+
 
 %healthy stim
 subplot(7,4,4); hold on
@@ -1110,6 +1313,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_hold mean_all_imag
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Stim Hold')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_hold < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_hold),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_hold),'Rotation',270)
+end
 
 subplot(7,4,8); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_prep mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_prep ,...
@@ -1121,6 +1329,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_prep mean_all_imag
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Stim Prep')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_prep < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_prep),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_prep),'Rotation',270)
+end
 
 subplot(7,4,12); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_reac mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_reac ,...
@@ -1132,6 +1345,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_reac mean_all_imag
 set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Stim Reach')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_reac < 0.05
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_reac),'Color','r','Rotation',270)
+else
+    text(5,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_reac),'Rotation',270)
+end
 
 subplot(7,4,16); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_hold mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_prep ,...
@@ -1143,6 +1361,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_hold mean_all_imag
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Stim Pre')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre),'Rotation',270)
+end
 
 subplot(7,4,20); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_hold mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_prep ,...
@@ -1154,6 +1377,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_hold mean_all_imag
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Stim i05')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05 < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05),'Rotation',270)
+end
 
 subplot(7,4,24); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_hold mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_prep ,...
@@ -1165,6 +1393,11 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_hold mean_all_imag
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Stim i15')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15 < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15),'Rotation',270)
+end
 
 subplot(7,4,28); hold on
 bar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_hold mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_prep ,...
@@ -1176,24 +1409,54 @@ errorbar([mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_hold mean_all_imag
 set(gca,'XTick',[1:3],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.7])
 ylabel('beta c3-c4 icoh')
 title('Healthy Stim pos')
+if p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos < 0.05
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos),'Color','r','Rotation',270)
+else
+    text(4,0.7,num2str(p_friedman_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos),'Rotation',270)
+end
 
-figure; set(gcf,'Position',[2133 109 1214 834])
-subplot(6,4,1); hold on
-bar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_hold 0,...
-     mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_hold 0,...
-     mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_hold 0,...
-     mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_hold])
-errorbar([mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_hold 0,...
-     mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_hold 0,...
-     mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_hold 0,...
-     mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos_hold mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_hold],...
-     [se_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_hold se_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_hold 0,...
-     se_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_hold se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_hold 0,...
-     se_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15_hold se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_hold 0,...
-     se_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos_hold se_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_hold],'.k')
-set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
-ylabel('beta c3-c4 icoh')
-title('Stroke - Hold')
+%stats - friedman
+%across stimtype
+for i=1:size(distype,1)
+    %for j=1:size(stimtype,1)
+        for k=1:size(timetype,1)
+            for l=1:size(phasetype,1)
+                eval(['[p_rank_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},',',...
+                    'tab_rank_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},',',...
+                    'stats_rank_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},']',...
+                    '=ranksum(all_imagescDat_ind_c3_c4_beta_',distype{i},'_sham_',timetype{k},'_',phasetype{l},',',...
+                              'all_imagescDat_ind_c3_c4_beta_',distype{i},'_stim_',timetype{k},'_',phasetype{l},');'])
+%                 eval(['mc_rank_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},...
+%                       '=multcompare(stats_rank_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},')'])
+%                           
+%                 eval(['se_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+%                     '=std(all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},')',...
+%                     '/sqrt(size(all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},',2))'])
+            end
+        end
+    %end
+end
+
+%for i=1:size(distype,1)
+    for j=1:size(stimtype,1)
+        for k=1:size(timetype,1)
+            for l=1:size(phasetype,1)
+                eval(['[p_rank_all_imagescDat_ind_c3_c4_beta_',stimtype{j},'_',timetype{k},'_',phasetype{l},',',...
+                    'tab_rank_all_imagescDat_ind_c3_c4_beta_',stimtype{j},'_',timetype{k},'_',phasetype{l},',',...
+                    'stats_rank_all_imagescDat_ind_c3_c4_beta_',stimtype{j},'_',timetype{k},'_',phasetype{l},']',...
+                    '=ranksum(all_imagescDat_ind_c3_c4_beta_healthy','_',stimtype{j},'_',timetype{k},'_',phasetype{l},',',...
+                              'all_imagescDat_ind_c3_c4_beta_stroke','_',stimtype{j},'_',timetype{k},'_',phasetype{l},');'])
+%                 eval(['mc_rank_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},...
+%                       '=multcompare(stats_rank_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},')'])
+%                           
+%                 eval(['se_all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+%                     '=std(all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},')',...
+%                     '/sqrt(size(all_imagescDat_ind_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},',2))'])
+            end
+        end
+    end
+%end
+
  
 figure; set(gcf,'Position',[2133 109 1214 834])
 %stroke
@@ -1226,7 +1489,19 @@ legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.8])
 ylabel('beta c3-c4 icoh')
 title('Stroke - Hold')
-
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pre_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i05_hold<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i15_hold<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pos_hold<0.05
+    text(10.5,0.7,'*','Color','r')
+end
+   
 subplot(7,4,5); hold on
      bar([1,4,7,10],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_prep,...  
                      mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_prep,... 
@@ -1252,10 +1527,22 @@ errorbar([2,5,8,11],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_prep,...
                        se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_prep,... 
                        se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_prep,... 
                        se_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_prep],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.8])
 ylabel('beta c3-c4 icoh')
 title('Stroke - Prep')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pre_prep<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i05_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i15_prep<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pos_prep<0.05
+    text(10.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,9); hold on
      bar([1,4,7,10],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_reac,...  
@@ -1282,10 +1569,22 @@ errorbar([2,5,8,11],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_reac,...
                        se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_reac,... 
                        se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_reac,... 
                        se_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_reac],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.8])
 ylabel('beta c3-c4 icoh')
 title('Stroke - Reach')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pre_reac<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i05_reac<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i15_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pos_reac<0.05
+    text(10.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,13); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_hold,...  
@@ -1306,10 +1605,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_reac],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stroke - Pre')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pre_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pre_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pre_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,17); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_hold,...  
@@ -1330,10 +1638,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_reac],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stroke - I05')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i05_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i05_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i05_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,21); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15_hold,...  
@@ -1354,10 +1671,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_reac],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stroke - I15')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i15_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i15_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_i15_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,25); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos_hold,...  
@@ -1378,10 +1704,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_reac],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stroke - Pos')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pos_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pos_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stroke_pos_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 %healthy
 subplot(7,4,2); hold on
@@ -1413,6 +1748,18 @@ legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.8])
 ylabel('beta c3-c4 icoh')
 title('Healthy - Hold')
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pre_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i05_hold<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i15_hold<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pos_hold<0.05
+    text(10.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,6); hold on
      bar([1,4,7,10],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_prep,...  
@@ -1439,10 +1786,22 @@ errorbar([2,5,8,11],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_prep,..
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_prep,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_prep,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_prep],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.8])
 ylabel('beta c3-c4 icoh')
 title('Healthy - Prep')
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pre_prep<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i05_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i15_prep<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pos_prep<0.05
+    text(10.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,10); hold on
      bar([1,4,7,10],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_reac,...  
@@ -1469,10 +1828,22 @@ errorbar([2,5,8,11],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_reac,..
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_reac,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_reac,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_reac],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.8])
 ylabel('beta c3-c4 icoh')
 title('Healthy - Reach')
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pre_reac<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i05_reac<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i15_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pos_reac<0.05
+    text(10.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,14); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_hold,...  
@@ -1493,10 +1864,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_reac],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Healthy - Pre')
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pre_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pre_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pre_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,18); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_hold,...  
@@ -1517,10 +1897,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_reac],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Healthy - I05')
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i05_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i05_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i05_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,22); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15_hold,...  
@@ -1541,10 +1930,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_reac],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Healthy - I15')
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i15_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i15_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_i15_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,26); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos_hold,...  
@@ -1565,10 +1963,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_reac],'.k')
-legend('Sham','','Stim','')
+%legend('Sham','','Stim','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Healthy - Pos')
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pos_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pos_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_healthy_pos_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 %sham 
 subplot(7,4,3); hold on
@@ -1600,6 +2007,18 @@ legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Sham - Hold')
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pre_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i05_hold<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i15_hold<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pos_hold<0.05
+    text(10.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,7); hold on
      bar([1,4,7,10],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_prep,...  
@@ -1626,10 +2045,22 @@ errorbar([2,5,8,11],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_prep,..
                        se_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_prep,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15_prep,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos_prep],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Sham - Prep')
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pre_prep<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i05_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i15_prep<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pos_prep<0.05
+    text(10.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,11); hold on
      bar([1,4,7,10],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_reac,...  
@@ -1656,10 +2087,22 @@ errorbar([2,5,8,11],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_reac,..
                        se_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_reac,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15_reac,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos_reac],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Sham - Reach')
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pre_reac<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i05_reac<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i15_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pos_reac<0.05
+    text(10.5,0.7,'*','Color','r')
+end
  
 subplot(7,4,15); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pre_hold,...  
@@ -1680,10 +2123,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_sham_pre_reac],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Sham - Pre')
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pre_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pre_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pre_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,19); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i05_hold,...  
@@ -1704,10 +2156,20 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_sham_i05_reac],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Sham - I05')
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i05_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i05_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i05_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+
 
 subplot(7,4,23); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_i15_hold,...  
@@ -1728,10 +2190,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_sham_i15_reac],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Sham - I15')
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i15_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i15_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_i15_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,27); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_sham_pos_hold,...  
@@ -1752,10 +2223,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_sham_pos_reac],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Sham - Pos')
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pos_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pos_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_sham_pos_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 %stim 
 subplot(7,4,4); hold on
@@ -1787,6 +2267,19 @@ legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stim - Hold')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pre_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i05_hold<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i15_hold<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pos_hold<0.05
+    text(10.5,0.7,'*','Color','r')
+end
+
 
 subplot(7,4,8); hold on
      bar([1,4,7,10],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_prep,...  
@@ -1813,10 +2306,22 @@ errorbar([2,5,8,11],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_prep,..
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_prep,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_prep,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_prep],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stim - Prep')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pre_prep<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i05_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i15_prep<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pos_prep<0.05
+    text(10.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,12); hold on
      bar([1,4,7,10],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_reac,...  
@@ -1843,10 +2348,22 @@ errorbar([2,5,8,11],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_reac,..
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_reac,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_reac,... 
                        se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_reac],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stim - Reach')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pre_reac<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i05_reac<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i15_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pos_reac<0.05
+    text(10.5,0.7,'*','Color','r')
+end
  
 subplot(7,4,16); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_hold,...  
@@ -1867,10 +2384,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pre_reac],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stim - Pre')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pre_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pre_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pre_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,20); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_hold,...  
@@ -1891,10 +2417,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i05_reac],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stim - I05')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i05_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i05_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i05_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,24); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_hold,...  
@@ -1915,10 +2450,19 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_i15_reac],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stim - I15')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i15_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i15_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_i15_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
 subplot(7,4,28); hold on
      bar([1,4,7],[mean_all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_hold,...  
@@ -1939,17 +2483,53 @@ errorbar([2,5,8],[mean_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_hold,...
                    [se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_hold,...  
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_prep,... 
                     se_all_imagescDat_ind_c3_c4_beta_healthy_stim_pos_reac],'.k')
-legend('Stroke','','Healthy','')
+%legend('Stroke','','Healthy','')
 set(gca,'XTick',[1 4 7],'XTickLabel',{'hold';'prep';'reac'},'YLim',[0.5 0.9])
 ylabel('beta c3-c4 icoh')
 title('Stim - Pos')
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pos_hold<0.05
+    text(1.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pos_prep<0.05
+    text(4.5,0.7,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_c3_c4_beta_stim_pos_reac<0.05
+    text(7.5,0.7,'*','Color','r')
+end
 
-all_sum_c3_c4_beta_stroke_stim_reac=[all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_reac',...
-    all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_reac',all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_reac',...
-    all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_reac']'
 
-[f_p_all_c3_c4_beta_stroke_stim_reac,f_tab_all_c3_c4_beta_stroke_stim_reac,f_stats_all_c3_c4_beta_stroke_stim_reac]=...
-    friedman(all_c3_c4_beta_stroke_stim_reac)
+
+% all_sum_c3_c4_beta_stroke_stim_reac=[all_imagescDat_ind_c3_c4_beta_stroke_stim_pre_reac',...
+%     all_imagescDat_ind_c3_c4_beta_stroke_stim_i05_reac',all_imagescDat_ind_c3_c4_beta_stroke_stim_i15_reac',...
+%     all_imagescDat_ind_c3_c4_beta_stroke_stim_pos_reac']
+% 
+% 
+% data_grp_icohmat_Beta_stroke_prestim_Reach_Stim(8,20,1)
+% data_grp_icohmat_Beta_stroke_prestim_Reach_Stim(8,20,2)
+% data_grp_icohmat_Beta_stroke_prestim_Reach_Stim(8,20,3)
+% data_grp_icohmat_Beta_stroke_prestim_Reach_Stim(8,20,4)
+% data_grp_icohmat_Beta_stroke_prestim_Reach_Stim(8,20,5)
+% 
+% data_grp_icohmat_Beta_stroke_intra5_Reach_Stim(8,20,1)
+% data_grp_icohmat_Beta_stroke_intra5_Reach_Stim(8,20,2)
+% data_grp_icohmat_Beta_stroke_intra5_Reach_Stim(8,20,3)
+% data_grp_icohmat_Beta_stroke_intra5_Reach_Stim(8,20,4)
+% data_grp_icohmat_Beta_stroke_intra5_Reach_Stim(8,20,5)
+% 
+% data_grp_icohmat_Beta_stroke_intra15_Reach_Stim(8,20,1)
+% data_grp_icohmat_Beta_stroke_intra15_Reach_Stim(8,20,2)
+% data_grp_icohmat_Beta_stroke_intra15_Reach_Stim(8,20,3)
+% data_grp_icohmat_Beta_stroke_intra15_Reach_Stim(8,20,4)
+% data_grp_icohmat_Beta_stroke_intra15_Reach_Stim(8,20,5)
+% 
+% data_grp_icohmat_Beta_stroke_poststim5_Reach_Stim(8,20,1)
+% data_grp_icohmat_Beta_stroke_poststim5_Reach_Stim(8,20,2)
+% data_grp_icohmat_Beta_stroke_poststim5_Reach_Stim(8,20,3)
+% data_grp_icohmat_Beta_stroke_poststim5_Reach_Stim(8,20,4)
+% data_grp_icohmat_Beta_stroke_poststim5_Reach_Stim(8,20,5)
+% 
+% [f_p_all_c3_c4_beta_stroke_stim_reac,f_tab_all_c3_c4_beta_stroke_stim_reac,f_stats_all_c3_c4_beta_stroke_stim_reac]=...
+%     friedman(all_c3_c4_beta_stroke_stim_reac)
 
 %% Coherence diff
 
@@ -2176,8 +2756,1747 @@ for f=1:numel(FOI_freq)
 end
 %cd(outpath)
 
-%% iCoh C3-C4 phase diff
+%Let's try to use the data_grp variables to do this
+distype={'stroke';'healthy'};
+stimtype={'Sham';'Stim'};
+timetype={'prestim';'intra5';'intra15';'poststim5'};
+phasedifftype={'Hold';'Prep';'Reach'};
+electrodes={'A1','Fp1','F7','T3','T5','O1','F3','C3','P3','Fz','Cz','Pz','A2','Fp2','F8','T4','T6','O2','F4','C4','P4'};
+load('~/nr_data_analysis/data_analyzed/eeg/gen_03/Analysis/iCohMatrix/data_grp_icohmatrices_2022_04_10_acdata.mat')
 
+
+%THIS IS WHERE YOU NEED TO REVERSE DIFF CALC!!!!!!! DO IT CAREFULLY!!!!
+for i=1:size(distype,1)
+    for j=1:size(timetype,1)
+        for k=1:size(phasedifftype,1)-1
+            for l=1:size(stimtype,1)
+                eval(['data_grp_diff_icohmat_Beta_',distype{i},'_',timetype{j},'_',phasedifftype{k},'_',phasedifftype{k+1},'_',stimtype{l},...
+                    '=(data_grp_icohmat_Beta_',distype{i},'_',timetype{j},'_',phasedifftype{k},'_',stimtype{l},...
+                    '-data_grp_icohmat_Beta_',distype{i},'_',timetype{j},'_',phasedifftype{k+1},'_',stimtype{l},')',...
+                    './data_grp_icohmat_Beta_',distype{i},'_',timetype{j},'_',phasedifftype{k},'_',stimtype{l},'*100;'])
+            end
+        end
+    end
+end
+
+%THIS IS WHERE YOU NEED TO REVERSE DIFF CALC!!!!!!! DO IT CAREFULLY!!!!
+for i=1:size(distype,1)
+    for j=1:size(timetype,1)
+        for k=1:size(phasedifftype,1)-1
+            for l=1:size(stimtype,1)
+                eval(['data_grp_diffa_icohmat_Beta_',distype{i},'_',timetype{j},'_',phasedifftype{k},'_',phasedifftype{k+1},'_',stimtype{l},...
+                    '=(data_grp_icohmat_Beta_',distype{i},'_',timetype{j},'_',phasedifftype{k+1},'_',stimtype{l},...
+                    '-data_grp_icohmat_Beta_',distype{i},'_',timetype{j},'_',phasedifftype{k},'_',stimtype{l},')',...
+                    './data_grp_icohmat_Beta_',distype{i},'_',timetype{j},'_',phasedifftype{k},'_',stimtype{l},'*100;'])
+            end
+        end
+    end
+end
+clear data_grp_icohmat*
+
+c=clock;
+y=sprintf('%0.5g',[c(1)]);
+m=sprintf('%0.5g',[c(2)]);
+d=sprintf('%0.5g',[c(3)]);
+if str2num(m)<10
+    m=['0',m];
+end
+if str2num(d)<10
+    d=['0',d];
+end
+date=[y,'_',m,'_',d];
+
+% eval([['data_grp_icohmatrices_',date],'=data_grp_icoh_barmat']);
+save([iCohdiffFolder,'/',['data_grp_icohdiffamatrices_',date]],['data_grp_diffa_icohmat*'])
+
+
+
+% 
+% 
+% load ~/nr_data_analysis/data_analyzed/eeg/gen_03/Analysis/subjectname.mat
+%    
+% distype={'stroke';'healthy'};
+% timetype={'prestim';'intra5';'intra15';'poststim5'};
+% stimtype={'Sham';'Stim'};
+% phasedifftype={'Hold';'Prep';'Reach'};
+% sp1=[1,5,9,13];
+% sp2=[2,6,10,14];
+% sp3=[3,7,11,15];
+% sp4=[4,8,12,16];
+% 
+% 
+% figure; set(gcf,'Position',[2133 109 1214 834])
+% for i=1%:size(distype,1)
+%     for j=1:size(timetype,1)
+%         for k=1%:size(phasedifftype,1)-1
+%             for l=1%:size(stimtype,1)
+%                 
+%                 if k==1 & l==1
+%                     subplot(4,4,sp1(j))
+%                 elseif k==2 & l==1
+%                     subplot(4,4,sp2(j))
+%                 elseif k==1 & l==2
+%                     subplot(4,4,sp3(j))
+%                 elseif k==2 & l==2
+%                     subplot(4,4,sp4(j))
+%                 end
+%     
+%                 eval(['imagesc(data_grp_diff_icohmat_Beta_',distype{i},'_',timetype{j},'_',phasedifftype{k},...
+%                     '_',phasedifftype{k+1},'_',stimtype{l},'(:,:,1))'])
+%                 colormap('jet');
+%                 xticks([1:numel(electrodes)])
+%                 xticklabels(electrodes)
+%                 yticks([1:numel(electrodes)])
+%                 yticklabels(electrodes)
+%                 title([phasedifftype{k},'-',phasedifftype{k+1}])
+%                 subtitle(stimtype{l})
+%                 ylabel(timetype{j})
+%             end
+%         end
+%     end
+% end
+
+%Individual diff plots for BETA!!
+load('~/nr_data_analysis/data_analyzed/eeg/gen_03/Analysis/subjectname.mat')
+for sbj=1:numel(sbj_name)
+    
+    if isempty(sbj_name{sbj})
+    else
+        figure; set(gcf,'Position',[2248 247 751 606])
+
+        if sbj>=1 & sbj<=6
+            distype='stroke';
+            stimtype='Sham';
+        elseif sbj>=7 & sbj<=12
+            distype='stroke';
+            stimtype='Stim';
+        elseif sbj>=13 & sbj<=18
+            distype='healthy';
+            stimtype='Sham';
+        elseif sbj>=19 & sbj<=24
+            distype='healthy';
+            stimtype='Stim';
+        end
+
+        %extract subject row
+        [sbj_r,sbj_c]=ind2sub(size(sbj_name),sbj);
+
+        for t=1:numel(TOI)
+            subplot(4,2,2*t-1)
+            if t==1
+                eval(['imagescDat=data_grp_diffa_icohmat_Beta_',distype,'_prestim_Hold_Prep_',stimtype,'(:,:,sbj_r);']);
+                eval(['imagescDat_p1_t1_diff=data_grp_diffa_icohmat_Beta_',distype,'_prestim_Hold_Prep_',stimtype,'(20,8,sbj_r);']);
+                %imagescDat=data_grp_diffa_icohmat_Beta_stroke_prestim_Hold_PrepStim(:,:,sbj);
+            elseif t==2
+                eval(['imagescDat=data_grp_diffa_icohmat_Beta_',distype,'_intra5_Hold_Prep_',stimtype,'(:,:,sbj_r);']);
+                eval(['imagescDat_p1_t2_diff=data_grp_diffa_icohmat_Beta_',distype,'_intra5_Hold_Prep_',stimtype,'(20,8,sbj_r);']);
+                %imagescDat=data_grp_diffa_icohmat_Beta_stroke_intra5_Hold_PrepStim(:,:,sbj);
+            elseif t==3
+                eval(['imagescDat=data_grp_diffa_icohmat_Beta_',distype,'_intra15_Hold_Prep_',stimtype,'(:,:,sbj_r);']);
+                eval(['imagescDat_p1_t3_diff=data_grp_diffa_icohmat_Beta_',distype,'_intra15_Hold_Prep_',stimtype,'(20,8,sbj_r);']);
+                %imagescDat=data_grp_diffa_icohmat_Beta_stroke_intra15_Hold_PrepStim(:,:,sbj);
+            elseif t==4
+                eval(['imagescDat=data_grp_diffa_icohmat_Beta_',distype,'_poststim5_Hold_Prep_',stimtype,'(:,:,sbj_r);']);
+                eval(['imagescDat_p1_t4_diff=data_grp_diffa_icohmat_Beta_',distype,'_poststim5_Hold_Prep_',stimtype,'(20,8,sbj_r);']);
+                %imagescDat=data_grp_diffa_icohmat_Beta_stroke_poststim5_Hold_PrepStim(:,:,sbj);
+            end
+
+        %             if norm
+        %                 imagescDat1(logical(diag(ones(size(imagescDat1,1),1))))=mean(imagescDat1,'all');
+        %                 imagescDat1=mat2gray(imagescDat1);
+        %                 imagescDat1(logical(diag(ones(size(imagescDat1,1),1))))=nan;
+        %             end
+            imagesc(imagescDat)
+            %axis square
+
+            colormap('jet');
+            xticks([1:numel(electrodes)])
+            xticklabels(electrodes)
+            yticks([1:numel(electrodes)])
+            yticklabels(electrodes)
+            title(['Hold-Prep'])
+            %subtitle(stimname{2})%s
+            subtitle(stimtype)
+            ylabel(TOI{t})
+
+        end
+
+        for t=1:numel(TOI)
+            subplot(4,2,2*t)
+            if t==1
+                eval(['imagescDat=data_grp_diffa_icohmat_Beta_',distype,'_prestim_Prep_Reach_',stimtype,'(:,:,sbj_r);']);
+                eval(['imagescDat_p2_t1_diff=data_grp_diffa_icohmat_Beta_',distype,'_prestim_Prep_Reach_',stimtype,'(20,8,sbj_r);']);
+                %imagescDat=data_grp_diffa_icohmat_Beta_stroke_prestim_Prep_ReachStim(:,:,sbj);
+            elseif t==2
+                eval(['imagescDat=data_grp_diffa_icohmat_Beta_',distype,'_intra5_Prep_Reach_',stimtype,'(:,:,sbj_r);']);
+                eval(['imagescDat_p2_t2_diff=data_grp_diffa_icohmat_Beta_',distype,'_intra5_Prep_Reach_',stimtype,'(20,8,sbj_r);']);
+                %imagescDat=data_grp_diffa_icohmat_Beta_stroke_intra5_Prep_ReachStim(:,:,sbj);
+            elseif t==3
+                eval(['imagescDat=data_grp_diffa_icohmat_Beta_',distype,'_intra15_Prep_Reach_',stimtype,'(:,:,sbj_r);']);
+                eval(['imagescDat_p2_t3_diff=data_grp_diffa_icohmat_Beta_',distype,'_intra15_Prep_Reach_',stimtype,'(20,8,sbj_r);']);
+                %imagescDat=data_grp_diffa_icohmat_Beta_stroke_intra15_Prep_ReachStim(:,:,sbj);
+            elseif t==4
+                eval(['imagescDat=data_grp_diffa_icohmat_Beta_',distype,'_poststim5_Prep_Reach_',stimtype,'(:,:,sbj_r);']);
+                eval(['imagescDat_p2_t4_diff=data_grp_diffa_icohmat_Beta_',distype,'_poststim5_Prep_Reach_',stimtype,'(20,8,sbj_r);']);
+                %imagescDat=data_grp_diffa_icohmat_Beta_stroke_poststim5_Prep_ReachStim(:,:,sbj);
+            end
+
+    %             if norm
+    %                 imagescDat1(logical(diag(ones(size(imagescDat1,1),1))))=mean(imagescDat1,'all');
+    %                 imagescDat1=mat2gray(imagescDat1);
+    %                 imagescDat1(logical(diag(ones(size(imagescDat1,1),1))))=nan;
+    %             end
+            imagesc(imagescDat)
+            %axis square
+
+            colormap('jet');
+            xticks([1:numel(electrodes)])
+            xticklabels(electrodes)
+            yticks([1:numel(electrodes)])
+            yticklabels(electrodes)
+            title(['Prep-Reach'])
+            %subtitle(stimname{2})%s
+            subtitle(stimtype)
+            ylabel(TOI{t})
+
+        end
+
+
+        %sbj
+        sgtitle([sbj_name{sbj},' ',distype,' ',stimtype])
+        %[sbj_name{sbj},' ',distype,' ',stimtype]
+
+        %Colorbar
+        %cbh = colorbar(h(end));
+        cbh = colorbar;
+        cbh.Location='layout';
+        cbh.Position=[.9314 .11 .0281 .8150];
+        ylabel(cbh,'Coherence','FontSize',12)
+        
+%         if norm
+%             ylabel(cbh,['Normalized ',FOI_label{f},' Coherence'],'FontSize',12)
+%             figtitle=sprintf('%s Coherence Matrix - %s Normalized',FOI_label{f},DOI{d});
+%         else
+%             ylabel(cbh,['Coherence ',FOI_label{f}],'FontSize',12)
+%             figtitle=sprintf('%s Coherence Matrix - %s',FOI_label{f},DOI{d});
+%         end
+        
+        imagescDat_ind_diff_c3_c4{sbj_r,sbj_c}(1,1)=imagescDat_p1_t1_diff;
+        imagescDat_ind_diff_c3_c4{sbj_r,sbj_c}(2,1)=imagescDat_p1_t2_diff;
+        imagescDat_ind_diff_c3_c4{sbj_r,sbj_c}(3,1)=imagescDat_p1_t3_diff;
+        imagescDat_ind_diff_c3_c4{sbj_r,sbj_c}(4,1)=imagescDat_p1_t4_diff;
+
+        imagescDat_ind_diff_c3_c4{sbj_r,sbj_c}(1,2)=imagescDat_p2_t1_diff;
+        imagescDat_ind_diff_c3_c4{sbj_r,sbj_c}(2,2)=imagescDat_p2_t2_diff;
+        imagescDat_ind_diff_c3_c4{sbj_r,sbj_c}(3,2)=imagescDat_p2_t3_diff;
+        imagescDat_ind_diff_c3_c4{sbj_r,sbj_c}(4,2)=imagescDat_p2_t4_diff;
+ 
+
+    end
+end
+
+%This is for ind c3-4 plots
+figure; set(gcf,'Position',[2133 109 1214 834])
+sp_vec=[1,7,13,19,2,8,14,20,3,9,15,21,4,10,16,22,5,11,17,23,NaN,NaN,NaN,24];
+for sbj=1:numel(sbj_name)
+    %if isempty(sbj_name{sbj})
+    if isnan(sp_vec(sbj))
+    else
+        subplot(6,4,sbj)
+        imagesc(imagescDat_ind_diff_c3_c4{sp_vec(sbj)})
+        ylabel(sbj_name{sp_vec(sbj)},'Fontweight','bold')
+        colormap('jet');
+        set(gca,'YTick',[1:4],'YTickLabel',['pre';'i05';'i15';'pos'],'XTick',[1:2],'XTickLabel',['HP';'PR'])
+        if sbj==1
+            title('stroke')
+            subtitle ('sham')
+        elseif sbj==2
+            title('stroke')
+            subtitle ('stim')
+        elseif sbj==3
+            title('healthy')
+            subtitle ('sham')
+        elseif sbj==4
+            title('healthy')
+            subtitle ('stim')
+        end
+            
+        %Colorbar
+        cbh = colorbar;
+        cbh.Location='layout';
+        cbh.Position=[.9314 .11 .0281 .8150];
+        ylabel(cbh,'Coherence','FontSize',12)
+        f=2;
+%         if norm
+%             ylabel(cbh,['Normalized ',FOI_label{f},' C3-4 Coherence'],'FontSize',12)
+%             figtitle=sprintf('%s Coherence Matrix - %s Normalized',FOI_label{f},DOI{d});
+%         else
+%             ylabel(cbh,['C3-4 Coherence ',FOI_label{f}],'FontSize',12)
+%             figtitle=sprintf('%s Coherence Matrix - %s',FOI_label{f},DOI{d});
+%         end
+    end
+end
+
+
+for sbj=1:numel(imagescDat_ind_diff_c3_c4)
+    if isempty(sbj_name{sbj})
+    else
+        %for 
+            
+            if sbj>=1 & sbj<=6
+                distype='stroke';
+                stimtype='sham';
+                [sbj_r,sbj_c]=ind2sub(size(sbj_name),sbj);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pre_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,1}(1,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i05_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,1}(2,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i15_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,1}(3,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pos_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,1}(4,1);']);
+                
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pre_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,1}(1,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i05_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,1}(2,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i15_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,1}(3,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pos_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,1}(4,2);']);
+                                              
+            elseif sbj>=7 & sbj<=12
+                distype='stroke';
+                stimtype='stim';
+                [sbj_r,sbj_c]=ind2sub(size(sbj_name),sbj);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pre_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,2}(1,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i05_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,2}(2,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i15_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,2}(3,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pos_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,2}(4,1);']);
+                
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pre_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,2}(1,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i05_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,2}(2,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i15_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,2}(3,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pos_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,2}(4,2);']);
+                
+          elseif sbj>=13 & sbj<=18
+                distype='healthy';
+                stimtype='sham';
+                [sbj_r,sbj_c]=ind2sub(size(sbj_name),sbj);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pre_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,3}(1,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i05_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,3}(2,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i15_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,3}(3,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pos_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,3}(4,1);']);
+                
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pre_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,3}(1,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i05_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,3}(2,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i15_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,3}(3,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pos_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,3}(4,2);']);
+                
+        elseif sbj>=19 & sbj<=24
+                distype='healthy';
+                stimtype='stim';
+                [sbj_r,sbj_c]=ind2sub(size(sbj_name),sbj);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pre_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,4}(1,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i05_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,4}(2,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i15_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,4}(3,1);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pos_hold_prep(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,4}(4,1);']);
+                
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pre_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,4}(1,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i05_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,4}(2,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_i15_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,4}(3,2);']);
+                eval(['all_imagescDat_ind_diff_c3_c4_beta_',distype,'_',stimtype,'_pos_prep_reac(sbj_r)=imagescDat_ind_diff_c3_c4{sbj_r,4}(4,2);']);
+                
+         end
+    end
+end
+
+distype={'stroke';'healthy'};
+stimtype={'sham';'stim'};
+timetype={'pre';'i05';'i15';'pos'};
+phasetype={'hold_prep';'prep_reac'};
+
+for i=1:size(distype,1)
+    for j=1:size(stimtype,1)
+        for k=1:size(timetype,1)
+            for l=1:size(phasetype,1)
+                eval(['mean_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+                    '=mean(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},');'])
+                eval(['se_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+                    '=std(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},')',...
+                    '/sqrt(size(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},',2));'])
+            end
+        end
+    end
+end
+
+
+
+%stats - friedman
+%across timetype
+for i=1:size(distype,1)
+    for j=1:size(stimtype,1)
+        %for k=1:size(timetype,1)
+            for l=1:size(phasetype,1)
+                eval(['[p_friedman_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',phasetype{l},',',...
+                    'tab_friedman_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',phasetype{l},',',...
+                    'stats_friedman_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',phasetype{l},']',...
+                    '=friedman([all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_pre_',phasetype{l},';',...
+                              'all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_i05_',phasetype{l},';',...
+                              'all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_i15_',phasetype{l},';',...
+                              'all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_pos_',phasetype{l},']'')'])
+                eval(['mc_friedman_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',phasetype{l},...
+                      '=multcompare(stats_friedman_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',phasetype{l},');'])
+                          
+%                 eval(['se_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+%                     '=std(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},')',...
+%                     '/sqrt(size(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},',2))'])
+            end
+        %end
+    end
+end
+
+
+%stats - ranksum
+%across stimtype
+for i=1:size(distype,1)
+    for j=1:size(stimtype,1)
+        for k=1:size(timetype,1)
+            %for l=1:size(phasetype,1)
+                eval(['[p_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},',',...
+                    'tab_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},',',...
+                    'stats_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},']',...
+                    '=ranksum(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_hold_prep,',...
+                              'all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_prep_reac);'])
+%                 eval(['mc_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},...
+%                       '=multcompare(stats_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},')'])
+%                           
+%                 eval(['se_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+%                     '=std(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},')',...
+%                     '/sqrt(size(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},',2))'])
+            %end
+        end
+    end
+end
+
+for i=1:size(distype,1)
+    %for j=1:size(stimtype,1)
+        for k=1:size(timetype,1)
+            for l=1:size(phasetype,1)
+                eval(['[p_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},...
+                    ',tab_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},...
+                    ',stats_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},']',...
+                    '=ranksum(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_sham_',timetype{k},'_',phasetype{l},...
+                              ',all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_stim_',timetype{k},'_',phasetype{l},');'])
+%                 eval(['mc_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},...
+%                       '=multcompare(stats_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},')'])
+%                           
+%                 eval(['se_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+%                     '=std(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},')',...
+%                     '/sqrt(size(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},',2))'])
+            end
+        end
+    %end
+end
+
+%for i=1:size(distype,1)
+    for j=1:size(stimtype,1)
+        for k=1:size(timetype,1)
+            for l=1:size(phasetype,1)
+                eval(['[p_rank_all_imagescDat_ind_diff_c3_c4_beta_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+                    ',tab_rank_all_imagescDat_ind_diff_c3_c4_beta_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+                    ',stats_rank_all_imagescDat_ind_diff_c3_c4_beta_',stimtype{j},'_',timetype{k},'_',phasetype{l},']',...
+                    '=ranksum(all_imagescDat_ind_diff_c3_c4_beta_stroke_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+                              ',all_imagescDat_ind_diff_c3_c4_beta_healthy_',stimtype{j},'_',timetype{k},'_',phasetype{l},');'])
+%                 eval(['mc_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},...
+%                       '=multcompare(stats_rank_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',timetype{k},'_',phasetype{l},')'])
+%                           
+%                 eval(['se_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+%                     '=std(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},')',...
+%                     '/sqrt(size(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},',2))'])
+            end
+        end
+    end
+%end
+
+
+
+
+% %
+% for i=1:size(distype,1)
+%     for j=1:size(stimtype,1)
+%         for k=1:size(timetype,1)
+%             %for l=1:size(phasetype,1)
+%                 eval(['[p_friedman_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},',',...
+%                     'tab_friedman_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},',',...
+%                     'stats_friedman_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},']',...
+%                     '=friedman([all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_hold;',...
+%                               'all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_prep;',...
+%                               'all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_reac]'')'])
+%                 eval(['mc_friedman_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},...
+%                       '=multcompare(stats_friedman_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},',''display'',''off'')'])
+%                           
+% %                 eval(['se_all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},...
+% %                     '=std(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},')',...
+% %                     '/sqrt(size(all_imagescDat_ind_diff_c3_c4_beta_',distype{i},'_',stimtype{j},'_',timetype{k},'_',phasetype{l},',2))'])
+%             %end
+%         end
+%     end
+% end
+
+
+% %trying out a few things
+% [fanova2p,fanova2table,fanova2stats]=friedman([all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac;all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac;
+%     all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac;all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac]')
+% fanova2amc=multcompare(fanova2stats)
+% 
+% [fanova2ap,fanova2atable,fanova2astats]=anova2([all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac,all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac;all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac,all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac;
+%     all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac,all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac;all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac,all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac]',5)
+% 
+% 
+% [all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac;all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac;
+%     all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac;all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac]'
+% 
+
+
+
+
+
+figure; set(gcf,'Position',[2133 109 1214 834])
+%Stroke sham
+subplot(6,4,1); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep ,...
+    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep],'.k')
+set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stroke Sham Hold Prep')
+if p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_hold_prep < 0.05
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_hold_prep),'Color','r','Rotation',270)
+else
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_hold_prep),'Rotation',270)
+end
+
+subplot(6,4,5); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac ,...
+    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],'.k')
+set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stroke Sham Prep Reach')
+if p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_prep_reac < 0.05
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_prep_reac),'Color','r','Rotation',270)
+else
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_prep_reac),'Rotation',270)
+end
+
+% subplot(6,4,9); hold on
+% bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_reac ,...
+%     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_reac])
+% errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_reac ,...
+%     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_reac],...
+%     [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_reac se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_reac ,...
+%     se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_reac se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_reac],'.k')
+% set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
+% ylabel('beta c3-c4 icoh')
+% title('Stroke Sham Reach')
+
+subplot(6,4,9); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac]) 
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Stroke Sham Pre')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre),'Rotation',270)
+end
+
+subplot(6,4,13); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac]) 
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Stroke Sham i05')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05 < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05),'Rotation',270)
+end
+
+subplot(6,4,17); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac],...
+   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Stroke Sham i15')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15 < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15),'Rotation',270)
+end
+
+subplot(6,4,21); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],...
+   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Stroke Sham pos')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos),'Rotation',270)
+end
+
+%stroke stim
+subplot(6,4,2); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,...
+    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep],'.k')
+set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stroke Stim Hold Prep')
+if p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_hold_prep < 0.05
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_hold_prep),'Color','r','Rotation',270)
+else
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_hold_prep),'Rotation',270)
+end
+
+subplot(6,4,6); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac,...
+    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],'.k')
+set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stroke Stim Prep Reach')
+if p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_prep_reac < 0.05
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_prep_reac),'Color','r','Rotation',270)
+else
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_prep_reac),'Rotation',270)
+end
+
+% subplot(6,4,10); hold on
+% bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_reac ,...
+%     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_reac])
+% errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_reac ,...
+%     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_reac mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_reac],...
+%     [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_reac se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_reac ,...
+%     se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_reac se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_reac],'.k')
+% set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.7])
+% ylabel('beta c3-c4 icoh')
+% title('Stroke Stim Reach')
+
+subplot(6,4,10); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Stroke Stim Pre')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre),'Rotation',270)
+end
+
+subplot(6,4,14); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Stroke Stim i05')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05 < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05),'Rotation',270)
+end
+
+subplot(6,4,18); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Stroke Stim i15')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15 < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15),'Rotation',270)
+end
+
+subplot(6,4,22); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Stroke Stim pos')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos),'Rotation',270)
+end
+
+
+%healthy sham
+subplot(6,4,3); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep ,...
+    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep],'.k')
+set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Healthy Sham Hold Prep')
+if p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_hold_prep < 0.05
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_hold_prep),'Color','r','Rotation',270)
+else
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_hold_prep),'Rotation',270)
+end
+
+subplot(6,4,7); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac ,...
+    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],'.k')
+set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Healthy Sham Prep Reach')
+if p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_prep_reac < 0.05
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_prep_reac),'Color','r','Rotation',270)
+else
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_prep_reac),'Rotation',270)
+end
+
+
+% subplot(6,4,11); hold on
+% bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_reac ,...
+%     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_reac])
+% errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_reac ,...
+%     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_reac],...
+%     [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_reac se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_reac ,...
+%     se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_reac se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_reac],'.k')
+% set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+% ylabel('beta c3-c4 icoh')
+% title('Healthy Sham Reach')
+
+subplot(6,4,11); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Healthy Sham Pre')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre),'Rotation',270)
+end
+
+subplot(6,4,15); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Healthy Sham i05')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05 < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05),'Rotation',270)
+end
+
+subplot(6,4,19); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Healthy Sham i15')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15 < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15),'Rotation',270)
+end
+
+subplot(6,4,23); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Healthy Sham pos')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos),'Rotation',270)
+end
+
+%healthy stim
+subplot(6,4,4); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep ,...
+    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep],'.k')
+set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Healthy Stim Hold Prep')
+if p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_hold_prep < 0.05
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_hold_prep),'Color','r','Rotation',270)
+else
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_hold_prep),'Rotation',270)
+end
+
+subplot(6,4,8); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac ,...
+    mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac ,...
+    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],'.k')
+set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Healthy Stim Prep Reach')
+if p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_prep_reac < 0.05
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_prep_reac),'Color','r','Rotation',270)
+else
+    text(5,10,num2str(p_friedman_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_prep_reac),'Rotation',270)
+end
+
+% subplot(6,4,12); hold on
+% bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_reac ,...
+%     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_reac])
+% errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_reac ,...
+%     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_reac mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_reac],...
+%     [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_reac se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_reac ,...
+%     se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_reac se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_reac],'.k')
+% set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+% ylabel('beta c3-c4 icoh')
+% title('Healthy Stim Reach')
+
+subplot(6,4,12); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Healthy Stim Pre')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre),'Rotation',270)
+end
+
+subplot(6,4,16); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Healthy Stim i05')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05 < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05),'Rotation',270)
+end
+
+subplot(6,4,20); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Healthy Stim i15')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15 < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15),'Rotation',270)
+end
+
+subplot(6,4,24); hold on
+bar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac])
+errorbar([mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],...
+    [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],'.k')
+set(gca,'XTick',[1:2],'XTickLabel',{'hp';'pr'},'YLim',[-20 20]) 
+ylabel('beta c3-c4 icoh')
+title('Healthy Stim pos')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos < 0.05
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos),'Color','r','Rotation',270)
+else
+    text(3,10,num2str(p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos),'Rotation',270)
+end
+
+ 
+figure; set(gcf,'Position',[2133 109 1214 834])
+%stroke
+subplot(6,4,1); hold on
+     bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep],0.2)
+errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep],'.k')
+     bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep],0.2)
+errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep],'.k')
+legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stroke - Hold Prep')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_pre_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_i05_hold_prep<0.05
+    text(4.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_i15_hold_prep<0.05
+    text(7.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_pos_hold_prep<0.05
+    text(10.5,10,'*','Color','r')
+end
+
+subplot(6,4,5); hold on
+     bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],0.2)
+errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],'.k')
+     bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],0.2)
+errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],'.k')
+%legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stroke - Prep Reach')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_pre_prep_reac<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_i05_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_i15_prep_reac<0.05
+    text(7.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_pos_prep_reac<0.05
+    text(10.5,10,'*','Color','r')
+end
+
+% subplot(6,4,9); hold on
+%      bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_reac],0.2)
+% errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_reac],...
+%                       [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_reac,...  
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_reac],'.k')
+%      bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_reac],0.2)
+% errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_reac],...
+%                       [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_reac,...  
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_reac],'.k')
+% legend('Sham','','Stim','')
+% set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.8])
+% ylabel('beta c3-c4 icoh')
+% title('Stroke - Reach')
+
+subplot(6,4,9); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac],'.k')
+%legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stroke - Pre')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_pre_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_pre_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,13); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac],'.k')
+%legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stroke - I05')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_i05_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_i05_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,17); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac],'.k')
+%legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stroke - I15')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_i15_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_i15_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,21); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],'.k')
+%legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hold';'prep';'reac'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stroke - Pos')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_pos_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stroke_pos_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+%healthy
+subplot(6,4,2); hold on
+     bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep],0.2)
+errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep],'.k')
+     bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep],0.2)
+errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep],'.k')
+legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Healthy - Hold Prep')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_pre_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_i05_hold_prep<0.05
+    text(4.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_i15_hold_prep<0.05
+    text(7.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_pos_hold_prep<0.05
+    text(10.5,10,'*','Color','r')
+end
+
+subplot(6,4,6); hold on
+     bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],0.2)
+errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],'.k')
+     bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],0.2)
+errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],'.k')
+%legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Healthy - Prep Reach')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_pre_prep_reac<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_i05_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_i15_prep_reac<0.05
+    text(7.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_pos_prep_reac<0.05
+    text(10.5,10,'*','Color','r')
+end
+
+% subplot(6,4,10); hold on
+%      bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_reac],0.2)
+% errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_reac],...
+%                       [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_reac,...  
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_reac],'.k')
+%      bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_reac],0.2)
+% errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_reac],...
+%                       [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_reac,...  
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_reac],'.k')
+% legend('Sham','','Stim','')
+% set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[0.5 0.8])
+% ylabel('beta c3-c4 icoh')
+% title('Healthy - Reach')
+
+subplot(6,4,10); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac],'.k')
+%legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Healthy - Pre')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_pre_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_pre_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,14); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac],'.k')
+%legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Healthy - I05')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_i05_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_i05_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,18); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac],'.k')
+%legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Healthy - I15')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_i15_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_i15_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,22); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],'.k')
+%legend('Sham','','Stim','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Healthy - Pos')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_pos_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_healthy_pos_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+%sham 
+subplot(6,4,3); hold on
+     bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep],0.2)
+errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep],'.k')
+     bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep],0.2)
+errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep],'.k')
+legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Sham - Hold Prep')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_pre_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_i05_hold_prep<0.05
+    text(4.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_i15_hold_prep<0.05
+    text(7.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_pos_hold_prep<0.05
+    text(10.5,10,'*','Color','r')
+end
+
+subplot(6,4,7); hold on
+     bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],0.2)
+errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],'.k')
+     bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],0.2)
+errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],'.k')
+%legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Sham - Prep Reach')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_pre_prep_reac<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_i05_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_i15_prep_reac<0.05
+    text(7.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_pos_prep_reac<0.05
+    text(10.5,10,'*','Color','r')
+end
+
+% subplot(6,4,11); hold on
+%      bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_reac],0.2)
+% errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_reac],...
+%                       [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_reac,...  
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_reac],'.k')
+%      bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_reac],0.2)
+% errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_reac],...
+%                       [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_reac,...  
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_reac],'.k')
+% legend('Stroke','','Healthy','')
+% set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+% ylabel('beta c3-c4 icoh')
+% title('Sham - Reach')
+ 
+subplot(6,4,11); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pre_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pre_prep_reac],'.k')
+%legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Sham - Pre')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_pre_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_pre_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,15); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i05_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i05_prep_reac],'.k')
+%legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Sham - I05')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_i05_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_i05_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,19); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_i15_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_i15_prep_reac],'.k')
+%legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Sham - I15')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_i15_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_i15_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,23); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_sham_pos_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_sham_pos_prep_reac],'.k')
+%legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Sham - Pos')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_pos_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_sham_pos_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+%stim 
+subplot(6,4,4); hold on
+     bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep],0.2)
+errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep],'.k')
+     bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep],0.2)
+errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep],'.k')
+legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stim - Hold Prep')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_pre_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_i05_hold_prep<0.05
+    text(4.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_i15_hold_prep<0.05
+    text(7.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_pos_hold_prep<0.05
+    text(10.5,10,'*','Color','r')
+end
+
+subplot(6,4,8); hold on
+     bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],0.2)
+errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],'.k')
+     bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],0.2)
+errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac,...  
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac,... 
+                     mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],...
+                      [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac,...  
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac,... 
+                       se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],'.k')
+%legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stim - Prep Reach')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_pre_prep_reac<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_i05_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_i15_prep_reac<0.05
+    text(7.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_pos_prep_reac<0.05
+    text(10.5,10,'*','Color','r')
+end
+
+% subplot(6,4,12); hold on
+%      bar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_reac],0.2)
+% errorbar([1,4,7,10],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_reac],...
+%                       [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_reac,...  
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_reac],'.k')
+%      bar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_reac],0.2)
+% errorbar([2,5,8,11],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_reac,...  
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_reac,... 
+%                      mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_reac],...
+%                       [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_reac,...  
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_reac,... 
+%                        se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_reac],'.k')
+% legend('Stroke','','Healthy','')
+% set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'},'YLim',[-20 20])
+% ylabel('beta c3-c4 icoh')
+% title('Stim - Reach')
+ 
+subplot(6,4,12); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pre_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pre_prep_reac],'.k')
+%legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stim - Pre')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_pre_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_pre_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,16); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i05_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i05_prep_reac],'.k')
+%legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stim - I05')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_i05_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_i05_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,20); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_i15_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_i15_prep_reac],'.k')
+%legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stim - I15')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_i15_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_i15_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+subplot(6,4,24); hold on
+     bar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],0.2)
+errorbar([1,4],[mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_stroke_stim_pos_prep_reac],'.k')
+     bar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],0.2)
+errorbar([2,5],[mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep,...  
+                  mean_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],...
+                   [se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_hold_prep,...  
+                    se_all_imagescDat_ind_diff_c3_c4_beta_healthy_stim_pos_prep_reac],'.k')
+%legend('Stroke','','Healthy','','Location','SouthEast')
+set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'},'YLim',[-20 20])
+ylabel('beta c3-c4 icoh')
+title('Stim - Pos')
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_pos_hold_prep<0.05
+    text(1.5,10,'*','Color','r')
+end
+if p_rank_all_imagescDat_ind_diff_c3_c4_beta_stim_pos_prep_reac<0.05
+    text(4.5,10,'*','Color','r')
+end
+
+% 
+% 
+% subplot(6,4,sbj)
+%         imagesc(imagescDat_ind_c3_c4{sp_vec(sbj)},[0.4 0.7])
+% matcoh=(matcoh2-matcoh1)./matcoh1*100;
+
+%% iCoh C3-C4 phase diff (I think you can safely skip this one as you've 
+%already generated the same plots
+
+%I think in the end we didn't need this one(?)
 TOI={'pre-stim (baseline)','intrastim (5 min)','intrastim (15 min)','post-stim (5 min)'};
 phases={'Hold','Prep','Reach'};
 DOI={'stroke','healthy'};
@@ -2255,7 +4574,7 @@ for f=1:numel(FOI_freq)
                 title([phases{p},' - ',phases{p+1}])
                 subtitle(TOI{t})
                 xticklabels({'Sham','Stim'})
-                [pass,pval]=ttest(plotdat(:),[ones(sum(idx),1);ones(sum(idx),1)*2]);
+                %[pass,pval]=ttest(plotdat(:),[ones(sum(idx),1);ones(sum(idx),1)*2]);
                 
 %                 if exportdata
 %                     eData.(FOI_label{f}).(DOI{d}).([phases{p},phases{p+1}]){t}=plotdat;
@@ -2277,280 +4596,431 @@ for f=1:numel(FOI_freq)
     end
 end
 %cd(iCohdiffc3_4Folder)
+
 %% Functions
-
-function exportData=columnscatter(subjectData,datlabel,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
-
-count_ax=1;
-ax=[];
-for f=1:numel(FOI_freq)
-    figname=[datlabel,' Column Scatter plot - ',FOI_label{f}];
-    figure('Name',figname,'WindowState','Maximized')
-    for t=1:numel(TOI)
-        for p=1:numel(phases)
-            ax(count_ax)=subplot(numel(TOI),numel(phases),p+(t-1)*numel(phases));
-            count_ax=count_ax+1;
-            hold on
-            
-            tempdat=[];
-            tempdisease=[];
-            tempstim=[];
-            tempacc=[];
-            for s=1:size(subjectData,2)
-                
-                if strcmp(datlabel,'iCoh')
-                    % Calculate coherence
-                    sbjicoh=subjectData(s).(datlabel);
-                    label_idx=all(strcmp(sbjicoh.label,'C3')+strcmp(sbjicoh.label,'C4'),2);
-                    FOI_idx=sbjicoh.freq>=FOI_freq{f}{1} & sbjicoh.freq<=FOI_freq{f}{2};
-                    TOI_idx=strcmp(subjectData(s).sessioninfo.trialnames,TOI{t});
-                    tempdat(s,1)=mean(mean(sbjicoh.data(label_idx,FOI_idx,:,p,TOI_idx),2,'omitnan'),3,'omitnan');
-                end
-                
-                
-                % Organize disease
-                tempdisease{s,1}=subjectData(s).sessioninfo.dx;
-                
-                % Organize stim
-                tempstim(s,1)=subjectData(s).sessioninfo.stimamp;
-            end
-            
-            clear l r pval
-            count=1;
-            axislabel=[];
-            kwdat=nan(10,numel(DOI)*numel(stimtypes));
-            sbj_name=cell(10,numel(DOI)*numel(stimtypes));
-            sbjcount=1;
-            for d=1:numel(DOI)
-                for s=1:numel(stimtypes)
-                    idx=strcmp(tempdisease,DOI{d})&tempstim==stimtypes(s);
-                    
-                    % organize data
-                    hold on
-                    ydat=tempdat(idx);
-                    sbjs=extractAfter({subjectData(idx).SubjectName},'pro00087153_00');
-                    sbj_name(1:numel(sbjs),sbjcount)=sbjs;
-                    sbjcount=sbjcount+1;
-                    
-                    % Column Scatter plot
-                    xshift=-.2;
-                    for i=1:numel(sbjs)
-                        xshift=xshift+0.05;
-                        text((s+(d-1)*numel(stimtypes))+xshift,ydat(i),sbjs{i});
-                    end
-                    line([(s+(d-1)*numel(stimtypes))-0.1 (s+(d-1)*numel(stimtypes))+0.1],[mean(ydat) mean(ydat)],'LineWidth',2)
-                    errorbar(s+(d-1)*numel(stimtypes),mean(ydat),std(ydat)/sqrt(numel(ydat)),'LineStyle','none','Color','k')
-                    
-                    % Group axis labels
-                    axislabel=[axislabel {sprintf('%s - %s',DOI{d},stimname{s})}];
-                    
-                    % Group data for KW test
-                    kwdat(1:numel(ydat),s+(d-1)*numel(stimtypes))=ydat;
-                end
-            end
-            xticks([1:4])
-            xticklabels(axislabel)
-            ylim([0 1])
-            ylabel([FOI_label{f},' iCoh'])
-            
-            title([TOI{t},'--',phases{p}]);
-            
-            % KW test
-            kwdat(all(isnan(kwdat),2),:)=[];
-            [pval,~,stat]=kruskalwallis(kwdat,[],'off');
-            if pval<=0.05
-                c = multcompare(stat,'Display','off');
-                sigIdx=find(c(:,6)<=0.05& c(:,6)>0);
-                maxy=max(kwdat,[],'all');
-                for si=1:numel(sigIdx)
-                    maxy=maxy+0.05;
-                    line([c(sigIdx(si),1) c(sigIdx(si),2)],[maxy maxy])
-                    text(mean([c(sigIdx(si),1) c(sigIdx(si),2)]),maxy,num2str(c(sigIdx(si),6)),'HorizontalAlignment','center')
-                end
-            end
-            
-            % Export data
-            exportData.(FOI_label{f}).(phases{p}).data{t,1}=kwdat;
-            exportData.(FOI_label{f}).(phases{p}).columnLabel=axislabel;
-            exportData.(FOI_label{f}).(phases{p}).SubjectNames=sbj_name(any(~cellfun(@isempty,(sbj_name)),2),:);
-            %here you can export p-values
-        end
-    end
-    linkaxes(ax)
-    sgtitle(FOI_label{f})
-    savefig(gcf,fullfile(savefolder,figname))
-    saveas(gcf,fullfile(savefolder,[figname,'.jpeg']))
-end
-end
-
-
-function export=linreg(subjectData,cmpdata,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
-kinlabel={'movementDuration','reactionTime','handpathlength','avgVelocity','maxVelocity','velocityPeaks','timeToMaxVelocity','timeToMaxVelocity_n','avgAcceleration','maxAcceleration','accuracy','normalizedJerk','IOC'};
-
-colors={'g','b','c','m'};
+% function exportData=columnscatter(subjectData,datlabel,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
+% 
+% count_ax=1;
+% ax=[];
+% for f=1:numel(FOI_freq)
+%     figname=[datlabel,' Column Scatter plot - ',FOI_label{f}];
+%     figure('Name',figname,'WindowState','Maximized')
+%     for t=1:numel(TOI)
+%         for p=1:numel(phases)
+%             ax(count_ax)=subplot(numel(TOI),numel(phases),p+(t-1)*numel(phases));
+%             count_ax=count_ax+1;
+%             hold on
+%             
+%             tempdat=[];
+%             tempdisease=[];
+%             tempstim=[];
+%             tempacc=[];
+%             for s=1:size(subjectData,2)
+%                 
+%                 if strcmp(datlabel,'iCoh')
+%                     % Calculate coherence
+%                     sbjicoh=subjectData(s).(datlabel);
+%                     label_idx=all(strcmp(sbjicoh.label,'C3')+strcmp(sbjicoh.label,'C4'),2);
+%                     FOI_idx=sbjicoh.freq>=FOI_freq{f}{1} & sbjicoh.freq<=FOI_freq{f}{2};
+%                     TOI_idx=strcmp(subjectData(s).sessioninfo.trialnames,TOI{t});
+%                     tempdat(s,1)=mean(mean(sbjicoh.data(label_idx,FOI_idx,:,p,TOI_idx),2,'omitnan'),3,'omitnan');
+%                 end
+%                 
+%                 
+%                 % Organize disease
+%                 tempdisease{s,1}=subjectData(s).sessioninfo.dx;
+%                 
+%                 % Organize stim
+%                 tempstim(s,1)=subjectData(s).sessioninfo.stimamp;
+%             end
+%             
+%             clear l r pval
+%             count=1;
+%             axislabel=[];
+%             kwdat=nan(10,numel(DOI)*numel(stimtypes));
+%             sbj_name=cell(10,numel(DOI)*numel(stimtypes));
+%             sbjcount=1;
+%             for d=1:numel(DOI)
+%                 for s=1:numel(stimtypes)
+%                     idx=strcmp(tempdisease,DOI{d})&tempstim==stimtypes(s);
+%                     
+%                     % organize data
+%                     hold on
+%                     ydat=tempdat(idx);
+%                     sbjs=extractAfter({subjectData(idx).SubjectName},'pro00087153_00');
+%                     sbj_name(1:numel(sbjs),sbjcount)=sbjs;
+%                     sbjcount=sbjcount+1;
+%                     
+%                     % Column Scatter plot
+%                     xshift=-.2;
+%                     for i=1:numel(sbjs)
+%                         xshift=xshift+0.05;
+%                         text((s+(d-1)*numel(stimtypes))+xshift,ydat(i),sbjs{i});
+%                     end
+%                     line([(s+(d-1)*numel(stimtypes))-0.1 (s+(d-1)*numel(stimtypes))+0.1],[mean(ydat) mean(ydat)],'LineWidth',2)
+%                     errorbar(s+(d-1)*numel(stimtypes),mean(ydat),std(ydat)/sqrt(numel(ydat)),'LineStyle','none','Color','k')
+%                     
+%                     % Group axis labels
+%                     axislabel=[axislabel {sprintf('%s - %s',DOI{d},stimname{s})}];
+%                     
+%                     % Group data for KW test
+%                     kwdat(1:numel(ydat),s+(d-1)*numel(stimtypes))=ydat;
+%                 end
+%             end
+%             xticks([1:4])
+%             xticklabels(axislabel)
+%             ylim([0 1])
+%             ylabel([FOI_label{f},' iCoh'])
+%             
+%             title([TOI{t},'--',phases{p}]);
+%             
+%             % KW test
+%             kwdat(all(isnan(kwdat),2),:)=[];
+%             [pval,~,stat]=kruskalwallis(kwdat,[],'off');
+%             if pval<=0.05
+%                 c = multcompare(stat,'Display','off');
+%                 sigIdx=find(c(:,6)<=0.05& c(:,6)>0);
+%                 maxy=max(kwdat,[],'all');
+%                 for si=1:numel(sigIdx)
+%                     maxy=maxy+0.05;
+%                     line([c(sigIdx(si),1) c(sigIdx(si),2)],[maxy maxy])
+%                     text(mean([c(sigIdx(si),1) c(sigIdx(si),2)]),maxy,num2str(c(sigIdx(si),6)),'HorizontalAlignment','center')
+%                 end
+%             end
+%             
+%             % Export data
+%             exportData.(FOI_label{f}).(phases{p}).data{t,1}=kwdat;
+%             exportData.(FOI_label{f}).(phases{p}).columnLabel=axislabel;
+%             exportData.(FOI_label{f}).(phases{p}).SubjectNames=sbj_name(any(~cellfun(@isempty,(sbj_name)),2),:);
+%             %here you can export p-values
+%         end
+%     end
+%     linkaxes(ax)
+%     sgtitle(FOI_label{f})
+%     savefig(gcf,fullfile(savefolder,figname))
+%     saveas(gcf,fullfile(savefolder,[figname,'.jpeg']))
+% end
+% end
 
 
-ax=[];
-for f=1:numel(FOI_freq)
-    figure('WindowState','Maximized')
-    count_ax=1;
-    for t=1:numel(TOI)
-        for p=1:numel(phases)
-            ax(count_ax)=subplot(numel(TOI),numel(phases),p+(t-1)*numel(phases));
-            count_ax=count_ax+1;
-            hold on
-            
-            tempdat=[];
-            tempdisease=[];
-            tempstim=[];
-            for s=1:size(subjectData,2)
-                
-                for d=1:numel(cmpdata)
-                    if any(strcmp(cmpdata{d},'iCoh'))
-                        tempcmp=cmpdata{d};
-                        
-                        % Calculate coherence
-                        sbjicoh=subjectData(s).(tempcmp);
-                        label_idx=all(strcmp(sbjicoh.label,'C3')+strcmp(sbjicoh.label,'C4'),2);
-                        FOI_idx=sbjicoh.freq>=FOI_freq{f}{1} & sbjicoh.freq<=FOI_freq{f}{2};
-                        TOI_idx=strcmp(subjectData(s).sessioninfo.trialnames,TOI{t});
-                        tempdat(s,1)=mean(mean(sbjicoh.data(label_idx,FOI_idx,:,p,TOI_idx),2,'omitnan'),3,'omitnan');
-                        axislabel{d}=[FOI_label{f},' - iCoh'];
-                    elseif any(strcmp(cmpdata{d},kinlabel))
-                        tempcmp=cmpdata{d};
-                        
-                        % Calculate kinematics
-                        templabel=strcmp(subjectData(s).kinematics.label,tempcmp);
-                        tempdat(s,2)=mean(subjectData(s).kinematics.data{templabel}(:,TOI_idx),'omitnan');
-                        axislabel{d}=tempcmp;
-                    end
-                end
-                
-                % Organize disease
-                tempdisease{s,1}=subjectData(s).sessioninfo.dx;
-                
-                % Organize stim
-                tempstim(s,1)=subjectData(s).sessioninfo.stimamp;
-            end
-            
-            clear l r pval
-            count=1;
-            legendlabels=[];
-            countcolor=1;
-            for d=1:numel(DOI)
-                for s=1:numel(stimtypes)
-                    idx=strcmp(tempdisease,DOI{d})&tempstim==stimtypes(s);
-                    sbjs=extractAfter({subjectData(idx).SubjectName},'pro00087153_00');
-                    
-                    % organize data
-                    hold on
-                    xdat=tempdat(idx,1);
-                    ydat=tempdat(idx,2);
-                    
-                    export.(FOI_label{f}).(phases{p}).(DOI{d}){t,s}=[xdat;ydat];
-                    
-                    
-                    
-                    
-                    % Scatter plot
-                    for i=1:numel(xdat)
-                        txt=text(xdat(i),ydat(i),sbjs{i});
-                        if stimtypes(s)==0
-                            txt.Color=colors{countcolor};
-                            linestyle='--';
-                        else
-                            txt.Color=colors{countcolor};
-                            linestyle='-';
-                        end
-                    end
-                    countcolor=countcolor+1;
-                    
-                    % Plot trendline
-                    pv = polyfit(xdat, ydat, 1);
-                    px = [min(xdat) max(xdat)];
-                    py = polyval(pv, px);
-                    l(count)=plot(px, py, 'LineWidth', 2,'Color',txt.Color,'LineStyle',linestyle);
-                    
-                    
-                    % Calculate p and r
-                    [r,pval]=corrcoef(xdat, ydat);
-                    
-                    % Save p and r value
-                    rval=r(2,1);
-                    pval=pval(2,1);
-                    
-                    % Change line if pval <=0.5
-                    if pval<=0.05
-                        if stimtypes(s)==0
-                            l(count).Color=[0.8500 0.3250 0.0980];
-                        else
-                            l(count).Color=[0.6350 0.0780 0.1840];
-                        end
-                    end
-                    
-                    % Organize legend label
-                    legendlabels{count}=sprintf('%s %s [p(%g),r(%g)]',DOI{d},stimname{s},pval,rval);
-                    count=count+1;
-                end
-            end
-            legend(l,legendlabels,'Location','best')
-            ylabel(axislabel{2})
-            xlabel(axislabel{1})
-            title([TOI{t},'--',phases{p}]);
-        end
-    end
-    linkaxes(ax)
-    savefig(gcf,fullfile(savefolder,[axislabel{1},' vs ',axislabel{2}]))
-    saveas(gcf,fullfile(savefolder,[axislabel{1},' vs ',axislabel{2},'.jpeg']))
-end
-end
+% function export=linreg(subjectData,cmpdata,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
+% kinlabel={'movementDuration','reactionTime','handpathlength','avgVelocity','maxVelocity','velocityPeaks','timeToMaxVelocity','timeToMaxVelocity_n','avgAcceleration','maxAcceleration','accuracy','normalizedJerk','IOC'};
+% 
+% colors={'g','b','c','m'};
+% 
+% 
+% ax=[];
+% for f=2%1:numel(FOI_freq)
+%     figure; set(gcf,'Position',[2380 99 1224 827])
+%     %('WindowState','Maximized')
+%     count_ax=1;
+%     for t=1:numel(TOI)
+%         for p=1:numel(phases)
+%             ax(count_ax)=subplot(numel(TOI),numel(phases),p+(t-1)*numel(phases));
+%             count_ax=count_ax+1;
+%             hold on
+%             
+%             tempdat=[];
+%             tempdisease=[];
+%             tempstim=[];
+%             for s=1:size(subjectData,2)
+%                 
+%                 for d=1:numel(cmpdata)
+%                     if any(strcmp(cmpdata{d},'iCoh'))
+%                         tempcmp=cmpdata{d};
+%                         
+%                         % Calculate coherence
+%                         sbjicoh=subjectData(s).(tempcmp);
+%                         label_idx=all(strcmp(sbjicoh.label,'C3')+strcmp(sbjicoh.label,'C4'),2);
+%                         FOI_idx=sbjicoh.freq>=FOI_freq{f}{1} & sbjicoh.freq<=FOI_freq{f}{2};
+%                         TOI_idx=strcmp(subjectData(s).sessioninfo.trialnames,TOI{t});
+%                         tempdat(s,1)=mean(mean(sbjicoh.data(label_idx,FOI_idx,:,p,TOI_idx),2,'omitnan'),3,'omitnan');
+%                         axislabel{d}=[FOI_label{f},' - iCoh'];
+%                     elseif any(strcmp(cmpdata{d},kinlabel))
+%                         tempcmp=cmpdata{d};
+%                         
+%                         % Calculate kinematics
+%                         templabel=strcmp(subjectData(s).kinematics.label,tempcmp);
+%                         tempdat(s,2)=mean(subjectData(s).kinematics.data{templabel}(:,TOI_idx),'omitnan');
+%                         axislabel{d}=tempcmp;
+%                     end
+%                 end
+%                 
+%                 % Organize disease
+%                 tempdisease{s,1}=subjectData(s).sessioninfo.dx;
+%                 
+%                 % Organize stim
+%                 tempstim(s,1)=subjectData(s).sessioninfo.stimamp;
+%             end
+%             
+%             clear l r pval
+%             count=1;
+%             legendlabels=[];
+%             countcolor=1;
+%             for d=1:numel(DOI)
+%                 for s=1:numel(stimtypes)
+%                     idx=strcmp(tempdisease,DOI{d})&tempstim==stimtypes(s);
+%                     sbjs=extractAfter({subjectData(idx).SubjectName},'pro00087153_00');
+%                     
+%                     % organize data
+%                     hold on
+%                     xdat=tempdat(idx,1);
+%                     ydat=tempdat(idx,2);
+%                     
+%                     export.(FOI_label{f}).(phases{p}).(DOI{d}){t,s}=[xdat;ydat];
+%                     
+%                     
+%                     
+%                     
+%                     % Scatter plot
+%                     for i=1:numel(xdat)
+%                         txt=text(xdat(i),ydat(i),sbjs{i});
+%                         if stimtypes(s)==0
+%                             txt.Color=colors{countcolor};
+%                             linestyle='--';
+%                         else
+%                             txt.Color=colors{countcolor};
+%                             linestyle='-';
+%                         end
+%                     end
+%                     countcolor=countcolor+1;
+%                     
+%                     % Plot trendline
+%                     pv = polyfit(xdat, ydat, 1);
+%                     px = [min(xdat) max(xdat)];
+%                     py = polyval(pv, px);
+%                     l(count)=plot(px, py, 'LineWidth', 2,'Color',txt.Color,'LineStyle',linestyle);
+%                     
+%                     
+%                     % Calculate p and r
+%                     [r,pval]=corrcoef(xdat, ydat);
+%                     
+%                     % Save p and r value
+%                     rval=r(2,1);
+%                     pval=pval(2,1);
+%                     
+%                     % Change line if pval <=0.5
+%                     if pval<=0.05
+%                         if stimtypes(s)==0
+%                             l(count).Color=[0.8500 0.3250 0.0980];
+%                         else
+%                             l(count).Color=[0.6350 0.0780 0.1840];
+%                         end
+%                     end
+%                     
+%                     % Organize legend label
+%                     legendlabels{count}=sprintf('%s %s [p(%g),r(%g)]',DOI{d},stimname{s},pval,rval);
+%                     count=count+1;
+%                 end
+%             end
+%             legend(l,legendlabels,'Location','best')
+%             ylabel(axislabel{2})
+%             xlabel(axislabel{1})
+%             title([TOI{t},'--',phases{p}]);
+%         end
+%     end
+%     linkaxes(ax)
+%     savefig(gcf,fullfile(savefolder,[axislabel{1},' vs ',axislabel{2}]))
+%     saveas(gcf,fullfile(savefolder,[axislabel{1},' vs ',axislabel{2},'.jpeg']))
+% end
+% end
 
 
-function mixANOVA(input,b)
 
-% Run Mixed Anova for contra
-[stat,rm]=simple_mixed_anova(vertcat(input{:}),vertcat(ones(size(input{1},1),1)*0,ones(size(input{2},1),1)*2),{'Trial'},{'Stim'});
+% function export=linreg2(subjectData,cmpdata,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
+% kinlabel={'movementDuration','reactionTime','handpathlength','avgVelocity','maxVelocity','velocityPeaks','timeToMaxVelocity','timeToMaxVelocity_n','avgAcceleration','maxAcceleration','accuracy','normalizedJerk','IOC'};
+% 
+% colors={'g','b','c','m'};
+% 
+% %cmpdata={'iCoh','IOC'}
+% %linreg_dat=linreg2(subjectData,{'iCoh','IOC'},TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,linReg_folder);
+% 
+% 
+% 
+% 
+% ax=[];
+% for f=2%1:numel(FOI_freq)
+%     figure; set(gcf,'Position',[2380 99 1224 827])
+%     %('WindowState','Maximized')
+%     subplot_count=1;
+%     count_ax=1;
+%     for t=1:numel(TOI)
+%         for p=1:numel(phases)-1
+%             h(count_ax)=subplot(numel(TOI),(numel(phases)-1),subplot_count);
+%             subplot_count=subplot_count+1;
+%             count_ax=count_ax+1;
+%             %ax(count_ax)=subplot(numel(TOI),numel(phases),p+(t-1)*numel(phases));
+%             %count_ax=count_ax+1;
+%             hold on
+%             
+%             tempdat=[];
+%             tempdat1=[];
+%             tempdat2=[];
+%             tempdisease=[];
+%             tempstim=[];
+%             for s=1:size(subjectData,2)
+%                 
+%                 for d=1:numel(cmpdata)
+%                     if any(strcmp(cmpdata{d},'iCoh'))
+%                         tempcmp=cmpdata{d};
+%                         
+%                         % Calculate coherence1
+%                         sbjicoh=subjectData(s).(tempcmp);
+%                         label_idx=all(strcmp(sbjicoh.label,'C3')+strcmp(sbjicoh.label,'C4'),2);
+%                         FOI_idx=sbjicoh.freq>=FOI_freq{f}{1} & sbjicoh.freq<=FOI_freq{f}{2};
+%                         TOI_idx=strcmp(subjectData(s).sessioninfo.trialnames,TOI{t});
+%                         tempdat1(s,1)=mean(mean(sbjicoh.data(label_idx,FOI_idx,:,p,TOI_idx),2,'omitnan'),3,'omitnan');
+%                         axislabel{d}=[FOI_label{f},' - iCoh'];
+%                         
+%                         % Calculate coherence2
+%                         sbjicoh=subjectData(s).(tempcmp);
+%                         label_idx=all(strcmp(sbjicoh.label,'C3')+strcmp(sbjicoh.label,'C4'),2);
+%                         FOI_idx=sbjicoh.freq>=FOI_freq{f}{1} & sbjicoh.freq<=FOI_freq{f}{2};
+%                         TOI_idx=strcmp(subjectData(s).sessioninfo.trialnames,TOI{t});
+%                         tempdat2(s,1)=mean(mean(sbjicoh.data(label_idx,FOI_idx,:,p+1,TOI_idx),2,'omitnan'),3,'omitnan');
+%                         axislabel{d}=[FOI_label{f},' - iCoh'];
+%                         
+% %                         %Find diff
+% %                         tempdat(s,1)=(tempdat2-tempdat1)./tempdat1*100;
+%                     elseif any(strcmp(cmpdata{d},kinlabel))
+%                         tempcmp=cmpdata{d};
+%                         
+%                         % Calculate kinematics
+%                         templabel=strcmp(subjectData(s).kinematics.label,tempcmp);
+%                         tempdat(s,2)=mean(subjectData(s).kinematics.data{templabel}(:,TOI_idx),'omitnan');
+%                         axislabel{d}=tempcmp;
+%                     end
+%                 end
+%                 
+%                 % Organize disease
+%                 tempdisease{s,1}=subjectData(s).sessioninfo.dx;
+%                 
+%                 % Organize stim
+%                 tempstim(s,1)=subjectData(s).sessioninfo.stimamp;
+%             end
+%             %Find diff
+%                 tempdat(:,1)=(tempdat2-tempdat1)./tempdat1*100;
+%             
+%                 clear l r pval
+%             count=1;
+%             legendlabels=[];
+%             countcolor=1;
+%             for d=1:numel(DOI)
+%                 for s=1:numel(stimtypes)
+%                     idx=strcmp(tempdisease,DOI{d})&tempstim==stimtypes(s);
+%                     sbjs=extractAfter({subjectData(idx).SubjectName},'pro00087153_00');
+%                     
+%                     % organize data
+%                     hold on
+%                     xdat=tempdat(idx,1);
+%                     ydat=tempdat(idx,2);
+%                     
+%                     export.(FOI_label{f}).(phases{p}).(DOI{d}){t,s}=[xdat;ydat];
+%                     
+%                     % Scatter plot
+%                     for i=1:numel(xdat)
+%                         txt=text(xdat(i),ydat(i),sbjs{i});
+%                         if stimtypes(s)==0
+%                             txt.Color=colors{countcolor};
+%                             linestyle='--';
+%                         else
+%                             txt.Color=colors{countcolor};
+%                             linestyle='-';
+%                         end
+%                     end
+%                     countcolor=countcolor+1;
+%                     
+%                     % Plot trendline
+%                     pv = polyfit(xdat, ydat, 1);
+%                     px = [min(xdat) max(xdat)];
+%                     py = polyval(pv, px);
+%                     l(count)=plot(px, py, 'LineWidth', 2,'Color',txt.Color,'LineStyle',linestyle);
+%                     
+%                     
+%                     % Calculate p and r
+%                     [r,pval]=corrcoef(xdat, ydat);
+%                     
+%                     % Save p and r value
+%                     rval=r(2,1);
+%                     pval=pval(2,1);
+%                     
+%                     % Change line if pval <=0.5
+%                     if pval<=0.05
+%                         if stimtypes(s)==0
+%                             l(count).Color=[0.8500 0.3250 0.0980];
+%                         else
+%                             l(count).Color=[0.6350 0.0780 0.1840];
+%                         end
+%                     end
+%                     
+%                     % Organize legend label
+%                     legendlabels{count}=sprintf('%s %s [p(%g),r(%g)]',DOI{d},stimname{s},pval,rval);
+%                     count=count+1;
+%                 end
+%             end
+%             legend(l,legendlabels,'Location','best')
+%             ylabel(axislabel{2})
+%             xlabel(axislabel{1})
+%             %title([TOI{t},'--',phases{p}]);
+%             title([TOI{t},'--',phases{p},' - ',phases{p+1}])
+%             
+% %                 bar(mean(plotdat,1))
+% %                 
+% %                 subtitle(TOI{t})
+% %                 xticklabels({'Sham','Stim'})
+%         end
+%     end
+% %     linkaxes(ax)
+% %     savefig(gcf,fullfile(savefolder,[axislabel{1},' vs ',axislabel{2}]))
+% %     saveas(gcf,fullfile(savefolder,[axislabel{1},' vs ',axislabel{2},'.jpeg']))
+% end
+% end
 
-% Compare stim vs sham
-Mrm1 = multcompare(rm,'Stim','By','Trial','ComparisonType','tukey-kramer');
-
-if any(Mrm1.pValue<=0.05)
-    sigidx=double(unique(Mrm1.Trial(find(Mrm1.pValue<=0.05))));
-    Ylimits=get(gca,'YLim');
-    for i=1:numel(sigidx)
-        text(sigidx(i),Ylimits(2)*0.8,num2str(unique(Mrm1.pValue(double(Mrm1.Trial)==sigidx(i)))),'FontSize',20,'HorizontalAlignment','center')
-    end
-end
-
-barpos(:,1)=b(1).XData;
-barpos(:,2)=b(2).XData;
-
-% Compare time points
-Mrm2 = multcompare(rm,'Trial','By','Stim','ComparisonType','bonferroni');
-if any(Mrm2.pValue<=0.05)
-    idx=find(Mrm2.pValue<=0.05);
-    for i=1:numel(idx)
-        t1=double(Mrm2.Trial_1(idx(i)));
-        t2=double(Mrm2.Trial_2(idx(i)));
-        pval=Mrm2.pValue(idx(i));
-        if t1<t2
-            if double(Mrm2.Stim(idx(i)))==1
-                sigpos=barpos(:,1);
-            else
-                sigpos=barpos(:,2);
-            end
-            Ylimits=get(gca,'YLim');
-            nYlimits=[Ylimits(1) Ylimits(2)+0.1*Ylimits(2)];
-            set(gca,'YLim',nYlimits)
-            l=line(gca,[sigpos(t1) sigpos(t2)],[1 1]*Ylimits(2));
-            text(gca,mean([sigpos(t1) sigpos(t2)]),Ylimits(2),num2str(pval),'HorizontalAlignment','center');
-            if double(Mrm2.Stim(idx(i)))==1
-                set(l,'linewidth',2,'Color','b')
-            else
-                set(l,'linewidth',2,'Color',[0.8500 0.3250 0.0980])
-            end
-        end
-    end
-end
-
-end
+% function mixANOVA(input,b)
+% 
+% % Run Mixed Anova for contra
+% [~,rm]=simple_mixed_anova(vertcat(input{:}),vertcat(ones(size(input{1},1),1)*0,ones(size(input{2},1),1)*2),{'Trial'},{'Stim'});
+% 
+% % Compare stim vs sham
+% Mrm1 = multcompare(rm,'Stim','By','Trial','ComparisonType','tukey-kramer');
+% 
+% if any(Mrm1.pValue<=0.05)
+%     sigidx=double(unique(Mrm1.Trial(find(Mrm1.pValue<=0.05))));
+%     Ylimits=get(gca,'YLim');
+%     for i=1:numel(sigidx)
+%         text(sigidx(i),Ylimits(2)*0.8,num2str(unique(Mrm1.pValue(double(Mrm1.Trial)==sigidx(i)))),'FontSize',20,'HorizontalAlignment','center')
+%     end
+% end
+% 
+% barpos(:,1)=b(1).XData;
+% barpos(:,2)=b(2).XData;
+% 
+% % Compare time points
+% Mrm2 = multcompare(rm,'Trial','By','Stim','ComparisonType','bonferroni');
+% if any(Mrm2.pValue<=0.05)
+%     idx=find(Mrm2.pValue<=0.05);
+%     for i=1:numel(idx)
+%         t1=double(Mrm2.Trial_1(idx(i)));
+%         t2=double(Mrm2.Trial_2(idx(i)));
+%         pval=Mrm2.pValue(idx(i));
+%         if t1<t2
+%             if double(Mrm2.Stim(idx(i)))==1
+%                 sigpos=barpos(:,1);
+%             else
+%                 sigpos=barpos(:,2);
+%             end
+%             Ylimits=get(gca,'YLim');
+%             nYlimits=[Ylimits(1) Ylimits(2)+0.1*Ylimits(2)];
+%             set(gca,'YLim',nYlimits)
+%             l=line(gca,[sigpos(t1) sigpos(t2)],[1 1]*Ylimits(2));
+%             text(gca,mean([sigpos(t1) sigpos(t2)]),Ylimits(2),num2str(pval),'HorizontalAlignment','center');
+%             if double(Mrm2.Stim(idx(i)))==1
+%                 set(l,'linewidth',2,'Color','b')
+%             else
+%                 set(l,'linewidth',2,'Color',[0.8500 0.3250 0.0980])
+%             end
+%         end
+%     end
+% end
+% 
+% end
