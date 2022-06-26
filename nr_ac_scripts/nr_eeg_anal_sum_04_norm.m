@@ -501,7 +501,7 @@ set(gca,'XTick',[1.5 4.5 7.5 10.5],'XTickLabel',['Base ';'Early';'Late ';'Post '
 
 
 
-%% figure #3
+%% figure #2
 figure
 set(gcf,'Position',[924 196 802 1285])
 

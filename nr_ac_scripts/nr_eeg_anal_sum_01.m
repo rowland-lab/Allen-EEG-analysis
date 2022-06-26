@@ -2,7 +2,6 @@
 %24
 %rest
 nr_eeg_anal_02_cfg('~/nr_data_analysis/data_raw/eeg/pro00087153_0024.edf','hc','stim','rest')
-nr_eeg_anal_02_cfg(filename,dx,stim_stat,cond)
 nr_eeg_anal_03_epochs(data,1.65e6,1.8e6,2.68e6,2.72e6,3.2e6,3.28e6,3.8e6,3.9e6)
 nr_eeg_anal_04_psd_stats(data,'rest')
 

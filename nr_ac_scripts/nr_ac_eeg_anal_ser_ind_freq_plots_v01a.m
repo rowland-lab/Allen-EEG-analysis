@@ -14,9 +14,9 @@ function nr_ac_eeg_anal_ser_ind_freq_plots_v01a(grp,freq_band,save_fig,save_data
 %%% directly with spss but can change back to tukey's if you like or can
 %%% just make an input in the function
 
-% grp='cs'
-% save_fig='no'
-% freq_band='beta'
+grp='cs'
+save_fig='no'
+freq_band='beta'
 
 if strcmp(grp,'cs')
     elec_stim_ipsi=[7,7,18,18,7,18,7,18,18,18]
