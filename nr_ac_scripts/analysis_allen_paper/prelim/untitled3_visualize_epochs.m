@@ -1,4 +1,4 @@
-sbj_no='03'
+sbj_no='04'
 fldr_nm=['pro00087153_00',sbj_no];
 file_nm=['pro00087153_00',sbj_no,'_S1-VRdata_preprocessed.mat'];
 load(['/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data/',fldr_nm,...
@@ -13,14 +13,19 @@ load(['/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data/',fldr_nm,.
     '/analysis/S2-metrics/',file_nm],'movementstart')
 hold on
 plot((trialData.eeg.data(:,7)-mean(trialData.eeg.data(:,7)))/std(trialData.eeg.data(:,7)))
-plot((trialData.eeg.data(:,18)-mean(trialData.eeg.data(:,18)))/std(trialData.eeg.data(:,18))-20)
+%plot((trialData.eeg.data(:,18)-mean(trialData.eeg.data(:,18)))/std(trialData.eeg.data(:,18))-20)
 plot((trialData.eeg.data(:,sessioninfo.vrchan)-mean(trialData.eeg.data(:,sessioninfo.vrchan)))/std(trialData.eeg.data(:,sessioninfo.vrchan))-60)
 plot(((trialData.eeg.data(:,sessioninfo.tdcschan)-mean(trialData.eeg.data(:,sessioninfo.tdcschan)))/std(trialData.eeg.data(:,sessioninfo.tdcschan))*-1)-80,'LineWidth',2)
-for i=1:size(trialData.vr,2)
-    plot(trialData.vr(i).tracker.time*fs,trialData.vr(i).tracker.p.right(:,1)*50,'r','LineWidth',2)
-end
+%UNCOMMENT- THIS IS YOUR POSITION DATA!!!!%
+% for i=1:size(trialData.vr,2)
+%     plot(trialData.vr(i).tracker.time*fs,trialData.vr(i).tracker.p.right(:,1)*50,'r','LineWidth',2)
+% end
+
 
 plot(movementstart.pre{1,1}*fs,linspace(0,0,12),'g.','MarkerSize',15)
+plot(movementstart.stim{1,1}*fs,linspace(0,0,12),'g.','MarkerSize',15)
+plot(movementstart.stim{1,2}*fs,linspace(0,0,12),'g.','MarkerSize',15)
+plot(movementstart.post{1,1}*fs,linspace(0,0,12),'g.','MarkerSize',15)
 
 Session_times=sessioninfo.sessionperiod;
 xlim([Session_times{1} Session_times{2}]);
@@ -28,7 +33,7 @@ yplotlim=get(gca,'ylim');
 
 
 
-%f1=figure('Position',[5 87 1131 852]);
+
 
 
 % % Add rest epochs

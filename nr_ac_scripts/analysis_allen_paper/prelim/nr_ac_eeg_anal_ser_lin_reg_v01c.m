@@ -2,11 +2,11 @@ function nr_ac_eeg_anal_ser_lin_reg_v01c(grp_stmstat,freq_band,mean_mean_sum_var
 
 
 
-% grp_stmstat='hc_stm'
-% freq_band='beta'
-% mean_mean_sum_var='~/nr_data_analysis/data_analyzed/eeg/gen_02/data/cs_mean_mean_sum_beta_all.mat'
-% save_figs='no'
-% save_data='yes'
+grp_stmstat='hc_stm'
+freq_band='beta'
+mean_mean_sum_var='~/nr_data_analysis/data_analyzed/eeg/gen_02/data/hc_mean_mean_sum_beta_all.mat'
+save_figs='no'
+save_data='no'
 
 if strcmp(grp_stmstat,'cs_stm')
     sbjs=['03';'04';'05';'42';'43'];

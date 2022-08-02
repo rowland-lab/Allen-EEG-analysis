@@ -682,17 +682,11 @@ for 13 try common average referencing
 %doing a psd to show that your scraggly looking segment looks exactly the
 %same
 
-%try using a highpass filter for your data to see if you get same results
-%but without having to re-epoch
-%also try bandpass filtering for just beta - you should do this and look at
-%raw data 
 
-%you will HAVE to repeat all this for delta through gamma bc you have to
-%prove that the tdcs effect is SPECIFIC to beta and no other freq band
-%UNLESS each individual has a specific frequency band
 
-%%%%Just thought of a great idea, just simply plot the accelerometer
-%%%%signals during flexion and extension!!!!!!
+
+
+
 
 %% things to do
 

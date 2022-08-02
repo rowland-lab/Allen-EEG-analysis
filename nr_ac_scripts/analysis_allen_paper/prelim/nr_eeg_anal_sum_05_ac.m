@@ -14,42 +14,29 @@
 %INCLUDE THE SUBJECT NUMBERS AS WELL, ALSO YOU MIGHT CALL ELEC_STIM_IPSI
 %ELEC_STIM_LAT OR SOMETHING LIKE THA, will also need to give path
 
-%%% FYI I changed the multcompare to bonferroni to be able to compare
-%%% directly with spss but can change back to tukey's if you like or can
-%%% just make an input in the function
+%cs
+elec_stim_ipsi=[7,7,18,18,7,18,7,18,18,18]
+sbj_nums=['03';'04';'05';'42';'43';'13';'15';'17';'18';'21']
 
-out_ind_c18_p1=[1 4 7 10];
-out_ind_c18_p2=[2 5 8 11];
-out_ind_c18_p3=[3 6 9 12];
-out_ind_c7_p1=[13 16 19 22];
-out_ind_c7_p2=[14 17 20 23];
-out_ind_c7_p3=[15 18 21 24];
+% %hc
+% elec_stim_ipsi=[18,7,7,7,7,18,7,18,7,7,7]
+% sbj_nums=['22';'24';'25';'26';'29';'30';'20';'23';'27';'28';'36']
 
-% %cs
-% elec_stim_ipsi=[7,7,18,18,7,18,7,18,18,18]
-% sbj_nums=['03';'04';'05';'42';'43';'13';'15';'17';'18';'21']
-
-%hc
-elec_stim_ipsi=[18,7,7,7,7,18,7,18,7,7,7]
-sbj_nums=['22';'24';'25';'26';'29';'30';'20';'23';'27';'28';'36']
-
-for n=11%:10 %%%%%MUST CHANGE!!!!!
+for n=1:10 %%%%%MUST CHANGE!!!!!
     load(['/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_02/data/pro00087153_00',sbj_nums(n,:),'/analysis/S3-EEGanalysis/s3_dat.mat'])
     m=num2str(sbj_nums(n,:))
     
     %psd plots
-    figure; set(gcf,'Position',[786 47 744 898])
+    figure; set(gcf,'Position',[3 47 744 898])
     for i=1:4
         subplot(8,5,i)
         hold on
         eval(['find_freq_plot_ch7_atStartPosition=find(epochs.vrevents.t',num2str(i),'.atStartPosition.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p1(i)}'])
-        %for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.atStartPosition.val,1)'])
+        for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.atStartPosition.val,1)'])
             eval(['plot(epochs.vrevents.t',num2str(i),'.atStartPosition.psd.freq(find_freq_plot_ch7_atStartPosition),log10(epochs.vrevents.t',num2str(i),'.atStartPosition.psd.saw(find_freq_plot_ch7_atStartPosition,7,j)))'])
         end
         ylimasp=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p1(i)},2)'])))
-        %text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.atStartPosition.val,1)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.atStartPosition.val,1)'])))
         if i==1 & elec_stim_ipsi(n)==7
             ylabel('atStartPosition')
             title(['Sbj',m(1,:),':ch7:t',num2str(i)],'Color',[1 0 0])
@@ -66,13 +53,11 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
         subplot(8,5,i+5)
         hold on
         eval(['find_freq_plot_ch7_cueEvent=find(epochs.vrevents.t',num2str(i),'.cueEvent.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p2(i)}'])
-        %for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.cueEvent.val,1)'])
+        for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.cueEvent.val,1)'])
             eval(['plot(epochs.vrevents.t',num2str(i),'.cueEvent.psd.freq(find_freq_plot_ch7_cueEvent),log10(epochs.vrevents.t',num2str(i),'.cueEvent.psd.saw(find_freq_plot_ch7_cueEvent,7,j)))'])
         end
         ylimce=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p2(i)},2)'])))
-        %text(75,ylimce(2)-0.1*ylimce(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.cueEvent.val,1)'])))
+        text(75,ylimce(2)-0.1*ylimce(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.cueEvent.val,1)'])))
         if i==1
             ylabel('cueEvent')
         end
@@ -84,20 +69,17 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
         subplot(8,5,i+10)
         hold on
         eval(['find_freq_plot_ch7_targetUp=find(epochs.vrevents.t',num2str(i),'.targetUp.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p3(i)}'])
-        %for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.targetUp.val,1)'])
+        for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.targetUp.val,1)'])
             eval(['plot(epochs.vrevents.t',num2str(i),'.targetUp.psd.freq(find_freq_plot_ch7_targetUp),log10(epochs.vrevents.t',num2str(i),'.targetUp.psd.saw(find_freq_plot_ch7_targetUp,7,j)))'])
         end
         ylimtu=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p3(i)},2)'])))
-        %text(75,ylimtu(2)-0.1*ylimtu(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.targetUp.val,1)'])))
+        text(75,ylimtu(2)-0.1*ylimtu(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.targetUp.val,1)'])))
         if i==1
             ylabel('targetUp')
         end
         title(['t',num2str(i)])
         eval(['ylim_',num2str(i+10),'=get(gca,''ylim'');'])
     end
-
 
     %%%scale psd plots
     ymin=min([ylim_1(1) ylim_2(1) ylim_3(1) ylim_4(1),...
@@ -119,7 +101,6 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
             set(gca,'ylim',[ymin ymax])
         end
     end
-
     %%%
     
     %%%now start bar plots (line 106 is where you would want to put in the
@@ -127,35 +108,23 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
     phase={'atStartPosition';'cueEvent';'targetUp'}
     %mean beta (from 13-30 Hz) of each t and p combination for all reaches
     %(12 or so separate values)
-    count=0
     for i=1:4
         for j=1:3
-            count=count+1
-            %count=5
-            for l=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{count+12}'])
-            %for l=1:size(eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{count+12}']),2)
-                l
-            %for l=1:eval(['size(epochs.vrevents.t',num2str(i),'.',phase{j},'.val,1)'])
+            for l=1:eval(['size(epochs.vrevents.t',num2str(i),'.',phase{j},'.val,1)'])
                 eval(['find_freq_beta_ch7_t',num2str(i),'_p',num2str(j),'=find(epochs.vrevents.t',num2str(i),'.',phase{j},'.psd.freq>12 & epochs.vrevents.t',num2str(i),'.',phase{j},'.psd.freq<31)'])
                 eval(['mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'(l)=log10(mean(epochs.vrevents.t',num2str(i),'.',phase{j},...
                     '.psd.saw(find_freq_beta_ch7_t',num2str(i),'_p',num2str(j),',7,l)));'])
-                %eval(['size_mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=size(nonzeros(mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'),1)'])
+                eval(['size_mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=size(mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),',2)'])
             end
         end
     end
     
-    for i=1:4
-        for j=1:3
-            eval(['mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=nonzeros(mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'''])
-            eval(['size_mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=size(mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),',2)'])
-        end
-    end
     %supermean of each t and p combination to get 1 value
     for i=1:4
         for j=1:3
-            eval(['mean_mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=mean(mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'])
+            eval(['mean_mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=mean(mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
             eval(['se_mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=std(mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),...
-                ')/sqrt(size_mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
+                ')/sqrt(size(mean_beta_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),',2));'])
         end
     end
     
@@ -253,11 +222,11 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
     end
     
     subplot(8,5,5)
-    eval(['mc_ch7_p1=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_p1,ymin2)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_p1,ymin2)'])
     subplot(8,5,10)
-    eval(['mc_ch7_p2=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_p2,ymin2)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_p2,ymin2)'])
     subplot(8,5,15)
-    eval(['mc_ch7_p3=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_p3,ymin2)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_p3,ymin2)'])
     
     %p1-3 for t1
     grps_plot_16=[1 2 3]
@@ -367,13 +336,13 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
     end
 
     subplot(8,5,16)
-    eval(['mc_ch7_t1=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_t1,ymin3)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_t1,ymin3)'])
     subplot(8,5,17)
-    eval(['mc_ch7_t2=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_t2,ymin3)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_t2,ymin3)'])
     subplot(8,5,18)
-    eval(['mc_ch7_t3=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_t3,ymin3)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_t3,ymin3)'])
     subplot(8,5,19)
-    eval(['mc_ch7_t4=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_t4,ymin3)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch7_t4,ymin3)'])
 
 
     %ch18
@@ -382,13 +351,11 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
         subplot(8,5,i+20)
         hold on
         eval(['find_freq_plot_ch18_atStartPosition=find(epochs.vrevents.t',num2str(i),'.atStartPosition.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p1(i)}'])
-        %for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.atStartPosition.val,1)'])
+        for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.atStartPosition.val,1)'])
             eval(['plot(epochs.vrevents.t',num2str(i),'.atStartPosition.psd.freq(find_freq_plot_ch18_atStartPosition),log10(epochs.vrevents.t',num2str(i),'.atStartPosition.psd.saw(find_freq_plot_ch18_atStartPosition,18,j)))'])
         end
         ylimasp=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p1(i)},2)'])))
-        %text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.atStartPosition.val,1)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.atStartPosition.val,1)'])))
         if i==1 & elec_stim_ipsi(n)==18
             ylabel('atStartPosition')
             title(['ch18:t',num2str(i)],'Color',[1 0 0])
@@ -405,13 +372,11 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
         subplot(8,5,i+25)
         hold on
         eval(['find_freq_plot_ch18_cueEvent=find(epochs.vrevents.t',num2str(i),'.cueEvent.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p2(i)}'])
-        %for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.cueEvent.val,1)'])
+        for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.cueEvent.val,1)'])
             eval(['plot(epochs.vrevents.t',num2str(i),'.cueEvent.psd.freq(find_freq_plot_ch18_cueEvent),log10(epochs.vrevents.t',num2str(i),'.cueEvent.psd.saw(find_freq_plot_ch18_cueEvent,18,j)))'])
         end
         ylimce=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p2(i)},2)'])))
-        %text(75,ylimce(2)-0.1*ylimce(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.cueEvent.val,1)'])))
+        text(75,ylimce(2)-0.1*ylimce(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.cueEvent.val,1)'])))
         if i==1
             ylabel('cueEvent')
         end
@@ -423,13 +388,11 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
         subplot(8,5,i+30)
         hold on
         eval(['find_freq_plot_ch18_targetUp=find(epochs.vrevents.t',num2str(i),'.targetUp.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p3(i)}'])
-        %for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.targetUp.val,1)'])
+        for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.targetUp.val,1)'])
             eval(['plot(epochs.vrevents.t',num2str(i),'.targetUp.psd.freq(find_freq_plot_ch18_targetUp),log10(epochs.vrevents.t',num2str(i),'.targetUp.psd.saw(find_freq_plot_ch18_targetUp,18,j)))'])
         end
         ylimtu=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p3(i)},2)'])))
-        %text(75,ylimtu(2)-0.1*ylimtu(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.targetUp.val,1)'])))
+        text(75,ylimtu(2)-0.1*ylimtu(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.targetUp.val,1)'])))
         if i==1
             ylabel('targetUp')
         end
@@ -459,24 +422,14 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
     end
     
     phase={'atStartPosition';'cueEvent';'targetUp'}
-    count=0
     for i=1:4
         for j=1:3
-            count=count+1
-            for l=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{count}'])
-            %for l=1:eval(['size(epochs.vrevents.t',num2str(i),'.',phase{j},'.val,1)'])
+            for l=1:eval(['size(epochs.vrevents.t',num2str(i),'.',phase{j},'.val,1)'])
                 eval(['find_freq_beta_ch18_t',num2str(i),'_p',num2str(j),'=find(epochs.vrevents.t',num2str(i),'.',phase{j},'.psd.freq>12 & epochs.vrevents.t',num2str(i),'.',phase{j},'.psd.freq<31)'])
                 eval(['mean_beta_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'(l)=log10(mean(epochs.vrevents.t',num2str(i),'.',phase{j},...
                     '.psd.saw(find_freq_beta_ch18_t',num2str(i),'_p',num2str(j),',18,l)));'])
-                %eval(['size_mean_beta_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'=size(mean_beta_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),',2)'])
+                eval(['size_mean_beta_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'=size(mean_beta_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),',2)'])
             end
-        end
-    end
-    
-    for i=1:4
-        for j=1:3
-            eval(['mean_beta_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'=nonzeros(mean_beta_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),')'''])
-            eval(['size_mean_beta_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'=size(mean_beta_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),',2)'])
         end
     end
         
@@ -568,11 +521,11 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
     end
     
     subplot(8,5,25)
-    eval(['mc_ch18_p1=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_p1,ymin4)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_p1,ymin4)'])
     subplot(8,5,30)
-    eval(['mc_ch18_p2=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_p2,ymin4)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_p2,ymin4)'])
     subplot(8,5,35)
-    eval(['mc_ch18_p3=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_p3,ymin4)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_p3,ymin4)'])
     
     grps_plot_36=[1 2 3]
     for i=1
@@ -678,15 +631,15 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
     end
     
     subplot(8,5,36)
-    eval(['mc_ch18_t1=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_t1,ymin5)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_t1,ymin5)'])
     subplot(8,5,37)
-    eval(['mc_ch18_t2=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_t2,ymin5)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_t2,ymin5)'])
     subplot(8,5,38)
-    eval(['mc_ch18_t3=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_t3,ymin5)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_t3,ymin5)'])
     subplot(8,5,39)
-    eval(['mc_ch18_t4=nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_t4,ymin5)'])
+    eval(['nr_multcompare_ind_tdcs_plot(stats_mean_beta_sbj',m,'_ch18_t4,ymin5)'])
     
-    %clear Epochcompare epochs f* g* mat* mean_beta_* p_* se* si* stats* table* y*
+    clear Epochcompare epochs f* g* mat* mean_beta_* p_* se* si* stats* table* y*
     %stats y g tbale p_*
     %clear Epochcompare epochs
  end
@@ -700,7 +653,7 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
 %all the steps
 % 4) have claudia work on reconstructions
 % 5) rerun all subjects with allen's newest scripts
-% 7) try z-scoring, common average referencing
+
 % also have to rerun with different stats tests completely, then customize
 % to each test based on normality
 
@@ -721,14 +674,13 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
 % irene and have her work on PCA
 % Next, maybe work on your controls
 %next,work with claudia's data
-%then can do reactivity
 
-%don;t forget to analyze 10 and 15 minute epochs for those that have them
+
 
 %questions for allen
 %use his sum code and find out why he did it that way
 
-% do reactivity - beta desync and beta resync
+
 % use movement epochs
 %don't forget to do imaginary movement
 
@@ -776,25 +728,6 @@ for n=11%:10 %%%%%MUST CHANGE!!!!!
 % validation of vr task
 % see if velocity curves match FMA scores
            
-%first go through and note on database which subjects had rejected trials
-%to begin with and then note whether delays and such also resulted in weird
-%looking psd's
-%so you will need to do for all phases and reaches for both channels, plot
-%out all 12 epochs for each of those conditions
-%then you should compare with original epoch plo but you should plot with
-%'.' so you can get specific epoch values
-%at some point you need to be able to view video at that same epoch time
-
-%once you've figured all that out, need to try different methods, ica, car,
-%bandpass filtering on beta to see which works best
-
-%the number of rejected trials did not differ between groups
-
-%could make the background black perhaps to see the yellow outliers
-%better(?)
-%put subject number as title
-%things to do - make figure an object
-%make description bold
 %% sum fig
 
 %%%THIS CAN OBVIOUSLY BE OPTIMIZED BY MAKING A FOR LOOP FOR STM VS NON
@@ -809,7 +742,7 @@ elec_non_ipsi=[18,7,18,18,18];
 elec_non_cont=[7,18,7,7,7];
 phase={'atStartPosition';'cueEvent';'targetUp'};
 
-% %hc
+% hc
 % sbjs_stm=['22';'24';'25';'26';'29';'30'];
 % elec_stm_ipsi=[18,7,7,7,7,18];
 % elec_stm_cont=[7,18,18,18,18,7];
@@ -817,30 +750,7 @@ phase={'atStartPosition';'cueEvent';'targetUp'};
 % elec_non_ipsi=[7,18,7,7,7];
 % elec_non_cont=[18,7,18,18,18];
 % phase={'atStartPosition';'cueEvent';'targetUp'};
-
-% figure; set(gcf,'Position',[3 47 744 898])
-%     for i=1:4
-%         subplot(8,5,i)
-%         hold on
-%         eval(['find_freq_plot_ch7_atStartPosition=find(epochs.vrevents.t',num2str(i),'.atStartPosition.psd.freq<=100)'])
-%         for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p1(i)}'])
-%         %for j=1:eval(['size(epochs.vrevents.t',num2str(i),'.atStartPosition.val,1)'])
-%             eval(['plot(epochs.vrevents.t',num2str(i),'.atStartPosition.psd.freq(find_freq_plot_ch7_atStartPosition),log10(epochs.vrevents.t',num2str(i),'.atStartPosition.psd.saw(find_freq_plot_ch7_atStartPosition,7,j)))'])
-%         end
-%         ylimasp=get(gca,'ylim');
-%         text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p1(i)},2)'])))
-%         %text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(epochs.vrevents.t',num2str(i),'.atStartPosition.val,1)'])))
-%         if i==1 & elec_stim_ipsi(n)==7
-%             ylabel('atStartPosition')
-%             title(['Sbj',m(1,:),':ch7:t',num2str(i)],'Color',[1 0 0])
-%         elseif i==1 & elec_stim_ipsi(n)~=7
-%             ylabel('atStartPosition')
-%             title(['Sbj',m(1,:),':ch7:t',num2str(i)])
-%         else
-%             title(['t',num2str(i)])
-%         end
-%         eval(['ylim_',num2str(i),'=get(gca,''ylim'');'])
-%     end
+% 
 
 %stim ipsi
 for i=1:4

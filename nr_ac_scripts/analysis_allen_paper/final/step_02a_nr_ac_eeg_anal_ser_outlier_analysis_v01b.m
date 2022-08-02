@@ -2,10 +2,13 @@ function nr_ac_eeg_anal_ser_outlier_analysis_v01b(sbjfolder,plot_ind,scroll,save
 
 %uses epochsWhole
 
-%sbjfolder='~/nr_data_analysis/data_analyzed/eeg/gen_02/data/pro00087153_0015'
+sbjfolder='~/nr_data_analysis/data_analyzed/eeg/gen_02/data/pro00087153_0013'
 %sbjfolder='Z:\pro00087153_0003'
 sbjfind=strfind(sbjfolder,'pro')
 sbjname=sbjfolder(sbjfind:sbjfind+15)
+plot_ind='yes'
+scroll='yes'
+save_outliers='yes'
 
 cd(sbjfolder)
 load([sbjfolder,'/analysis/S1-VR_preproc/',sbjname,'_S1-VRdata_preprocessed.mat'])

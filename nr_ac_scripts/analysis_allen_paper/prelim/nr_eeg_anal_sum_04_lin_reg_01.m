@@ -1,18 +1,31 @@
 load ~/nr_data_analysis/data_analyzed/eeg/metrics
 load ~/nr_data_analysis/data_analyzed/eeg/data_sum_eeg_anal_05a_plot_01_13_sub_stats_42_43_nonnorm_data_only
 
-kin_metrics.cs.stm.accur=MetricBetaPower_accur_stm;
-kin_metrics.cs.stm.avg_accel=MetricBetaPower_avg_accel_stm;
-kin_metrics.cs.stm.avg_vel=MetricBetaPower_avg_vel_stm;
-kin_metrics.cs.stm.hand_path_length=MetricBetaPower_hand_path_length_stm;
-kin_metrics.cs.stm.idx_curv=MetricBetaPower_idx_curv_stm;
-kin_metrics.cs.stm.max_accel=MetricBetaPower_max_accel_stm;
-kin_metrics.cs.stm.max_vel=MetricBetaPower_max_vel_stm;
-kin_metrics.cs.stm.norm_jerk=MetricBetaPower_norm_jerk_stm;
-kin_metrics.cs.stm.reaction_time=MetricBetaPower_reaction_time_stm;
-kin_metrics.cs.stm.time_max_vel=MetricBetaPower_time_max_vel_stm;
-kin_metrics.cs.stm.time_max_vel_norm=MetricBetaPower_time_to_max_vel_norm_stm;
-kin_metrics.cs.stm.vel_peak=MetricBetaPower_vel_peak_stm;
+% kin_metrics.cs.stm.accur=MetricBetaPower_accur_stm;
+% kin_metrics.cs.stm.avg_accel=MetricBetaPower_avg_accel_stm;
+% kin_metrics.cs.stm.avg_vel=MetricBetaPower_avg_vel_stm;
+% kin_metrics.cs.stm.hand_path_length=MetricBetaPower_hand_path_length_stm;
+% kin_metrics.cs.stm.idx_curv=MetricBetaPower_idx_curv_stm;
+% kin_metrics.cs.stm.max_accel=MetricBetaPower_max_accel_stm;
+% kin_metrics.cs.stm.max_vel=MetricBetaPower_max_vel_stm;
+% kin_metrics.cs.stm.norm_jerk=MetricBetaPower_norm_jerk_stm;
+% kin_metrics.cs.stm.reaction_time=MetricBetaPower_reaction_time_stm;
+% kin_metrics.cs.stm.time_max_vel=MetricBetaPower_time_max_vel_stm;
+% kin_metrics.cs.stm.time_max_vel_norm=MetricBetaPower_time_to_max_vel_norm_stm;
+% kin_metrics.cs.stm.vel_peak=MetricBetaPower_vel_peak_stm;
+
+kin_metrics.cs.stm.accur=MetricBetaPower_accur_stm_non;
+kin_metrics.cs.stm.avg_accel=MetricBetaPower_avg_accel_stm_non;
+kin_metrics.cs.stm.avg_vel=MetricBetaPower_avg_vel_stm_non;
+kin_metrics.cs.stm.hand_path_length=MetricBetaPower_hand_path_length_stm_non;
+kin_metrics.cs.stm.idx_curv=MetricBetaPower_idx_curv_stm_non;
+kin_metrics.cs.stm.max_accel=MetricBetaPower_max_accel_stm_non;
+kin_metrics.cs.stm.max_vel=MetricBetaPower_max_vel_stm_non;
+kin_metrics.cs.stm.norm_jerk=MetricBetaPower_norm_jerk_stm_non;
+kin_metrics.cs.stm.reaction_time=MetricBetaPower_reaction_time_stm_non;
+kin_metrics.cs.stm.time_max_vel=MetricBetaPower_time_max_vel_stm_non;
+kin_metrics.cs.stm.time_max_vel_norm=MetricBetaPower_time_to_max_vel_norm_stm_non;
+kin_metrics.cs.stm.vel_peak=MetricBetaPower_vel_peak_stm_non;
 
 
 sbjs_stm=['03';'04';'05';'42';'43'];

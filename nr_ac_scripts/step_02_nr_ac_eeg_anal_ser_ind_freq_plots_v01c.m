@@ -1,66 +1,108 @@
-function nr_ac_eeg_anal_ser_ind_freq_plots_v01b(grp,freq_band,save_fig,save_data)
+%function nr_ac_eeg_anal_ser_ind_freq_plots_v01c(grp,freq_band,save_fig,save_data)
 
-%uses epochsWhole
+%this really does not need to be a function, because I will want to look at
+%all of these en masse (may change my mind later)
 
-%%% FYI I changed the multcompare to bonferroni to be able to compare
-%%% directly with spss but can change back to tukey's if you like or can
-%%% just make an input in the function
+% 7/3/22
+%things we accomplished up to this point
+% For this function, I've changed a few of the variables to make it a bit
+% easier to run.
+% changed beta to be any freq band btn alpha and gamma,
+%i think Allen put the opposite sides for 42 and 43 so I manually change
+%them here without changing the actual sessioninfo variable (confirmed by
+%looking at the original videos)
+% For gen_02, I first changed the epoch type to vrevents (vr events is just
+% 1 second of data after the start of the event whereas epochswhole is the 
+% entire event), and compared these to epochsWhole
+% (confirming they are slightly different but have the same general pattern
+% of significance), then saved these plots as version d along with the data separately
+% Also for gen_02, sbj3's outliers had been overwritten so I regenerated
+% these and in the process refamiliarized myself with that script in case
+% its needed later on (renamed it step_02a)
+% I transferred all the epoch outlier variables to the gen_03 s3_dat
+% variables and reran all the plots with both epochsWhole and vr events,
+% compared them to the gen_02 versions (verc), and saved all plots and all data
+% separately under gen_03. Note that the psd's for 42 and 43 for gen_03
+% were generated differently (still not exactly sure in what way) but I do
+% think they were done correctly so I left them that way. after extensive
+%checking, all other subjects appear to be identical btn gen_02 and gen_03
+% now time to move on to the sum analyses
 
-% grp='cs'
-% save_fig='no'
-% freq_band='beta'
 
-if strcmp(grp,'cs')
-    elec_stim_ipsi=[7,7,18,18,7,18,7,18,18,18]
-    sbj_nums=['03';'04';'05';'42';'43';'13';'15';'17';'18';'21']
-    cs_stm=[3,4,5,42,43]
-    cs_non=[13,15,17,18,21]
-elseif strcmp(grp,'hc')
-    elec_stim_ipsi=[18,7,7,7,7,18,7,18,7,7,7]
-    sbj_nums=['22';'24';'25';'26';'29';'30';'20';'23';'27';'28';'36'];
-    hc_stm=[22,24,25,26,29,30]
-    hc_non=[20,23,27,28,36]
+
+sbjs_all=['03';'04';'05';'42';'43';'13';'15';'17';'18';'21';'22';'24';'25';'26';'29';'30';'20';'23';'27';'28';'36']
+
+%grp='cs'
+save_fig='yes'
+save_data='yes'
+freq_band='beta'
+epoch_type='vrevents'
+if strcmp(epoch_type,'epochsWhole')
+    labl='ew'
+elseif strcmp(epoch_type,'vrevents')
+    labl='vr'
 end
 
-if strcmp(freq_band,'beta')
-    frq_rng_st=13;
-    frq_rng_ed=30
-elseif strcmp(freq_band,'alpha')
+if strcmp(freq_band,'alpha')
     frq_rng_st=8;
     frq_rng_ed=12;
+elseif strcmp(freq_band,'beta')
+    frq_rng_st=13;
+    frq_rng_ed=31
+elseif strcmp(freq_band,'gamma')
+    frq_rng_st=30;
+    frq_rng_ed=50
 end
+
+
+% cs_stm=[3,4,5,42,43]
+% cs_non=[13,15,17,18,21]
+% hc_stm=[22,24,25,26,29,30]
+% hc_non=[20,23,27,28,36]
 
 out_ind_c18_p1=[1 4 7 10];
 out_ind_c18_p2=[2 5 8 11];
 out_ind_c18_p3=[3 6 9 12];
-out_ind_c7_p1=[13 16 19 22];
-out_ind_c7_p2=[14 17 20 23];
-out_ind_c7_p3=[15 18 21 24];
+out_ind_c7_p1=[13 16 19 22];%these are backwards bc ch 18 was processed first
+out_ind_c7_p2=[14 17 20 23];%so ch18 is 1-12 (i.e., t1*3 phases, t2*3 phases and so on)
+out_ind_c7_p3=[15 18 21 24];%followed by ch7 which makes 24 (even though ch7 is plotted 
+%on top of 18)
 phase={'atStartPosition';'cueEvent';'targetUp'}
 
-%n=5
 
-for n=1:size(sbj_nums,1) 
-    load(['/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_02/data/pro00087153_00',sbj_nums(n,:),'/analysis/S3-EEGanalysis/s3_dat.mat'])
-    m=num2str(sbj_nums(n,:))
+
+for n=1:size(sbjs_all,1) 
+    load(['/home/rowlandn/nr_data_analysis/data_analyzed/data_for_dlc/pro00087153_00',sbjs_all(n,:),...
+        '_sessioninfo.mat'])
+    if n==4
+        sessioninfo.stimlat='R'
+    end
+    if n==5
+        sessioninfo.stimlat='L'
+    end
+    load(['/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data/pro00087153_00',sbjs_all(n,:),...
+        '/analysis/S3-EEGanalysis/s3_dat.mat'])
+    m=num2str(sbjs_all(n,:))
     
+   
     %psd plots
-    figure; set(gcf,'Position',[786 47 744 898])
+    %figure; set(gcf,'Position',[786 47 744 898])
+    figure; set(gcf,'Position',[1518 372 754 891])
     for i=1:4
         subplot(8,5,i)
         hold on
-        eval(['find_freq_plot_ch7_atStartPosition=find(epochs.epochsWhole.t',num2str(i),'.atStartPosition.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p1(i)}'])
-            eval(['plot(epochs.epochsWhole.t',num2str(i),'.atStartPosition.psd.freq(find_freq_plot_ch7_atStartPosition),log10(epochs.epochsWhole.t',num2str(i),'.atStartPosition.psd.saw(find_freq_plot_ch7_atStartPosition,7,j)))'])
+        eval(['find_freq_plot_ch7_atStartPosition=find(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.freq<=100)'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p1(i)}'])
+            eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.freq(find_freq_plot_ch7_atStartPosition),log10(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.saw(find_freq_plot_ch7_atStartPosition,7,j)))'])
         end
         ylimasp=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p1(i)},2)'])))
-        if i==1 & elec_stim_ipsi(n)==7
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p1(i)},2)'])))
+        if i==1 & strcmp(sessioninfo.stimlat,'L')==1 
             ylabel('atStartPosition')
-            title(['Sbj',m(1,:),':ch7:t',num2str(i)],'Color',[1 0 0])
-        elseif i==1 & elec_stim_ipsi(n)~=7
+            title(['Sbj',m(1,:),':ch7:t',num2str(i),':',freq_band,':',labl],'Color',[1 0 0])
+        elseif i==1 & strcmp(sessioninfo.stimlat,'L')~=1 
             ylabel('atStartPosition')
-            title(['Sbj',m(1,:),':ch7:t',num2str(i)])
+            title(['Sbj',m(1,:),':ch7:t',num2str(i),':',freq_band,':',labl])
         else
             title(['t',num2str(i)])
         end
@@ -70,12 +112,12 @@ for n=1:size(sbj_nums,1)
     for i=1:4
         subplot(8,5,i+5)
         hold on
-        eval(['find_freq_plot_ch7_cueEvent=find(epochs.epochsWhole.t',num2str(i),'.cueEvent.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p2(i)}'])
-            eval(['plot(epochs.epochsWhole.t',num2str(i),'.cueEvent.psd.freq(find_freq_plot_ch7_cueEvent),log10(epochs.epochsWhole.t',num2str(i),'.cueEvent.psd.saw(find_freq_plot_ch7_cueEvent,7,j)))'])
+        eval(['find_freq_plot_ch7_cueEvent=find(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.freq<=100)'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p2(i)}'])
+            eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.freq(find_freq_plot_ch7_cueEvent),log10(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.saw(find_freq_plot_ch7_cueEvent,7,j)))'])
         end
         ylimce=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p2(i)},2)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p2(i)},2)'])))
         if i==1
             ylabel('cueEvent')
         end
@@ -86,12 +128,12 @@ for n=1:size(sbj_nums,1)
     for i=1:4
         subplot(8,5,i+10)
         hold on
-        eval(['find_freq_plot_ch7_targetUp=find(epochs.epochsWhole.t',num2str(i),'.targetUp.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p3(i)}'])
-            eval(['plot(epochs.epochsWhole.t',num2str(i),'.targetUp.psd.freq(find_freq_plot_ch7_targetUp),log10(epochs.epochsWhole.t',num2str(i),'.targetUp.psd.saw(find_freq_plot_ch7_targetUp,7,j)))'])
+        eval(['find_freq_plot_ch7_targetUp=find(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.freq<=100)'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p3(i)}'])
+            eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.freq(find_freq_plot_ch7_targetUp),log10(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.saw(find_freq_plot_ch7_targetUp,7,j)))'])
         end
         ylimtu=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c7_p3(i)},2)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p3(i)},2)'])))
         if i==1
             ylabel('targetUp')
         end
@@ -121,16 +163,16 @@ for n=1:size(sbj_nums,1)
     end
     %%%
     
-      
-    %bar plots
+       
+    %%%
     count=0
     for i=1:4
         for j=1:3
             count=count+1
-            for l=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{count+12}'])
+            for l=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{count+12}'])
                 l
-                eval(['find_freq_',freq_band,'_ch7_t',num2str(i),'_p',num2str(j),'=find(epochs.epochsWhole.t',num2str(i),'.',phase{j},'.psd.freq>=',num2str(frq_rng_st),' & epochs.epochsWhole.t',num2str(i),'.',phase{j},'.psd.freq<=',num2str(frq_rng_ed),')'])
-                eval(['mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'(l)=log10(mean(epochs.epochsWhole.t',num2str(i),'.',phase{j},...
+                eval(['find_freq_',freq_band,'_ch7_t',num2str(i),'_p',num2str(j),'=find(epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq>',num2str(frq_rng_st),' & epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq<',num2str(frq_rng_ed),')'])
+                eval(['mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'(l)=log10(mean(epochs.',epoch_type,'.t',num2str(i),'.',phase{j},...
                     '.psd.saw(find_freq_',freq_band,'_ch7_t',num2str(i),'_p',num2str(j),',7,l)));'])
             end
         end
@@ -368,21 +410,21 @@ for n=1:size(sbj_nums,1)
     eval(['mc_ch7_t4=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_t4,ymin3)'])
 
 
-    %ch18
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%ch18
     %psd plots
     for i=1:4
         subplot(8,5,i+20)
         hold on
-        eval(['find_freq_plot_ch18_atStartPosition=find(epochs.epochsWhole.t',num2str(i),'.atStartPosition.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p1(i)}'])
-            eval(['plot(epochs.epochsWhole.t',num2str(i),'.atStartPosition.psd.freq(find_freq_plot_ch18_atStartPosition),log10(epochs.epochsWhole.t',num2str(i),'.atStartPosition.psd.saw(find_freq_plot_ch18_atStartPosition,18,j)))'])
+        eval(['find_freq_plot_ch18_atStartPosition=find(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.freq<=100)'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p1(i)}'])
+            eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.freq(find_freq_plot_ch18_atStartPosition),log10(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.saw(find_freq_plot_ch18_atStartPosition,18,j)))'])
         end
         ylimasp=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p1(i)},2)'])))
-        if i==1 & elec_stim_ipsi(n)==18
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p1(i)},2)'])))
+        if i==1 & strcmp(sessioninfo.stimlat,'R')==1 
             ylabel('atStartPosition')
             title(['ch18:t',num2str(i)],'Color',[1 0 0])
-        elseif i==1 & elec_stim_ipsi(n)~=18
+        elseif i==1 & strcmp(sessioninfo.stimlat,'R')~=1 
             ylabel('atStartPosition')
             title(['ch18:t',num2str(i)])
         else
@@ -394,12 +436,12 @@ for n=1:size(sbj_nums,1)
     for i=1:4
         subplot(8,5,i+25)
         hold on
-        eval(['find_freq_plot_ch18_cueEvent=find(epochs.epochsWhole.t',num2str(i),'.cueEvent.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p2(i)}'])
-            eval(['plot(epochs.epochsWhole.t',num2str(i),'.cueEvent.psd.freq(find_freq_plot_ch18_cueEvent),log10(epochs.epochsWhole.t',num2str(i),'.cueEvent.psd.saw(find_freq_plot_ch18_cueEvent,18,j)))'])
+        eval(['find_freq_plot_ch18_cueEvent=find(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.freq<=100)'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p2(i)}'])
+            eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.freq(find_freq_plot_ch18_cueEvent),log10(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.saw(find_freq_plot_ch18_cueEvent,18,j)))'])
         end
         ylimce=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p2(i)},2)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p2(i)},2)'])))
         if i==1
             ylabel('cueEvent')
         end
@@ -410,12 +452,12 @@ for n=1:size(sbj_nums,1)
     for i=1:4
         subplot(8,5,i+30)
         hold on
-        eval(['find_freq_plot_ch18_targetUp=find(epochs.epochsWhole.t',num2str(i),'.targetUp.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p3(i)}'])
-            eval(['plot(epochs.epochsWhole.t',num2str(i),'.targetUp.psd.freq(find_freq_plot_ch18_targetUp),log10(epochs.epochsWhole.t',num2str(i),'.targetUp.psd.saw(find_freq_plot_ch18_targetUp,18,j)))'])
+        eval(['find_freq_plot_ch18_targetUp=find(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.freq<=100)'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p3(i)}'])
+            eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.freq(find_freq_plot_ch18_targetUp),log10(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.saw(find_freq_plot_ch18_targetUp,18,j)))'])
         end
         ylimtu=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{out_ind_c18_p3(i)},2)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p3(i)},2)'])))
         if i==1
             ylabel('targetUp')
         end
@@ -450,9 +492,9 @@ for n=1:size(sbj_nums,1)
     for i=1:4
         for j=1:3
             count=count+1
-            for l=eval(['pro00087153_00',num2str(sbj_nums(n,:)),'_reaches_wo_outliers{count}'])
-                eval(['find_freq_',freq_band,'_ch18_t',num2str(i),'_p',num2str(j),'=find(epochs.epochsWhole.t',num2str(i),'.',phase{j},'.psd.freq>=',num2str(frq_rng_st),' & epochs.epochsWhole.t',num2str(i),'.',phase{j},'.psd.freq<=',num2str(frq_rng_ed),')'])
-                eval(['mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'(l)=log10(mean(epochs.epochsWhole.t',num2str(i),'.',phase{j},...
+            for l=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{count}'])
+                eval(['find_freq_',freq_band,'_ch18_t',num2str(i),'_p',num2str(j),'=find(epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq>',num2str(frq_rng_st),' & epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq<',num2str(frq_rng_ed),')'])
+                eval(['mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'(l)=log10(mean(epochs.',epoch_type,'.t',num2str(i),'.',phase{j},...
                     '.psd.saw(find_freq_',freq_band,'_ch18_t',num2str(i),'_p',num2str(j),',18,l)));'])
             end
         end
@@ -672,23 +714,30 @@ for n=1:size(sbj_nums,1)
     eval(['mc_ch18_t4=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_t4,ymin5)'])
     
     if strcmp(save_fig,'yes')
-        if strcmp(grp,'cs') & ismember(str2num(m),cs_stm)
-            saveas(gcf,['~/nr_data_analysis/data_analyzed/eeg/gen_02/figures/gen_02_verc_ind_',grp,'_stm_',freq_band,'_sbj',m,'.fig'],'fig')
-        elseif strcmp(grp,'cs') & ismember(str2num(m),cs_non)
-            saveas(gcf,['~/nr_data_analysis/data_analyzed/eeg/gen_02/figures/gen_02_verc_ind_',grp,'_non_',freq_band,'_sbj',m,'.fig'],'fig')
-        elseif strcmp(grp,'hc') & ismember(str2num(m),hc_stm)
-            saveas(gcf,['~/nr_data_analysis/data_analyzed/eeg/gen_02/figures/gen_02_verc_ind_',grp,'_stm_',freq_band,'_sbj',m,'.fig'],'fig')
-        elseif strcmp(grp,'hc') & ismember(str2num(m),hc_non)
-            saveas(gcf,['~/nr_data_analysis/data_analyzed/eeg/gen_02/figures/gen_02_verc_ind_',grp,'_non_',freq_band,'_sbj',m,'.fig'],'fig')
-        end
+        saveas(gcf,['~/nr_data_analysis/data_analyzed/eeg/gen_03/figures/gen_03_ver_a_',labl,'_ind_',...
+            freq_band,'_sbj',m,'.fig'],'fig')
     end
     
-    clear Epochcompare epochs find* grp_* mat* mc* mean_delta_* mean_theta_* mean_alpha_* mean_beta_* mean_gamma_* p_* se* si* stats* table* y*
-    %stats y g tbale p_*
-    %clear Epochcompare epochs
-    
+    clear Epochcompare epochs find* grps* mat* mc* mean_',freq_band,'_* p_* se* si* stats* table* y*
+        
 end
 
 if strcmp(save_data,'yes')
-        save(['~/nr_data_analysis/data_analyzed/eeg/gen_02/data/',grp,'_mean_mean_',freq_band,'_all'] ,['mean_mean_',freq_band,'*']) 
+        save(['~/nr_data_analysis/data_analyzed/eeg/gen_03/data/gen_03_ver_a_',...
+            '_mean_mean_',freq_band,'_ind_all','_',labl] ,['mean_mean_',freq_band,'*']) 
 end
+
+
+find100=find(epochs.',epoch_type,'.t1.atStartPosition.psd.freq<100)
+figure
+plot(epochs.',epoch_type,'.t1.atStartPosition.psd.freq(1:17),log10(epochs.',epoch_type,'.t1.atStartPosition.psd.saw(1:17,:,1)))
+
+% clear
+% load('/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_02/data/pro00087153_0043/analysis/S3-EEGanalysis/s3_dat.mat')
+% clear e* E*
+% load('/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data/pro00087153_0043/analysis/S3-EEGanalysis/s3_dat.mat')
+% save('/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data/pro00087153_0043/analysis/S3-EEGanalysis/s3_dat.mat')
+% 
+
+
+

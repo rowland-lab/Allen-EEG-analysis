@@ -16,6 +16,7 @@ function nr_ac_eeg_anal_ser_sum_freq_plots_v01b(grp,freq_band,mean_mean_var,save
 % save_data='yes'
 
 
+
 if strcmp(grp,'cs')
     sbjs_stm=['03';'04';'05';'42';'43'];
     for n=1:size(sbjs_stm,1)

@@ -1,26 +1,38 @@
 load ~/nr_data_analysis/data_analyzed/eeg/metrics
 load ~/nr_data_analysis/data_analyzed/eeg/data_sum_eeg_anal_05a_plot_01_13_sub_stats_42_43_nonnorm_data_only
 
-kin_metrics.cs.non.accur=MetricBetaPower_accur;
-kin_metrics.cs.non.avg_accel=MetricBetaPower_avg_accel;
-kin_metrics.cs.non.avg_vel=MetricBetaPower_avg_vel;
-kin_metrics.cs.non.hand_path_length=MetricBetaPower_hand_path_length;
-kin_metrics.cs.non.idx_curv=MetricBetaPower_idx_curv;
-kin_metrics.cs.non.max_accel=MetricBetaPower_max_accel;
-kin_metrics.cs.non.max_vel=MetricBetaPower_max_vel;
-kin_metrics.cs.non.norm_jerk=MetricBetaPower_norm_jerk;
-kin_metrics.cs.non.reaction_time=MetricBetaPower_reaction_time;
-kin_metrics.cs.non.time_max_vel=MetricBetaPower_time_max_vel;
-kin_metrics.cs.non.time_max_vel_norm=MetricBetaPower_time_to_max_vel_norm;
-kin_metrics.cs.non.vel_peak=MetricBetaPower_vel_peak;
+% kin_metrics.cs.non.accur=MetricBetaPower_accur;
+% kin_metrics.cs.non.avg_accel=MetricBetaPower_avg_accel;
+% kin_metrics.cs.non.avg_vel=MetricBetaPower_avg_vel;
+% kin_metrics.cs.non.hand_path_length=MetricBetaPower_hand_path_length;
+% kin_metrics.cs.non.idx_curv=MetricBetaPower_idx_curv;
+% kin_metrics.cs.non.max_accel=MetricBetaPower_max_accel;
+% kin_metrics.cs.non.max_vel=MetricBetaPower_max_vel;
+% kin_metrics.cs.non.norm_jerk=MetricBetaPower_norm_jerk;
+% kin_metrics.cs.non.reaction_time=MetricBetaPower_reaction_time;
+% kin_metrics.cs.non.time_max_vel=MetricBetaPower_time_max_vel;
+% kin_metrics.cs.non.time_max_vel_norm=MetricBetaPower_time_to_max_vel_norm;
+% kin_metrics.cs.non.vel_peak=MetricBetaPower_vel_peak;
 
+kin_metrics.cs.non.accur=MetricBetaPower_accur_non;
+kin_metrics.cs.non.avg_accel=MetricBetaPower_avg_accel_non;
+kin_metrics.cs.non.avg_vel=MetricBetaPower_avg_vel_non;
+kin_metrics.cs.non.hand_path_length=MetricBetaPower_hand_path_length_non;
+kin_metrics.cs.non.idx_curv=MetricBetaPower_idx_curv_non;
+kin_metrics.cs.non.max_accel=MetricBetaPower_max_accel_non;
+kin_metrics.cs.non.max_vel=MetricBetaPower_max_vel_non;
+kin_metrics.cs.non.norm_jerk=MetricBetaPower_norm_jerk_non;
+kin_metrics.cs.non.reaction_time=MetricBetaPower_reaction_time_non;
+kin_metrics.cs.non.time_max_vel=MetricBetaPower_time_max_vel_non;
+kin_metrics.cs.non.time_max_vel_norm=MetricBetaPower_time_to_max_vel_norm_non;
+kin_metrics.cs.non.vel_peak=MetricBetaPower_vel_peak_non;
 
 sbjs_non=['13';'15';'17';'18';'21'];
 plot_color=['k','b','g','c','m']
 
 %% cs_non_ipsi_rest_beta
 figure
-set(gcf,'Position',[228 100 1367 1271])
+set(gcf,'Position',[1630 43 976 1213])
 
 %Accuracy
 xlim_cs_non_ipsi_rest_beta=max(max(data_sum_cs_non_ipsi_rest_beta))

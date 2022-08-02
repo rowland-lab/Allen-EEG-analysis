@@ -1,0 +1,23 @@
+bin 1
+N_PicOnset
+.{5}{10}
+
+bin 2
+TU_PicOnset
+.{25}{50}
+
+bin 3
+TA_PicOnset
+.{75}{100}
+
+bin 4
+N_ViewChange
+{5}.{10}
+
+bin 5
+TU_ViewChange
+{25}.{50}
+
+bin 6
+TA_ViewChange
+{75}.{100}
