@@ -102,7 +102,6 @@ for f=1:numel(FOI_freq)
     cd(['~/nr_data_analysis/data_analyzed/eeg/gen_03/analysis_icoh/',datestr])
     %savefig(gcf,fullfile(savefolder,figname))
     %savefig(gcf,figname)
-    close
-    %saveas(gcf,fullfile(savefolder,[figname,'.jpeg']))
+    %%%close
 end
 %end

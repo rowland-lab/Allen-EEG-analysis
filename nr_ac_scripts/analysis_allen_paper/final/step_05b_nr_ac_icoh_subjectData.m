@@ -2443,7 +2443,7 @@ for f=1:numel(FOI_freq)
         % % %             end
         % % %         end
         
-        close all
+        %close all
     end
 end
 %cd(outpath)

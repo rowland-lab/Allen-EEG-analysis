@@ -12,7 +12,7 @@ calc_labpower=true;
 
 % Detect subjects
 sbj=dir(fullfile(datafolder,'pro000*'));
-sbj={sbj.name}';
+sbj={sbj.name}'; 
 
 % % Load Gitpath
 cd(gitpath)
@@ -1091,9 +1091,9 @@ end
 % then the bar plots (I think)
 
 
-%TOI={'pre-stim (baseline)','intrastim (5 min)','intrastim (15 min)','post-stim (5 min)'};
-TOI={'pre','i05','i15','pos'};
-TOI_mod={'prestim','intra5','intra15','poststim5'};
+TOI={'pre-stim (baseline)','intrastim (5 min)','intrastim (15 min)','post-stim (5 min)'};
+TOI_mod={'pre','i05','i15','pos'};
+%TOI_mod={'prestim','intra5','intra15','poststim5'};
 phases={'Hold','Prep','Reach'};
 DOI={'stroke','healthy'};
 stimtypes=[0,2];
@@ -1101,10 +1101,10 @@ stimname={'Sham','Stim'};
 electrodes={'F7','T3','T5','O1','F3','C3','P3','A1','Fz','Cz','Fp2','F8','T4','T6','O2','F4','C4','P4','A2','Pz','Fp1'};
 FOI_label={'Alpha','Beta','Gamma'};
 FOI_freq={{8,12},{13,30},{30,50}};
-savefigures=true;
-outpath='/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/Analysis';
-iCohdiffFolder=fullfile(outpath,'iCohdiff');
-mkdir(iCohdiffFolder);
+% savefigures=true;
+% outpath='/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/Analysis';
+% iCohdiffFolder=fullfile(outpath,'iCohdiff');
+% mkdir(iCohdiffFolder);
 %outpath='C:\Users\allen\Desktop\RowlandFigs_11_22_21\Coh';
 
 for f=1:numel(FOI_freq)
@@ -1165,12 +1165,13 @@ for f=1:numel(FOI_freq)
                 
                 % Find diff
                 matcoh=(matcoh2-matcoh1)./matcoh1*100;
-                
+                                
                 for s=1:numel(stimtypes)
                     h(ax_count)=subplot(numel(TOI),(numel(phases)-1)*numel(stimtypes),p+((s-1)*(numel(phases)-1))+((t-1)*(numel(phases)-1)*numel(stimtypes)));
                     ax_count=ax_count+1;
                     idx=tempstim==stimtypes(s)&strcmp(tempdisease,DOI{d});
-                    eval(['icoh_data_anal.mat_diff.all.',FOI_label{f},'.',DOI{d},'.',phases{p},'_',phases{p+1},'.',stimname{s},'.',TOI{t},'=matcoh(:,:,idx);'])
+                    eval(['icoh_data_anal.mat_diff.all.',FOI_label{f},'.',DOI{d},'.',phases{p},'_',phases{p+1},'.',stimname{s},'.',TOI_mod{t},'=matcoh(:,:,find(idx));'])
+                                             
                     imagescDat=mean(matcoh(:,:,idx),3);
                     imagesc(imagescDat)
                     
@@ -1190,18 +1191,18 @@ for f=1:numel(FOI_freq)
             end
         end
         
-%         % link axis
-%         for i=1:numel(h)
-%             caxis(h(i),[cmin cmax])
-%         end
-%         
-%         % Colorbar
-%         cbh = colorbar(h(end));
-%         cbh.Location='layout';
-%         cbh.Position=[.9314 .11 .0281 .8150];
-%         ylabel(cbh,['% Diff Coherence ',FOI_label{f}],'FontSize',12)
-%         figtitle=sprintf('%s Percent Diff Coherence - %s',FOI_label{f},DOI{d});
-%         
+        % link axis
+        for i=1:numel(h)
+            caxis(h(i),[cmin cmax])
+        end
+        
+        % Colorbar
+        cbh = colorbar(h(end));
+        cbh.Location='layout';
+        cbh.Position=[.9314 .11 .0281 .8150];
+        ylabel(cbh,['% Diff Coherence ',FOI_label{f}],'FontSize',12)
+        figtitle=sprintf('%s Percent Diff Coherence - %s',FOI_label{f},DOI{d});
+        
         % Title
             sgtitle([FOI_label{f},' - ',DOI{d},' - all subjects (%)'])
             figname=['nr_icoh_matdiff_sbj_all_elec_all_',FOI_label{f},'_',DOI{d},'_nonnorm_',datestr];
@@ -1214,19 +1215,12 @@ for f=1:numel(FOI_freq)
             %savefig(gcf,figname)
         %end
         
-        
-        
-        
         %close all
     end
 end
 
-%tomorrow
-% clear everything (btw make sure to uncomment caxes on previous section
-%run all eelectrode mattdiff plots then try to run plots for each subject
-%do some spot checking bc you won't know whether they are correct or not
 
-%% Individual icoh diff matrices
+%% Individual icoh diff matrices - DIDN'T USE THIS CODE - ELIMINATE IF NOT NEEDED
 
 %Create subject name variable
 for s=1:size(subjectData,2)
@@ -1271,15 +1265,21 @@ for f=2%1:numel(FOI_label)
             %extract subject row
             [sbj_r,sbj_c]=ind2sub(size(sbj_name),sbj);
              
-            count=0
-            sp_vec_08=[1 3 5 7 2 4 6 8]
+            count=0;
+            sp_vec_08=[1 3 5 7 2 4 6 8];
             for p=[1 2]
                 for t=1:numel(TOI)
-                    count=count+1
+                    count=count+1;
                     subplot(4,2,sp_vec_08(count))
+                    
+                    %eval(['icoh_data_anal.mat_diff.all.',FOI_label{f},'.',distype,'.',phases{p},'_',phases{p+1},'.',stimtype,'.',TOI_mod{t},'=matcoh(:,:,sbj_r);'])
+
                    % if t==1
-                        eval(['imagescDatall=icoh_data_anal.mat_diff.all.',FOI_label{f},'.',DOI{d},'.',phases{p},'_',phases{p+1},'.',stimname{s},'.',TOI{t},'(:,:,sbj_r);']);
-        %                eval(['imagescDatall=icoh_data_anal.mat_diff.all.',FOI_label{f},'.',distype,'.',phases{p},'_',phases{p+1},'.',stimtype,'.',TOI{t},'(:,:,sbj_r);']);
+                        %eval(['imagescDatall=icoh_data_anal.mat_diff.all.',FOI_label{f},'.',DOI{d},'.',phases{p},'_',phases{p+1},'.',stimname{s},'.',TOI_mod{t},'(:,:,sbj_r);']);
+                                eval(['imagescDatall=idxstruct1.',FOI_label{f},'.',DOI{d},'.',phases{p},'_',phases{p+1},'.',stimname{s},'.',TOI_mod{t},'(:,:,sbj_r);']);
+
+                        
+                        %                eval(['imagescDatall=icoh_data_anal.mat_diff.all.',FOI_label{f},'.',distype,'.',phases{p},'_',phases{p+1},'.',stimtype,'.',TOI{t},'(:,:,sbj_r);']);
         % 
         %                 eval(['icoh_data_anal.mat_diff.all.',FOI_label{f},'.',DOI{d},'.',phases{p},'_',phases{p+1},'.',stimname{s},'.',TOI{t},'=matcoh(:,:,idx);'])
         %                 eval(['imagescDatall=icoh_data_anal.mat_diff.all.',FOI_label{f},'.',DOI{d},'.',phases{p},'_',phases{p+1},'.',stimname{s},'.',TOI{t},'(:,:,sbj_r);']);
@@ -1303,8 +1303,11 @@ for f=2%1:numel(FOI_label)
                 %                 imagescDat1=mat2gray(imagescDat1);
                 %                 imagescDat1(logical(diag(ones(size(imagescDat1,1),1))))=nan;
                 %             end
-                    imagesc(imagescDatall,[0.4 0.7])
-                    %axis square
+                    imagesc(imagescDatall)
+                    
+                    % Find caxis
+                    cmin=min([cmin; imagescDatall(:)]);
+                    cmax=max([cmax; imagescDatall(:)]);
 
                     colormap('jet');
                     xticks([1:numel(electrodes)])
@@ -1314,10 +1317,15 @@ for f=2%1:numel(FOI_label)
                     title([phases{p},' - ',phases{p+1}])
                     %subtitle(stimname{2})%s
                     subtitle(stimtype)
-                    ylabel(TOI{t})
+                    ylabel(TOI_mod{t})
 
                 end
             end
+            
+%             % link axis
+%             for i=1:numel(h)
+%                 caxis(h(i),[cmin cmax])
+%             end
             sgtitle([FOI_label{f},' - ',sbj_name{sbj},' ',distype,' ',stimtype])
 
     % 
@@ -1433,155 +1441,591 @@ for f=2%1:numel(FOI_label)
     end
 end
 
-%This is for ind c3-4 plots
+
+%% this is to recreate the means from my icoh_data_anal variable, check the cmin/cmax and colorbars, etc
+figure; set(gcf,'Position',[1947 408 873 440])
+spv1=[1 5 9 13 2 6 10 14 3 7 11 15 4 8 12 16]
+tvec=[1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4]
+t={'pre';'i05';'i15';'pos'}
+for i=1:16
+    if i>=1 & i<=4
+        htest(i)=subplot(4,4,spv1(i))
+        eval(['imagesc(mean(icoh_data_anal.mat_diff.all.Beta.stroke.Hold_Prep.Sham.',t{tvec(i)},'(:,:,:),3));'])
+        eval(['imagescDattest=mean(icoh_data_anal.mat_diff.all.Beta.stroke.Hold_Prep.Sham.',t{tvec(i)},'(:,:,:),3);'])
+        cmin=min([cmin; imagescDattest(:)]);
+        cmax=max([cmax; imagescDattest(:)]);
+        colormap('jet')
+        xticks([1:numel(electrodes)])
+        xticklabels(electrodes)
+        yticks([1:numel(electrodes)])
+        yticklabels(electrodes)
+
+    elseif i>=5 & i<=8
+        htest(i)=subplot(4,4,spv1(i))
+        eval(['imagesc(mean(icoh_data_anal.mat_diff.all.Beta.stroke.Prep_Reach.Sham.',t{tvec(i)},'(:,:,:),3));'])
+        eval(['imagescDattest=mean(icoh_data_anal.mat_diff.all.Beta.stroke.Prep_Reach.Sham.',t{tvec(i)},'(:,:,:),3);'])
+        cmin=min([cmin; imagescDattest(:)]);
+        cmax=max([cmax; imagescDattest(:)]);
+        colormap('jet')
+        xticks([1:numel(electrodes)])
+        xticklabels(electrodes)
+        yticks([1:numel(electrodes)])
+        yticklabels(electrodes)
+        
+    elseif i>=9 & i<=12
+        htest(i)=subplot(4,4,spv1(i))
+        eval(['imagesc(mean(icoh_data_anal.mat_diff.all.Beta.stroke.Hold_Prep.Stim.',t{tvec(i)},'(:,:,:),3));'])
+        eval(['imagescDattest=mean(icoh_data_anal.mat_diff.all.Beta.stroke.Hold_Prep.Stim.',t{tvec(i)},'(:,:,:),3);'])
+        cmin=min([cmin; imagescDattest(:)]);
+        cmax=max([cmax; imagescDattest(:)]);
+        colormap('jet')
+        xticks([1:numel(electrodes)])
+        xticklabels(electrodes)
+        yticks([1:numel(electrodes)])
+        yticklabels(electrodes)
+        
+    elseif i>=13 & i<=16
+        htest(i)=subplot(4,4,spv1(i))
+        eval(['imagesc(mean(icoh_data_anal.mat_diff.all.Beta.stroke.Prep_Reach.Stim.',t{tvec(i)},'(:,:,:),3));'])
+        eval(['imagescDattest=mean(icoh_data_anal.mat_diff.all.Beta.stroke.Prep_Reach.Stim.',t{tvec(i)},'(:,:,:),3);'])
+        cmin=min([cmin; imagescDattest(:)]);
+        cmax=max([cmax; imagescDattest(:)]);
+        colormap('jet')
+        xticks([1:numel(electrodes)])
+        xticklabels(electrodes)
+        yticks([1:numel(electrodes)])
+        yticklabels(electrodes)
+    end
+end
+
+% % link axis
+% for i=1:numel(htest)
+%     caxis(htest(i),[cmin cmax])
+% end
+%sgtitle([FOI_label
+%Colorbar
+cbh = colorbar(htest(end));
+cbh = colorbar;
+cbh.Location='layout';
+cbh.Position=[.9314 .11 .0281 .8150];
+ylabel(cbh,'Coherence','FontSize',12)
+
+%%%%% The non-linked axes version checks out perfectly! Time to move on to
+%%%%% individual plots!!
+
+%% this is to recreate the individual plots
+for s=1:size(subjectData,2)
+    if tempstim(s)==0
+        tempstimlabel{s,1}='Sham';
+    elseif tempstim(s)==2
+        tempstimlabel{s,1}='Stim';
+    end
+end
+
+spv1=[1 3 5 7 2 4 6 8]
+tvec=[1 2 3 4 1 2 3 4]
+time={'pre';'i05';'i15';'pos'}
+
+sbj_name=cell(6,numel(DOI)*numel(stimtypes));
+sbjcount=1;
+for d=1:numel(DOI)
+    for s=1:numel(stimtypes)
+        idx=strcmp(tempdisease,DOI{d})&tempstim==stimtypes(s);
+        hold on
+        ydat=tempdat(idx);
+        sbjs=extractAfter({subjectData(idx).SubjectName},'pro00087153_00');
+        sbj_name(1:numel(sbjs),sbjcount)=sbjs;
+        sbjcount=sbjcount+1;
+    end
+end
+
+for s=1:21
+    sbj_str{s}=extractAfter({subjectData(s).SubjectName},'pro00087153_00')
+end
+
 for f=1:numel(FOI_label)
-    figure; set(gcf,'Position',[2133 109 1214 834])
-    sp_vec=[1,7,13,19,2,8,14,20,3,9,15,21,4,10,16,22,5,11,17,23,NaN,NaN,NaN,24]
-    for sbj=1:numel(sbj_name)
-        %if isempty(sbj_name{sbj})
-        if isnan(sp_vec(sbj))
-        else
-            subplot(6,4,sbj)
-            eval(['imagesc(imagescDat_ind_',FOI_label{f},'_c3_c4{sp_vec(sbj)},[0.4 0.7])'])
-            ylabel(sbj_name{sp_vec(sbj)},'Fontweight','bold')
-            colormap('jet');
-            set(gca,'YTick',[1:4],'YTickLabel',['pre';'i05';'i15';'pos'],'XTick',[1:3],'XTickLabel',['H';'P';'R'])
-            if sbj==1
-                title('stroke')
-                subtitle ('sham')
-            elseif sbj==2
-                title('stroke')
-                subtitle ('stim')
-            elseif sbj==3
-                title('healthy')
-                subtitle ('sham')
-            elseif sbj==4
-                title('healthy')
-                subtitle ('stim')
-            end
-            sgtitle(FOI_label{f})
-
-            %Colorbar
-            cbh = colorbar;
-            cbh.Location='layout';
-            cbh.Position=[.9314 .11 .0281 .8150];
-            ylabel(cbh,'Coherence','FontSize',12)
-            %f=2;
-            if norm
-                ylabel(cbh,['Normalized ',FOI_label{f},' C3-4 Coherence'],'FontSize',12)
-                figtitle=sprintf('%s Coherence Matrix - %s Normalized',FOI_label{f},DOI{d});
-            else
-                ylabel(cbh,['C3-4 Coherence ',FOI_label{f}],'FontSize',12)
-                figtitle=sprintf('%s Coherence Matrix - %s',FOI_label{f},DOI{d});
+    for s=1:21
+        figure; set(gcf,'Position',[2052 610 743 515])
+        [sbj_r,sbj_c]=find(strcmp(sbj_name,sbj_str{s}));
+        for t=1:8
+            if t>=1 & t<=4
+                htest(t)=subplot(4,2,spv1(t));
+                subplot(4,2,spv1(t))
+                eval(['imagesc(icoh_data_anal.mat_diff.all.',FOI_label{f},'.',tempdisease{s},'.','Hold_Prep.',tempstimlabel{s},...
+                    '.',time{tvec(t)},'(:,:,sbj_r));'])
+                colormap('jet')
+                xticks([1:numel(electrodes)])
+                xticklabels(electrodes)
+                yticks([1:numel(electrodes)])
+                yticklabels(electrodes)
+                title('Hold - Prep')
+            elseif t>=5 & t<=8
+                htest(t)=subplot(4,2,spv1(t));
+                subplot(4,2,spv1(t))
+                eval(['imagesc(icoh_data_anal.mat_diff.all.',FOI_label{f},'.',tempdisease{s},'.','Prep_Reach.',tempstimlabel{s},...
+                    '.',time{tvec(t)},'(:,:,sbj_r));'])
+                colormap('jet')
+                xticks([1:numel(electrodes)])
+                xticklabels(electrodes)
+                yticks([1:numel(electrodes)])
+                yticklabels(electrodes)
+                title('Prep - Reach')
             end
         end
-        cd(['~/nr_data_analysis/data_analyzed/eeg/gen_03/analysis_icoh/',datestr])
-        figname=['nr_icoh_mat_sbj_all_elec_c3c4_',FOI_label{f},'_nonnorm_',datestr];
-        %savefig(gcf,figname)
+        sgtitle([sbj{s}(15:16),' ',FOI_label{f},' ',tempdisease{s},' ',tempstimlabel{s}])
+        %Colorbar
+        %cbh = colorbar(htest(end));
+        cbh = colorbar;
+        cbh.Location='layout';
+        cbh.Position=[.9314 .11 .0281 .8150];
+        ylabel(cbh,'Coherence','FontSize',12)
     end
 end
 
-%% iCoh C3-C4 phase diff
 
-TOI={'pre-stim (baseline)','intrastim (5 min)','intrastim (15 min)','post-stim (5 min)'};
-phases={'Hold','Prep','Reach'};
-DOI={'stroke','healthy'};
-stimtypes=[0,2];
-stimname={'Sham','Stim'};
-electrodes={'F7','T3','T5','O1','F3','C3','P3','A1','Fz','Cz','Fp2','F8','T4','T6','O2','F4','C4','P4','A2','Pz','Fp1'};
-FOI_label={'Alpha','Beta','Gamma-L','Gamma-B'};
-FOI_freq={{8,12},{13,30},{30,70},{70,120}};
-savefigures=true;
-%outpath='C:\Users\allen\Desktop\RowlandFigs_11_22_21\Coh';
-outpath='/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/Analysis';
-iCohdiffc3_4Folder=fullfile(outpath,'iCohdiffc3_4');
-mkdir(iCohdiffc3_4Folder);
-exportdata=true;
-
-eData=[];
-for f=2%1:numel(FOI_freq)
-    for d=1:numel(DOI)
-        %figure('WindowState','maximized')
-        figure; set(gcf,'Position',[2371 385 593 430])
-        ax_count=1;
-        subplot_count=1;
-        clear h
-        cmin=[];
-        cmax=[];
-        for t=1:numel(TOI)
-            for p=1:numel(phases)-1
-                
-                tempdisease=[];
-                tempstim=[];
-                matcoh1=[];
-                matcoh2=[];
-                
-                for s=1:numel(sbj)
-                    
-                    % Calculate coherence 1
-                    sbjicoh=subjectData(s).iCoh;
-                    FOI_idx=sbjicoh.freq>=FOI_freq{f}{1} & sbjicoh.freq<=FOI_freq{f}{2};
-                    TOI_idx=strcmp(subjectData(s).sessioninfo.trialnames,TOI{t});
-                    c3c4idx=all(strcmp(sbjicoh.label,'C3')+strcmp(sbjicoh.label,'C4'),2);
-                    tempdat=mean(mean(sbjicoh.data(c3c4idx,FOI_idx,:,p,TOI_idx),2,'omitnan'),3,'omitnan');
-                    matcoh1(s)=tempdat;
-                    
-                    % Calculate coherence 2
-                    sbjicoh=subjectData(s).iCoh;
-                    FOI_idx=sbjicoh.freq>=FOI_freq{f}{1} & sbjicoh.freq<=FOI_freq{f}{2};
-                    TOI_idx=strcmp(subjectData(s).sessioninfo.trialnames,TOI{t});
-                    c3c4idx=all(strcmp(sbjicoh.label,'C3')+strcmp(sbjicoh.label,'C4'),2);
-                    tempdat=mean(mean(sbjicoh.data(c3c4idx,FOI_idx,:,p+1,TOI_idx),2,'omitnan'),3,'omitnan');
-                    matcoh2(s)=tempdat;
-                    
-                    % Organize disease
-                    tempdisease{s,1}=subjectData(s).sessioninfo.dx;
-                    
-                    % Organize stim
-                    tempstim(s,1)=subjectData(s).sessioninfo.stimamp;
-                end
-                
-                % Find diff
-                matcoh=(matcoh2-matcoh1)./matcoh1*100;
-                
-                sbjname=[];
-                plotdat=nan(10,2);
-                for s=1:numel(stimtypes)
-                    idx=tempstim==stimtypes(s)&strcmp(tempdisease,DOI{d});
-                    plotdat(1:sum(idx),s)=matcoh(idx);
-                    sbjname=[sbjname;sbj(idx)];
-                end
-                plotdat=plotdat(any(~isnan(plotdat),2),:);
-                
-                h(ax_count)=subplot(numel(TOI),(numel(phases)-1),subplot_count);
-                subplot_count=subplot_count+1;
-                ax_count=ax_count+1;
-                bar(mean(plotdat,1))
-                title([phases{p},' - ',phases{p+1}])
-                subtitle(TOI{t})
-                xticklabels({'Sham','Stim'})
-                [pass,pval]=ttest(plotdat(:),[ones(sum(idx),1);ones(sum(idx),1)*2]);
-                
-%                 if exportdata
-%                     eData.(FOI_label{f}).(DOI{d}).([phases{p},phases{p+1}]){t}=plotdat;
-%                 end
+% %This is for ind c3-4 plots
+% for s=1:size(subjectData,2)
+%     if tempstim(s)==0
+%         tempstimlabel{s,1}='Sham';
+%     elseif tempstim(s)==2
+%         tempstimlabel{s,1}='Stim';
+%     end
+% end
+% 
+% spv1=[1 3 5 7 2 4 6 8]
+% tvec=[1 2 3 4 1 2 3 4]
+% time={'pre';'i05';'i15';'pos'}
+% 
+% sbj_name=cell(6,numel(DOI)*numel(stimtypes));
+% sbjcount=1;
+% for d=1:numel(DOI)
+%     for s=1:numel(stimtypes)
+%         idx=strcmp(tempdisease,DOI{d})&tempstim==stimtypes(s);
+%         hold on
+%         ydat=tempdat(idx);
+%         sbjs=extractAfter({subjectData(idx).SubjectName},'pro00087153_00');
+%         sbj_name(1:numel(sbjs),sbjcount)=sbjs;
+%         sbjcount=sbjcount+1;
+%     end
+% end
+% 
+% for s=1:21
+%     sbj_str{s}=extractAfter({subjectData(s).SubjectName},'pro00087153_00')
+% end
+% 
+% for f=1:numel(FOI_label)
+%     for s=1:21
+%         figure; set(gcf,'Position',[2052 610 743 515])
+%         [sbj_r,sbj_c]=find(strcmp(sbj_name,sbj_str{s}));
+%         for t=1:8
+% 
+% 
+% 
+% 
+% 
+% figure; set(gcf,'Position',[2123 401 1368 793])
+%     sp_vec=[1,7,13,19,2,8,14,20,3,9,15,21,4,10,16,22,5,11,17,23,NaN,NaN,NaN,24]
+%     
+%     
+%         %if isempty(sbj_name{sbj})
+%         figure
+%         phase=1:2
+%         spv1=[1 3 5 7 2 4 6 8]
+%         tvec=[1 2 3 4 1 2 3 4]
+%         
+sp_vec=[2,6,10,1,5,9,13,3,17,4,7,8,12,16,11,15,20,24,19,14,18]
+for f=1:numel(FOI_label)
+    figure; set(gcf,'Position',[2123 401 1368 793])
+    for s=1:21
+        
+        [sbj_r,sbj_c]=find(strcmp(sbj_name,sbj_str{s}));
+        time_lbl={'pre';'i05';'i15';'pos'}
+        phase_diff_lbl={'Hold_Prep';'Prep_Reach'}        
+        for p=1:numel(phase_diff_lbl)
+            for t=1:numel(time_lbl)
+                eval(['temp_icoh_mat_diff_c3c4(t,p)=icoh_data_anal.mat_diff.all.',FOI_label{f},'.',tempdisease{s},'.',phase_diff_lbl{p},'.',tempstimlabel{s},...
+                            '.',time_lbl{t},'(20,8,sbj_r);'])
+                eval(['icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',tempdisease{s},'.',phase_diff_lbl{p},'.',tempstimlabel{s},...
+                            '.',time_lbl{t},'(:,:,sbj_r)=icoh_data_anal.mat_diff.all.',FOI_label{f},'.',tempdisease{s},'.',phase_diff_lbl{p},'.',tempstimlabel{s},...
+                            '.',time_lbl{t},'(20,8,sbj_r);'])
             end
         end
         
-        % link axis
-        linkaxes(h)
+        %[sbj_r_sp,sbj_c_sp]=ind2sub(size(sbj_name),sbj);
         
-        % Title
-        sgtitle([DOI{d},' - ',FOI_label{f}])
         
-        % Save figure
-        figtitle=sprintf('%s Percent C3-4 Diff Coherence - %s',FOI_label{f},DOI{d});
-%         if savefigures
-%             savefig(gcf,fullfile(iCohdiffc3_4Folder,figtitle));
-%         end
+        subplot(6,4,sp_vec(s)); hold on
+        imagesc(temp_icoh_mat_diff_c3c4)
+        colormap('jet')
+%         subplot(6,4,sbj)
+%             eval(['imagesc(imagescDat_ind_',FOI_label{f},'_c3_c4{sp_vec(sbj)},[0.4 0.7])'])
+            ylabel(sbj_str{s},'Fontweight','bold')
+            %colormap('jet');
+            set(gca,'YTick',[1:4],'YTickLabel',['pre';'i05';'i15';'pos'],'XTick',[1:3],'XTickLabel',['HP';'PR'])
+            if sp_vec(s)==1
+                title('stroke')
+                subtitle ('sham')
+            elseif sp_vec(s)==2
+                title('stroke')
+                subtitle ('stim')
+            elseif sp_vec(s)==3
+                title('healthy')
+                subtitle ('sham')
+            elseif sp_vec(s)==4
+                title('healthy')
+                subtitle ('stim')
+            end
+            
+        
+    end
+    sgtitle([FOI_label{f},'Diff'])
+    %Colorbar
+    cbh = colorbar;
+    cbh.Location='layout';
+    cbh.Position=[.9314 .11 .0281 .8150];
+    ylabel(cbh,'C3-4 Coherence Diff','FontSize',12)
+end
+                
+                
+
+
+%% c3c4 mat diff bar plots           
+distype={'stroke';'healthy'};
+stimtype={'Sham';'Stim'};
+timetype={'pre';'i05';'i15';'pos'};
+phasedifftype={'Hold_Prep';'Prep_Reach'};
+phasedifftype_title={'Hold-Prep';'Prep-Reach'};
+
+for f=1:numel(FOI_label)
+    for d=1:size(distype,1)
+        for s=1:size(stimtype,1)
+            for p=1:size(phasedifftype,1)
+                for t=1:size(timetype,1)
+                    eval(['icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.',timetype{t},...
+                        '=mean(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.',timetype{t},')'])
+                    eval(['icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.',timetype{t},...
+                        '=std(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.',timetype{t},')',...
+                        '/sqrt(size(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.',timetype{t},',2))'])
+                end
+            end
+        end
     end
 end
-%cd(iCohdiffc3_4Folder)
-           
 
+for f=1:numel(FOI_label)
+    for d=1:size(distype,1)
+        for p=1:size(phasedifftype,1)
+            for s=1:size(stimtype,1)
+                for t=1:size(timetype,1)
+                    eval(['icoh_data_anal.mat_diff.c3c4.grps.all_times.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'(:,t)=',...
+                        'icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.',timetype{t},'(1,1,:)'])
+                end
+            end
+        end
+    end
+end
+                
+for f=1:numel(FOI_label)
+    for d=1:size(distype,1)
+        for p=1:size(phasedifftype,1)
+            for s=1:size(stimtype,1)
+                eval(['[icoh_data_anal.stats.mat_diff.c3c4.friedman.all_times.p.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},...
+                    ',icoh_data_anal.stats.mat_diff.c3c4.friedman.all_times.tab.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},...
+                    ',icoh_data_anal.stats.mat_diff.c3c4.friedman.all_times.stats.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},']=',...
+                    'friedman(icoh_data_anal.mat_diff.c3c4.grps.all_times.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},',1,''off'')'])
+            end
+        end
+    end
+end
+
+for f=1:numel(FOI_label)
+    for d=1:size(distype,1)
+        for s=1:size(stimtype,1)
+            for t=1:size(timetype,1)
+                for p=1:size(phasedifftype,1)
+                    eval(['icoh_data_anal.mat_diff.c3c4.grps.all_phases.',FOI_label{f},'.',distype{d},'.',stimtype{s},'.',timetype{t},'(:,p)=',...
+                        'icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.',timetype{t},'(1,1,:)'])
+                end
+            end
+        end
+    end
+end
+
+for f=1:numel(FOI_label)
+    for d=1:size(distype,1)
+        for s=1:size(stimtype,1)
+            for t=1:size(timetype,1)
+                eval(['[icoh_data_anal.stats.mat_diff.c3c4.signrank.all_phases.p.',FOI_label{f},'.',distype{d},'.',stimtype{s},'.',timetype{t},...
+                    ',icoh_data_anal.stats.mat_diff.c3c4.signrank.all_phases.h.',FOI_label{f},'.',distype{d},'.',stimtype{s},'.',timetype{t},...
+                    ',icoh_data_anal.stats.mat_diff.c3c4.signrank.all_phases.stats.',FOI_label{f},'.',distype{d},'.',stimtype{s},'.',timetype{t},']=',...
+                    'signrank(icoh_data_anal.mat_diff.c3c4.grps.all_phases.',FOI_label{f},'.',distype{d},'.',stimtype{s},'.',timetype{t},'(:,1),',...
+                    'icoh_data_anal.mat_diff.c3c4.grps.all_phases.',FOI_label{f},'.',distype{d},'.',stimtype{s},'.',timetype{t},'(:,2))'])  
+            end
+        end
+    end
+end
+
+for f=1:numel(FOI_label)
+    figure; set(gcf,'Position',[51 626 1214 571])
+    
+    count=0;
+    sp_vec_02=[1 5 2 6 3 7 4 8];
+    for d=[1 2]
+        for s=[1 2]
+            for p=[1 2]
+                count=count+1;
+                subplot(6,4,sp_vec_02(count)); hold on
+                eval(['bar([icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.pre,',...
+                    'icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.i05,',...
+                    'icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.i15,',...
+                    'icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.pos])'])
+                eval(['errorbar([icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.pre,',...
+                    'icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.i05,',...
+                    'icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.i15,',...
+                    'icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.pos],',...
+                    '[icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.pre,',...
+                    'icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.i05,',...
+                    'icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.i15,',...
+                    'icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'.pos],''.k'')'])
+                set(gca,'XTick',[1:4],'XTickLabel',{'pre';'i05';'i15';'pos'})
+                ylabel('c3c4 mat diff')
+                eval(['title(''',distype{d},' ',stimtype{s},' ',phasedifftype_title{p},''')'])
+                eval(['icoh_data_anal.stats.mat_diff.c3c4.friedman.all_times.mc.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},'=',...
+                    'nr_multcompare_ind_tdcs_plot2(icoh_data_anal.stats.mat_diff.c3c4.friedman.all_times.stats.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{s},',',...
+                    'icoh_data_anal.stats.mat_diff.c3c4.friedman.all_times.p.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.',stimtype{p},',0.5)'])
+            end
+        end
+    end
+    
+    count=0;
+    sp_vec_03=[9 13 17 21 10 14 18 22 11 15 19 23 12 16 20 24];
+    for d=[1 2]
+        for s=[1 2]
+            for t=[1 2 3 4]
+                count=count+1;
+                subplot(6,4,sp_vec_03(count)); hold on
+                eval(['bar([icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.',stimtype{s},'.',timetype{t},',',...
+                        'icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.',stimtype{s},'.',timetype{t},'])'])
+                eval(['errorbar([icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.',stimtype{s},'.',timetype{t},',',...
+                        'icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.',stimtype{s},'.',timetype{t},'],',...
+                        '[icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.',stimtype{s},'.',timetype{t},',',...
+                        'icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.',stimtype{s},'.',timetype{t},'],''.k'')'])
+                set(gca,'XTick',[1:2],'XTickLabel',{'h-p';'p-r'})
+                ylabel('c3c4 matt diff')
+                eval(['title(''',distype{d},' ',stimtype{s},' ',timetype{t},''')'])
+                y_lim=get(gca,'ylim');
+                if eval(['icoh_data_anal.stats.mat_diff.c3c4.signrank.all_phases.p.',FOI_label{f},'.',distype{d},'.',stimtype{s},'.',timetype{t}])<0.05
+                    h=text(3,y_lim(1),num2str(eval(['icoh_data_anal.stats.mat_diff.c3c4.signrank.all_phases.p.',FOI_label{f},'.',distype{d},...
+                        '.',stimtype{s},'.',timetype{t}])),'FontSize',9,'Color',[1 0 0]); set(h,'Rotation',90)
+                else
+                    h=text(3,y_lim(1),num2str(eval(['icoh_data_anal.stats.mat_diff.c3c4.signrank.all_phases.p.',FOI_label{f},'.',distype{d},...
+                        '.',stimtype{s},'.',timetype{t}])),'FontSize',9); set(h,'Rotation',90)
+                end
+            end
+        end
+    end
+    sgtitle([FOI_label{f},' Diff'])
+%     cd(['~/nr_data_analysis/data_analyzed/eeg/gen_03/analysis_icoh/',datestr])
+%     figname=['nr_icoh_mat_diff_bar_sum_friedman_sbj_all_elec_c3c4_',FOI_label{f},'_',datestr];
+%     savefig(gcf,figname)
+end
+
+
+%mixed anova
+for f=1:numel(FOI_label)
+    figure; set(gcf,'Position',[2291 369 1214 571])
+    
+    count=0;
+    sp_vec_04=[1 5 2 6];
+    for d=[1 2]
+        %for s=[1 2]% 1 2 1 2 1 2 1 2 1 2]%1:size(stimtype,1)
+            for p=[1 2]
+                count=count+1;
+                subplot(7,4,sp_vec_04(count)); hold on
+                eval(['b(1)=bar([1,4,7,10],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.pre',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.i05',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.i15',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.pos],0.2)'])
+                eval(['errorbar([1,4,7,10],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.pre',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.i05',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.i15',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.pos],',...
+                    '[icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.pre',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.i05',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.i15',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.pos],''.k'')'])
+                eval(['b(2)=bar([2,5,8,11],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.pre',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.i05',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.i15',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.pos],0.2)'])
+                eval(['errorbar([2,5,8,11],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.pre',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.i05',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.i15',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.pos],',...
+                    '[icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.pre',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.i05',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.i15',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.pos],''.k'')'])
+
+                set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'})
+                ylabel('c3-c4 mat diff')
+                eval(['title(''',distype{d},' ',phasedifftype_title{p},''')'])
+                if count==1
+                    l1=legend('Sham','','Stim','')
+                    set(l1,'Position',[0.2439 0.9386 0.0640 0.0499])
+                end
+                
+                eval(['anovaInput{1,1}=[squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.pre),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.i05),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.i15),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Sham.pos)]'])
+                eval(['anovaInput{1,2}=[squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.pre),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.i05),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.i15),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.',phasedifftype{p},'.Stim.pos)]'])
+                eval(['[icoh_data_anal.stats.mat_diff.c3c4.mixanova.',FOI_label{f},'.all_times','.',distype{d},'.',phasedifftype{p},'.mc1,',...
+                    'icoh_data_anal.stats.mat_diff.c3c4.mixanova.',FOI_label{f},'.all_times','.',distype{d},'.',phasedifftype{p},'.mc2',...
+                    ']=mixANOVA(anovaInput,b)'])
+                clear anovaInput b
+                        
+            end
+        %end
+    end
+    
+    count=0;
+    sp_vec_05=[9 13 17 21 10 14 18 22 26];
+    for d=[1 2]
+        %for s=[1 2]
+        for t=[1 2 3 4]
+            %for p=[1 2 3]
+                count=count+1;
+                subplot(7,4,sp_vec_05(count)); hold on
+                eval(['b(1)=bar([1,4],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.Sham.',timetype{t},...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.Sham.',timetype{t},'],0.2)'])
+                eval(['errorbar([1,4],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.Sham.',timetype{t},...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.Sham.',timetype{t},'],',...
+                    '[icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.Sham.',timetype{t},...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.Sham.',timetype{t},'],''.k'')'])
+                eval(['b(2)=bar([2,5],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.Stim.',timetype{t},...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.Stim.',timetype{t},'],0.2)'])
+                eval(['errorbar([2,5],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.Stim.',timetype{t},...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.Stim.',timetype{t},'],',...
+                    '[icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.Stim.',timetype{t},...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.Stim.',timetype{t},'],''.k'')'])           
+                set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'})
+                ylabel('c3-c4 mat diff')
+                eval(['title(''',distype{d},' - ',timetype{t},''')'])
+                                
+                eval(['anovaInput{1,1}=[squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.Sham.',timetype{t},'),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.Sham.',timetype{t},')]'])
+                eval(['anovaInput{1,2}=[squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Hold_Prep.Stim.',timetype{t},'),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.',distype{d},'.Prep_Reach.Stim.',timetype{t},')]'])
+                eval(['[icoh_data_anal.stats.icoh_mat_diff.c3c4.mixanova.',FOI_label{f},'.all_phases','.',distype{d},'.',timetype{t},'.mc1,'...
+                    'icoh_data_anal.stats.icoh_mat_diff.c3c4.mixanova.',FOI_label{f},'.all_phases','.',distype{d},'.',timetype{t},'.mc2',...
+                    ']=mixANOVA(anovaInput,b)'])
+                clear anovaInput b
+                                         
+            end
+        %end
+    end
+
+    count=0;
+    sp_vec_06=[3 4 7 8];
+    %for d=[1 2]
+        for p=[1 2]
+            for s=[1 2]
+                count=count+1;
+                subplot(7,4,sp_vec_06(count)); hold on
+                eval(['b(1)=bar([1,4,7,10],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.pre',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.i05',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.i15',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.pos],0.2)'])
+                eval(['errorbar([1,4,7,10],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.pre',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.i05',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.i15',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.pos],',...
+                    '[icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.pre',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.i05',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.i15',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.pos],''.k'')'])
+                eval(['b(2)=bar([2,5,8,11],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.pre',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.i05',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.i15',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.pos],0.2)'])
+                eval(['errorbar([2,5,8,11],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.pre',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.i05',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.i15',...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.pos],',...
+                    '[icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.pre',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.i05',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.i15',...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.pos],''.k'')'])
+                          
+                set(gca,'XTick',[1 4 7 10],'XTickLabel',{'pre';'i05';'i15';'pos'})
+                ylabel('c3-c4 mat diff')
+                eval(['title(''',stimtype{s},' - ',phasedifftype_title{p},''')'])
+                if count==3
+                    l2=legend('Stroke','','Healthy','')
+                    set(l2,'Position',[0.6529 0.9154 0.0714 0.0718])
+                end
+                
+                eval(['anovaInput{1,1}=[squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.pre),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.i05),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.i15),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.','stroke','.',phasedifftype{p},'.',stimtype{s},'.pos)]'])
+                eval(['anovaInput{1,2}=[squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.pre),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.i05),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.i15),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.','healthy','.',phasedifftype{p},'.',stimtype{s},'.pos)]'])
+                eval(['[icoh_data_anal.stats.mat_diff.c3c4.mixanova.',FOI_label{f},'.all_times','.',stimtype{s},'.',phasedifftype{p},'.mc1,',...
+                    'icoh_data_anal.stats.mat_diff.c3c4.mixanova.',FOI_label{f},'.all_times','.',stimtype{s},'.',phasedifftype{p},'.mc2',...
+                    ']=mixANOVA(anovaInput,b)'])
+                clear anovaInput b
+                        
+            end
+        %end
+    end
+    
+    count=0;
+    sp_vec_07=[11 15 19 23 12 16 20 24];
+    %for d=[1 2]
+        for s=[1 2]
+        for t=[1 2 3 4]
+            %for p=[1 2 3]
+                count=count+1;
+                subplot(7,4,sp_vec_07(count)); hold on
+                eval(['b(1)=bar([1,4],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.stroke.Hold_Prep.',stimtype{s},'.',timetype{t},...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.stroke.Prep_Reach.',stimtype{s},'.',timetype{t},'],0.2)'])
+                eval(['errorbar([1,4],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.stroke.Hold_Prep.',stimtype{s},'.',timetype{t},...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.stroke.Prep_Reach.',stimtype{s},'.',timetype{t},'],',...
+                    '[icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.stroke.Hold_Prep.',stimtype{s},'.',timetype{t},...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.stroke.Prep_Reach.',stimtype{s},'.',timetype{t},'],''.k'')'])
+                eval(['b(2)=bar([2,5],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.healthy.Hold_Prep.',stimtype{s},'.',timetype{t},...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.healthy.Prep_Reach.',stimtype{s},'.',timetype{t},'],0.2)'])
+                eval(['errorbar([2,5],[icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.healthy.Hold_Prep.',stimtype{s},'.',timetype{t},...
+                    ' icoh_data_anal.mean.mat_diff.c3c4.',FOI_label{f},'.healthy.Prep_Reach.',stimtype{s},'.',timetype{t},'],',...
+                    '[icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.healthy.Hold_Prep.',stimtype{s},'.',timetype{t},...
+                    ' icoh_data_anal.se.mat_diff.c3c4.',FOI_label{f},'.healthy.Prep_Reach.',stimtype{s},'.',timetype{t},'],''.k'')'])
+                set(gca,'XTick',[1 4],'XTickLabel',{'hp';'pr'})
+                ylabel('c3-c4 mat diff')
+                eval(['title(''',stimtype{s},' - ',timetype{t},''')'])
+                
+                eval(['anovaInput{1,1}=[squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.stroke.Hold_Prep.',stimtype{s},'.',timetype{t},'),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.stroke.Prep_Reach.',stimtype{s},'.',timetype{t},')]'])
+                eval(['anovaInput{1,2}=[squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.healthy.Hold_Prep.',stimtype{s},'.',timetype{t},'),',...
+                    'squeeze(icoh_data_anal.mat_diff.c3c4.',FOI_label{f},'.healthy.Prep_Reach.',stimtype{s},'.',timetype{t},')]'])
+                eval(['[icoh_data_anal.stats.icoh_mat_diff.c3c4.mixanova.',FOI_label{f},'.all_phases','.',stimtype{s},'.',timetype{t},'.mc1,'...
+                    'icoh_data_anal.stats.icoh_mat_diff.c3c4.mixanova.',FOI_label{f},'.all_phases','.',stimtype{s},'.',timetype{t},'.mc2',...
+                    ']=mixANOVA(anovaInput,b)'])
+                clear anovaInput b
+                        
+            end
+        %end
+    end
+   
+     sgtitle([FOI_label{f},' Diff'])
+%     cd(['~/nr_data_analysis/data_analyzed/eeg/gen_03/analysis_icoh/',datestr])
+%     figname=['nr_icoh_mat_bar_sum_mixanova_sbj_all_elec_c3c4_',FOI_label{f},'_',datestr];
+%     savefig(gcf,figname)
+end    
 
