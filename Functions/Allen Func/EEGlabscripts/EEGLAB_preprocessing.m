@@ -561,6 +561,10 @@ for i=1:size(vrsig,1)
     end
     
     eegevents.trials.(['t',num2str(i)])=tempeeg;
+    
+    % Save as set file
+    pop_saveset(tempeeg, 'filepath', fullfile(analysisfolder,['t',num2str(i),'_preproc.set']));
+
 end
 
 

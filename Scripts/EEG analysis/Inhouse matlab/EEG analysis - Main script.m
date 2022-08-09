@@ -80,7 +80,7 @@ sbj={sbj.name}';
 
 % Try autorun S1
 clear manual status
-parfor i=1%:3
+parfor i=2%:3
     try
         S1_VR_trial_preproc(sbj{i},protocolfolder,false)
     catch ME
@@ -97,7 +97,7 @@ end
 
 
 %%%%%%%%%%%%%%%% Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
-parfor i=1%5
+parfor i=2%5
     S2_MetricPlot(sbj{i},protocolfolder,2)
 end
 
