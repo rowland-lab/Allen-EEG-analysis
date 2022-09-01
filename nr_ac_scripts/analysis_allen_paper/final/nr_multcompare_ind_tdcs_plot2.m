@@ -4,9 +4,9 @@ function mc=nr_multcompare_ind_tdcs_plot2(stats,p,ylim_min)
 %subplot(8,5,5)22
 mc=multcompare(stats,'display','off','ctype','tukey-kramer')
 
-ylim=get(gca,'ylim')
-ylim_new=set(gca,'ylim',[ylim_min ylim(2)*2])
-xlim_new=get(gca,'xlim')
+ylim=get(gca,'ylim');
+ylim_new=set(gca,'ylim',[ylim(1) ylim(2)*2]);
+xlim_new=get(gca,'xlim');
 
 if size(mc,1)==6
     for i=1:6

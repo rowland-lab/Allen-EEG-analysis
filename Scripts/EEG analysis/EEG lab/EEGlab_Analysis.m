@@ -517,13 +517,14 @@ electrodes={'F7','T3','T5','O1','F3','C3','P3','A1','Fz','Cz','Fp2','F8','T4','T
 FOI_label={'Alpha','Beta','Gamma-L','Gamma-B'};
 FOI_freq={{8,12},{13,30},{30,70},{70,120}};
 savefigures=false;
-outpath='C:\Users\allen\Desktop\RowlandFigs_11_22_21\Coh';
+%outpath='C:\Users\allen\Desktop\RowlandFigs_11_22_21\Coh';
 exportdata=true;
 
 eData=[];
 for f=1:numel(FOI_freq)
     for d=1:numel(DOI)
-        figure('WindowState','maximized')
+        figure; set(gcf,'Position',[1987 673 740 540])
+        %figure('WindowState','maximized')
         ax_count=1;
         subplot_count=1;
         clear h
@@ -595,10 +596,10 @@ for f=1:numel(FOI_freq)
         % Title
         sgtitle(DOI{d})
         
-        % Save figure
-        if savefigures
-            savefig(gcf,fullfile(outpath,figtitle));
-        end
+%         % Save figure
+%         if savefigures
+%             savefig(gcf,fullfile(outpath,figtitle));
+%         end
     end
 end
 cd(outpath)

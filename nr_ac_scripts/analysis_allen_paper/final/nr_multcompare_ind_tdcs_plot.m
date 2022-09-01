@@ -4,8 +4,8 @@ function mc=nr_multcompare_ind_tdcs_plot(stats,ylim_min)
 %subplot(8,5,5)22
 mc=multcompare(stats,'display','off','ctype','bonferroni')
 
-ylim=get(gca,'ylim')
-ylim_new=set(gca,'ylim',[ylim_min ylim(2)*2])
+ylim=get(gca,'ylim');
+ylim_new=set(gca,'ylim',[ylim_min ylim(2)*2]);
 
 if size(mc,1)==6
     for i=1:6

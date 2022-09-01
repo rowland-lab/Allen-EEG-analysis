@@ -257,9 +257,9 @@ for f=1:numel(FOI_label)
             title([DOI{d},' - ',phases{p}])
             set(gca,'ylim',[0 1],'XTick',[1 2 3 4],'XTickLabel',['pre';'i5 ';'i15';'pos'])
             sgtitle(FOI_label{f})
-            eval(['anovaInputa{1,1}=icoh_data_anal.bar.',FOI_label{f},'.',DOI{d},'.',phases{p},'{1,1}'])
-            eval(['anovaInputa{1,2}=icoh_data_anal.bar.',FOI_label{f},'.',DOI{d},'.',phases{p},'{1,2}'])
-            eval(['stats_mix_tbl_',FOI_label{f},'_',DOI{d},'_',phases{p},'=mixANOVA(anovaInputa,b)'])
+            eval(['anovaInputa{1,1}=icoh_data_anal.bar.',FOI_label{f},'.',DOI{d},'.',phases{p},'{1,1};'])
+            eval(['anovaInputa{1,2}=icoh_data_anal.bar.',FOI_label{f},'.',DOI{d},'.',phases{p},'{1,2};'])
+            eval(['stats_mix_tbl_',FOI_label{f},'_',DOI{d},'_',phases{p},'=mixANOVA(anovaInputa,b);'])
         end
     end
     figname=['nr_icoh_bar_',FOI_label{f}];
@@ -992,17 +992,17 @@ for f=1:numel(FOI_label)
                 eval(['anovaInput{1,1}=[icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.sham.pre_',phasetype{p},''','...
                     'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.sham.i05_',phasetype{p},''','...
                     'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.sham.i15_',phasetype{p},''','...
-                    'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.sham.pos_',phasetype{p},''']'])
+                    'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.sham.pos_',phasetype{p},'''];'])
                 eval(['anovaInput{1,2}=[icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.stim.pre_',phasetype{p},''','...
                     'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.stim.i05_',phasetype{p},''','...
                     'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.stim.i15_',phasetype{p},''','...
-                    'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.stim.pos_',phasetype{p},''']'])
+                    'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.stim.pos_',phasetype{p},'''];'])
                 %keep in mind you already have the expressions above saved
                 %in icoh_data_anal but to make the for loop run just keep
                 %as is
                 eval(['[icoh_data_anal.stats.icoh_mat.c3c4.mixanova.',FOI_label{f},'.all_times','.',distype{d},'.',phasetype{p},'.mc1,',...
                     'icoh_data_anal.stats.icoh_mat.c3c4.mixanova.',FOI_label{f},'.all_times','.',distype{d},'.',phasetype{p},'.mc2',...
-                    ']=mixANOVA(anovaInput,b)'])
+                    ']=mixANOVA(anovaInput,b);'])
                 clear anovaInput b
                         
             end
@@ -1041,10 +1041,10 @@ for f=1:numel(FOI_label)
                                 
                 eval(['anovaInput{1,1}=[icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.sham.',timetype{t},'_hold'','...
                     'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.sham.',timetype{t},'_prep'','...
-                    'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.sham.',timetype{t},'_reac'']'])
+                    'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.sham.',timetype{t},'_reac''];'])
                 eval(['anovaInput{1,2}=[icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.stim.',timetype{t},'_hold'','...
                     'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.stim.',timetype{t},'_prep'','...
-                    'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.stim.',timetype{t},'_reac'']'])
+                    'icoh_data_anal.mat.c3c4.grps.ind.',FOI_label{f},'.',distype{d},'.stim.',timetype{t},'_reac''];'])
                 eval(['[icoh_data_anal.stats.icoh_mat.c3c4.mixanova.',FOI_label{f},'.all_phases','.',distype{d},'.',timetype{t},'.mc1,'...
                     'icoh_data_anal.stats.icoh_mat.c3c4.mixanova.',FOI_label{f},'.all_phases','.',distype{d},'.',timetype{t},'.mc2',...
                     ']=mixANOVA(anovaInput,b)'])

@@ -1,4 +1,4 @@
-function icoh_data_anal=nr_ac_columnscatter_v01(datestr,subjectData,datlabel,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefolder)
+function icoh_data_anal=nr_ac_columnscatter_v01(datestr,subjectData,datlabel,TOI,FOI_label,FOI_freq,phases,DOI,stimtypes,stimname,savefigures)
 
 count_ax=1;
 ax=[];
@@ -99,9 +99,15 @@ for f=1:numel(FOI_freq)
     end
     linkaxes(ax)
     sgtitle(FOI_label{f})
-    cd(['~/nr_data_analysis/data_analyzed/eeg/gen_03/analysis_icoh/',datestr])
-    %savefig(gcf,fullfile(savefolder,figname))
-    %savefig(gcf,figname)
-    %%%close
+    
+    % Save figure
+    if savefigures
+        figname=['nr_icoh_col_scat_',FOI_label{f},'_',datestr];
+        cd(['~/nr_data_analysis/data_analyzed/eeg/gen_03/analysis_icoh/',datestr])
+        savefig(gcf,figname)
+    end
+
+    close all
+    
 end
 %end

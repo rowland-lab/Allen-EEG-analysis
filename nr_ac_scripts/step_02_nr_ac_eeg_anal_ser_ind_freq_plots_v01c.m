@@ -28,19 +28,26 @@
 %checking, all other subjects appear to be identical btn gen_02 and gen_03
 % now time to move on to the sum analyses
 
+%8/28/22
+% cleaned code up just a bit. Tried to match the icoh analyses more but
+% still not identical. Saved to different folder. And I agree 42 and 43 look
+% different than all other versions but appears to have been done correctly so
+% I think this is a stable version .
 
-
-sbjs_all=['03';'04';'05';'42';'43';'13';'15';'17';'18';'21';'22';'24';'25';'26';'29';'30';'20';'23';'27';'28';'36']
+sbjs_all=['03';'04';'05';'42';'43';'13';'15';'17';'18';'21';'22';'24';'25';'26';'29';'30';'20';'23';'27';'28';'36'];
 
 %grp='cs'
-save_fig='yes'
-save_data='yes'
-freq_band='beta'
-epoch_type='vrevents'
+save_fig='yes';
+save_data='yes';
+freq_band='beta';
+epoch_type='epochsWhole';
+version='e';
+date_str='2022_08_28';
+
 if strcmp(epoch_type,'epochsWhole')
-    labl='ew'
+    labl='ew';
 elseif strcmp(epoch_type,'vrevents')
-    labl='vr'
+    labl='vr';
 end
 
 if strcmp(freq_band,'alpha')
@@ -48,10 +55,10 @@ if strcmp(freq_band,'alpha')
     frq_rng_ed=12;
 elseif strcmp(freq_band,'beta')
     frq_rng_st=13;
-    frq_rng_ed=31
+    frq_rng_ed=31;
 elseif strcmp(freq_band,'gamma')
     frq_rng_st=30;
-    frq_rng_ed=50
+    frq_rng_ed=50;
 end
 
 
@@ -67,7 +74,7 @@ out_ind_c7_p1=[13 16 19 22];%these are backwards bc ch 18 was processed first
 out_ind_c7_p2=[14 17 20 23];%so ch18 is 1-12 (i.e., t1*3 phases, t2*3 phases and so on)
 out_ind_c7_p3=[15 18 21 24];%followed by ch7 which makes 24 (even though ch7 is plotted 
 %on top of 18)
-phase={'atStartPosition';'cueEvent';'targetUp'}
+phase={'atStartPosition';'cueEvent';'targetUp'};
 
 
 
@@ -75,14 +82,14 @@ for n=1:size(sbjs_all,1)
     load(['/home/rowlandn/nr_data_analysis/data_analyzed/data_for_dlc/pro00087153_00',sbjs_all(n,:),...
         '_sessioninfo.mat'])
     if n==4
-        sessioninfo.stimlat='R'
+        sessioninfo.stimlat='R';
     end
     if n==5
-        sessioninfo.stimlat='L'
+        sessioninfo.stimlat='L';
     end
     load(['/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data/pro00087153_00',sbjs_all(n,:),...
         '/analysis/S3-EEGanalysis/s3_dat.mat'])
-    m=num2str(sbjs_all(n,:))
+    m=num2str(sbjs_all(n,:));
     
    
     %psd plots
@@ -91,15 +98,15 @@ for n=1:size(sbjs_all,1)
     for i=1:4
         subplot(8,5,i)
         hold on
-        eval(['find_freq_plot_ch7_atStartPosition=find(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p1(i)}'])
+        eval(['find_freq_plot_ch7_atStartPosition=find(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.freq<=100);'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c7_p1(i)}'])
             eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.freq(find_freq_plot_ch7_atStartPosition),log10(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.saw(find_freq_plot_ch7_atStartPosition,7,j)))'])
         end
         ylimasp=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p1(i)},2)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c7_p1(i)},2)'])))
         if i==1 & strcmp(sessioninfo.stimlat,'L')==1 
             ylabel('atStartPosition')
-            title(['Sbj',m(1,:),':ch7:t',num2str(i),':',freq_band,':',labl],'Color',[1 0 0])
+            title(['Sbj',m(1,:),':ch7:t',num2str(i),':',freq_band,':',labl,':ver ',version],'Color',[1 0 0])
         elseif i==1 & strcmp(sessioninfo.stimlat,'L')~=1 
             ylabel('atStartPosition')
             title(['Sbj',m(1,:),':ch7:t',num2str(i),':',freq_band,':',labl])
@@ -112,12 +119,12 @@ for n=1:size(sbjs_all,1)
     for i=1:4
         subplot(8,5,i+5)
         hold on
-        eval(['find_freq_plot_ch7_cueEvent=find(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p2(i)}'])
+        eval(['find_freq_plot_ch7_cueEvent=find(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.freq<=100);'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c7_p2(i)}'])
             eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.freq(find_freq_plot_ch7_cueEvent),log10(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.saw(find_freq_plot_ch7_cueEvent,7,j)))'])
         end
         ylimce=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p2(i)},2)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c7_p2(i)},2)'])))
         if i==1
             ylabel('cueEvent')
         end
@@ -128,12 +135,12 @@ for n=1:size(sbjs_all,1)
     for i=1:4
         subplot(8,5,i+10)
         hold on
-        eval(['find_freq_plot_ch7_targetUp=find(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p3(i)}'])
+        eval(['find_freq_plot_ch7_targetUp=find(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.freq<=100);'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c7_p3(i)}'])
             eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.freq(find_freq_plot_ch7_targetUp),log10(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.saw(find_freq_plot_ch7_targetUp,7,j)))'])
         end
         ylimtu=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c7_p3(i)},2)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c7_p3(i)},2)'])))
         if i==1
             ylabel('targetUp')
         end
@@ -144,10 +151,10 @@ for n=1:size(sbjs_all,1)
     %%%scale psd plots
     ymin=min([ylim_1(1) ylim_2(1) ylim_3(1) ylim_4(1),...
               ylim_6(1) ylim_7(1) ylim_8(1) ylim_9(1),...
-              ylim_11(1) ylim_12(1) ylim_13(1) ylim_14(1)])
+              ylim_11(1) ylim_12(1) ylim_13(1) ylim_14(1)]);
     ymax=max([ylim_1(2) ylim_2(2) ylim_3(2) ylim_4(2),...
               ylim_6(2) ylim_7(2) ylim_8(2) ylim_9(2),...
-              ylim_11(2) ylim_12(2) ylim_13(2) ylim_14(2)])
+              ylim_11(2) ylim_12(2) ylim_13(2) ylim_14(2)]);
              
     for l=1:14
         if l<=4
@@ -169,9 +176,9 @@ for n=1:size(sbjs_all,1)
     for i=1:4
         for j=1:3
             count=count+1
-            for l=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{count+12}'])
+            for l=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{count+12}'])
                 l
-                eval(['find_freq_',freq_band,'_ch7_t',num2str(i),'_p',num2str(j),'=find(epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq>',num2str(frq_rng_st),' & epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq<',num2str(frq_rng_ed),')'])
+                eval(['find_freq_',freq_band,'_ch7_t',num2str(i),'_p',num2str(j),'=find(epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq>',num2str(frq_rng_st),' & epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq<',num2str(frq_rng_ed),');']);
                 eval(['mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'(l)=log10(mean(epochs.',epoch_type,'.t',num2str(i),'.',phase{j},...
                     '.psd.saw(find_freq_',freq_band,'_ch7_t',num2str(i),'_p',num2str(j),',7,l)));'])
             end
@@ -180,14 +187,14 @@ for n=1:size(sbjs_all,1)
     
     for i=1:4
         for j=1:3
-            eval(['mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=nonzeros(mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'''])
-            eval(['size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=size(mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),',2)'])
+            eval(['mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=nonzeros(mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'';'])
+            eval(['size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=size(mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),',2);'])
         end
     end
     %supermean of each t and p combination to get 1 value
     for i=1:4
         for j=1:3
-            eval(['mean_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=mean(mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'])
+            eval(['mean_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=mean(mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
             eval(['se_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),'=std(mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),...
                 ')/sqrt(size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
         end
@@ -199,17 +206,17 @@ for n=1:size(sbjs_all,1)
         for j=1:3
             count=count+1         
             eval(['mat_sz_mean_ch7{',num2str(count),'}=linspace(',num2str(count),',',num2str(count),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_means=cat(2,mat_sz_mean_ch7{:}); %probably don't need this bc you generate each separate one below
     
     %t1-4 for p1
-    grps_plot_05=[1 4 7 10] %don't remember how I came up with these indices 1,4,7,10 but I do remember it was necessary to assign each mean a unique #
+    grps_plot_05=[1 4 7 10]; %don't remember how I came up with these indices 1,4,7,10 but I do remember it was necessary to assign each mean a unique #
     for i=1:4               % they are used to group the kruskall-wallis groups
         for j=1
             eval(['mat_sz_plot_05{',num2str(i),'}=linspace(',num2str(grps_plot_05(i)),',',num2str(grps_plot_05(i)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_05_all=cat(2,mat_sz_plot_05{:});
@@ -222,7 +229,7 @@ for n=1:size(sbjs_all,1)
     ylim_5=get(gca,'ylim');
     set(gca,'XTick',[1:4],'XTickLabel',{'t1';'t2';'t3';'t4'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch7_p1,table_mean_',freq_band,'_sbj',m,'_ch7_p1,stats_mean_',freq_band,'_sbj',m,...
-        '_ch7_p1]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t1_p1,mean_',freq_band,'_sbj',m,'_ch7_t2_p1,mean_',freq_band,'_sbj',m,'_ch7_t3_p1,mean_',freq_band,'_sbj',m,'_ch7_t4_p1],[grp_plot_05_all],''off'')'])
+        '_ch7_p1]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t1_p1,mean_',freq_band,'_sbj',m,'_ch7_t2_p1,mean_',freq_band,'_sbj',m,'_ch7_t3_p1,mean_',freq_band,'_sbj',m,'_ch7_t4_p1],[grp_plot_05_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch7_p1'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch7_p1),''Color'',[1 0 0])'])
     else
@@ -230,11 +237,11 @@ for n=1:size(sbjs_all,1)
     end
         
     %t1-4 for p2
-    grps_plot_10=[2 5 8 11]
+    grps_plot_10=[2 5 8 11];
     for i=1:4
         for j=2
             eval(['mat_sz_plot_10{',num2str(i),'}=linspace(',num2str(grps_plot_10(i)),',',num2str(grps_plot_10(i)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_10_all=cat(2,mat_sz_plot_10{:});
@@ -247,7 +254,7 @@ for n=1:size(sbjs_all,1)
     ylim_10=get(gca,'ylim');
     set(gca,'XTick',[1:4],'XTickLabel',{'t1';'t2';'t3';'t4'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch7_p2,table_mean_',freq_band,'_sbj',m,'_ch7_p2,stats_mean_',freq_band,'_sbj',m,...
-        '_ch7_p2]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t1_p2,mean_',freq_band,'_sbj',m,'_ch7_t2_p2,mean_',freq_band,'_sbj',m,'_ch7_t3_p2,mean_',freq_band,'_sbj',m,'_ch7_t4_p2],[grp_plot_10_all],''off'')'])
+        '_ch7_p2]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t1_p2,mean_',freq_band,'_sbj',m,'_ch7_t2_p2,mean_',freq_band,'_sbj',m,'_ch7_t3_p2,mean_',freq_band,'_sbj',m,'_ch7_t4_p2],[grp_plot_10_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch7_p2'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch7_p2),''Color'',[1 0 0])'])
     else
@@ -255,11 +262,11 @@ for n=1:size(sbjs_all,1)
     end
         
     %t1-4 for p3
-    grps_plot_15=[3 6 9 12]
+    grps_plot_15=[3 6 9 12];
     for i=1:4
         for j=3
             eval(['mat_sz_plot_15{',num2str(i),'}=linspace(',num2str(grps_plot_15(i)),',',num2str(grps_plot_15(i)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_15_all=cat(2,mat_sz_plot_15{:});
@@ -274,7 +281,7 @@ for n=1:size(sbjs_all,1)
     ymax2=max([ylim_5(2) ylim_10(2) ylim_15(2)]);
     set(gca,'XTick',[1:4],'XTickLabel',{'t1';'t2';'t3';'t4'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch7_p3,table_mean_',freq_band,'_sbj',m,'_ch7_p3,stats_mean_',freq_band,'_sbj',m,...
-        '_ch7_p3]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t1_p3,mean_',freq_band,'_sbj',m,'_ch7_t2_p3,mean_',freq_band,'_sbj',m,'_ch7_t3_p3,mean_',freq_band,'_sbj',m,'_ch7_t4_p3],[grp_plot_15_all],''off'')'])
+        '_ch7_p3]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t1_p3,mean_',freq_band,'_sbj',m,'_ch7_t2_p3,mean_',freq_band,'_sbj',m,'_ch7_t3_p3,mean_',freq_band,'_sbj',m,'_ch7_t4_p3],[grp_plot_15_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch7_p3'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch7_p3),''Color'',[1 0 0])'])
     else
@@ -287,18 +294,18 @@ for n=1:size(sbjs_all,1)
     end
     
     subplot(8,5,5)
-    eval(['mc_ch7_p1=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_p1,ymin2)'])
+    eval(['mc_ch7_p1=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_p1,ymin2);'])
     subplot(8,5,10)
-    eval(['mc_ch7_p2=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_p2,ymin2)'])
+    eval(['mc_ch7_p2=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_p2,ymin2);'])
     subplot(8,5,15)
-    eval(['mc_ch7_p3=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_p3,ymin2)'])
+    eval(['mc_ch7_p3=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_p3,ymin2);'])
     
     %p1-3 for t1
-    grps_plot_16=[1 2 3]
+    grps_plot_16=[1 2 3];
     for i=1
         for j=1:3
             eval(['mat_sz_plot_16{',num2str(j),'}=linspace(',num2str(grps_plot_16(j)),',',num2str(grps_plot_16(j)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_16_all=cat(2,mat_sz_plot_16{:});
@@ -311,7 +318,7 @@ for n=1:size(sbjs_all,1)
     ylim_16=get(gca,'ylim');
     set(gca,'XTick',[1:3],'XTickLabel',{'h';'p';'m'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch7_t1,table_mean_',freq_band,'_sbj',m,'_ch7_t1,stats_mean_',freq_band,'_sbj',m,...
-        '_ch7_t1]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t1_p1,mean_',freq_band,'_sbj',m,'_ch7_t1_p2,mean_',freq_band,'_sbj',m,'_ch7_t1_p3],[grp_plot_16_all],''off'')'])
+        '_ch7_t1]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t1_p1,mean_',freq_band,'_sbj',m,'_ch7_t1_p2,mean_',freq_band,'_sbj',m,'_ch7_t1_p3],[grp_plot_16_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch7_t1'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch7_t1),''Color'',[1 0 0])'])
     else
@@ -319,11 +326,11 @@ for n=1:size(sbjs_all,1)
     end
 
     %p1-3 for t2
-    grps_plot_17=[4 5 6]
+    grps_plot_17=[4 5 6];
     for i=2
         for j=1:3
             eval(['mat_sz_plot_17{',num2str(j),'}=linspace(',num2str(grps_plot_17(j)),',',num2str(grps_plot_17(j)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_17_all=cat(2,mat_sz_plot_17{:});
@@ -336,7 +343,7 @@ for n=1:size(sbjs_all,1)
     ylim_17=get(gca,'ylim');
     set(gca,'XTick',[1:3],'XTickLabel',{'h';'p';'m'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch7_t2,table_mean_',freq_band,'_sbj',m,'_ch7_t2,stats_mean_',freq_band,'_sbj',m,...
-        '_ch7_t2]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t2_p1,mean_',freq_band,'_sbj',m,'_ch7_t2_p2,mean_',freq_band,'_sbj',m,'_ch7_t2_p3],[grp_plot_17_all],''off'')'])
+        '_ch7_t2]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t2_p1,mean_',freq_band,'_sbj',m,'_ch7_t2_p2,mean_',freq_band,'_sbj',m,'_ch7_t2_p3],[grp_plot_17_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch7_t2'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch7_t2),''Color'',[1 0 0])'])
     else
@@ -344,11 +351,11 @@ for n=1:size(sbjs_all,1)
     end
     
     %p1-3 for t3
-    grps_plot_18=[7 8 9]
+    grps_plot_18=[7 8 9];
     for i=3
         for j=1:3
             eval(['mat_sz_plot_18{',num2str(j),'}=linspace(',num2str(grps_plot_18(j)),',',num2str(grps_plot_18(j)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_18_all=cat(2,mat_sz_plot_18{:});
@@ -361,7 +368,7 @@ for n=1:size(sbjs_all,1)
     ylim_18=get(gca,'ylim');
     set(gca,'XTick',[1:3],'XTickLabel',{'h';'p';'m'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch7_t3,table_mean_',freq_band,'_sbj',m,'_ch7_t3,stats_mean_',freq_band,'_sbj',m,...
-        '_ch7_t3]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t3_p1,mean_',freq_band,'_sbj',m,'_ch7_t3_p2,mean_',freq_band,'_sbj',m,'_ch7_t3_p3],[grp_plot_18_all],''off'')'])
+        '_ch7_t3]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t3_p1,mean_',freq_band,'_sbj',m,'_ch7_t3_p2,mean_',freq_band,'_sbj',m,'_ch7_t3_p3],[grp_plot_18_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch7_t3'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch7_t3),''Color'',[1 0 0])'])
     else
@@ -369,11 +376,11 @@ for n=1:size(sbjs_all,1)
     end
     
     %p1-3 for t4
-    grps_plot_19=[10 11 12]
+    grps_plot_19=[10 11 12];
     for i=4
         for j=1:3
             eval(['mat_sz_plot_19{',num2str(j),'}=linspace(',num2str(grps_plot_19(j)),',',num2str(grps_plot_19(j)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch7_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_19_all=cat(2,mat_sz_plot_19{:});
@@ -386,7 +393,7 @@ for n=1:size(sbjs_all,1)
     ylim_19=get(gca,'ylim');
     set(gca,'XTick',[1:3],'XTickLabel',{'h';'p';'m'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch7_t4,table_mean_',freq_band,'_sbj',m,'_ch7_t4,stats_mean_',freq_band,'_sbj',m,...
-        '_ch7_t4]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t4_p1,mean_',freq_band,'_sbj',m,'_ch7_t4_p2,mean_',freq_band,'_sbj',m,'_ch7_t4_p3],[grp_plot_19_all],''off'')'])
+        '_ch7_t4]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch7_t4_p1,mean_',freq_band,'_sbj',m,'_ch7_t4_p2,mean_',freq_band,'_sbj',m,'_ch7_t4_p3],[grp_plot_19_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch7_t4'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch7_t4),''Color'',[1 0 0])'])
     else
@@ -401,13 +408,13 @@ for n=1:size(sbjs_all,1)
     end
 
     subplot(8,5,16)
-    eval(['mc_ch7_t1=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_t1,ymin3)'])
+    eval(['mc_ch7_t1=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_t1,ymin3);'])
     subplot(8,5,17)
-    eval(['mc_ch7_t2=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_t2,ymin3)'])
+    eval(['mc_ch7_t2=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_t2,ymin3);'])
     subplot(8,5,18)
-    eval(['mc_ch7_t3=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_t3,ymin3)'])
+    eval(['mc_ch7_t3=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_t3,ymin3);'])
     subplot(8,5,19)
-    eval(['mc_ch7_t4=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_t4,ymin3)'])
+    eval(['mc_ch7_t4=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch7_t4,ymin3);'])
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%ch18
@@ -415,12 +422,12 @@ for n=1:size(sbjs_all,1)
     for i=1:4
         subplot(8,5,i+20)
         hold on
-        eval(['find_freq_plot_ch18_atStartPosition=find(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p1(i)}'])
+        eval(['find_freq_plot_ch18_atStartPosition=find(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.freq<=100);'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c18_p1(i)}'])
             eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.freq(find_freq_plot_ch18_atStartPosition),log10(epochs.',epoch_type,'.t',num2str(i),'.atStartPosition.psd.saw(find_freq_plot_ch18_atStartPosition,18,j)))'])
         end
         ylimasp=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p1(i)},2)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c18_p1(i)},2)'])))
         if i==1 & strcmp(sessioninfo.stimlat,'R')==1 
             ylabel('atStartPosition')
             title(['ch18:t',num2str(i)],'Color',[1 0 0])
@@ -436,12 +443,12 @@ for n=1:size(sbjs_all,1)
     for i=1:4
         subplot(8,5,i+25)
         hold on
-        eval(['find_freq_plot_ch18_cueEvent=find(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p2(i)}'])
+        eval(['find_freq_plot_ch18_cueEvent=find(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.freq<=100);'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c18_p2(i)}'])
             eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.freq(find_freq_plot_ch18_cueEvent),log10(epochs.',epoch_type,'.t',num2str(i),'.cueEvent.psd.saw(find_freq_plot_ch18_cueEvent,18,j)))'])
         end
         ylimce=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p2(i)},2)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c18_p2(i)},2)'])))
         if i==1
             ylabel('cueEvent')
         end
@@ -452,12 +459,12 @@ for n=1:size(sbjs_all,1)
     for i=1:4
         subplot(8,5,i+30)
         hold on
-        eval(['find_freq_plot_ch18_targetUp=find(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.freq<=100)'])
-        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p3(i)}'])
+        eval(['find_freq_plot_ch18_targetUp=find(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.freq<=100);'])
+        for j=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c18_p3(i)}'])
             eval(['plot(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.freq(find_freq_plot_ch18_targetUp),log10(epochs.',epoch_type,'.t',num2str(i),'.targetUp.psd.saw(find_freq_plot_ch18_targetUp,18,j)))'])
         end
         ylimtu=get(gca,'ylim');
-        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{out_ind_c18_p3(i)},2)'])))
+        text(75,ylimasp(2)-0.1*ylimasp(2),num2str(eval(['size(pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{out_ind_c18_p3(i)},2)'])))
         if i==1
             ylabel('targetUp')
         end
@@ -468,10 +475,10 @@ for n=1:size(sbjs_all,1)
     %%%scale psd plots
     ymin=min([ylim_21(1) ylim_22(1) ylim_23(1) ylim_24(1),...
               ylim_26(1) ylim_27(1) ylim_28(1) ylim_29(1),...
-              ylim_31(1) ylim_32(1) ylim_33(1) ylim_34(1)])
+              ylim_31(1) ylim_32(1) ylim_33(1) ylim_34(1)]);
     ymax=max([ylim_21(2) ylim_22(2) ylim_23(2) ylim_24(2),...
               ylim_26(2) ylim_27(2) ylim_28(2) ylim_29(2),...
-              ylim_31(2) ylim_32(2) ylim_33(2) ylim_34(2)])
+              ylim_31(2) ylim_32(2) ylim_33(2) ylim_34(2)]);
 
     for l=21:34
         if l>=21 & l<=24
@@ -487,13 +494,13 @@ for n=1:size(sbjs_all,1)
     end
     %%%
     
-    phase={'atStartPosition';'cueEvent';'targetUp'}
-    count=0
+    phase={'atStartPosition';'cueEvent';'targetUp'};
+    count=0;
     for i=1:4
         for j=1:3
-            count=count+1
-            for l=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_reaches_wo_outliers{count}'])
-                eval(['find_freq_',freq_band,'_ch18_t',num2str(i),'_p',num2str(j),'=find(epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq>',num2str(frq_rng_st),' & epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq<',num2str(frq_rng_ed),')'])
+            count=count+1;
+            for l=eval(['pro00087153_00',num2str(sbjs_all(n,:)),'_gen_03_ver_',version,'_reaches_wo_outliers_',freq_band,'{count}'])
+                eval(['find_freq_',freq_band,'_ch18_t',num2str(i),'_p',num2str(j),'=find(epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq>',num2str(frq_rng_st),' & epochs.',epoch_type,'.t',num2str(i),'.',phase{j},'.psd.freq<',num2str(frq_rng_ed),');'])
                 eval(['mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'(l)=log10(mean(epochs.',epoch_type,'.t',num2str(i),'.',phase{j},...
                     '.psd.saw(find_freq_',freq_band,'_ch18_t',num2str(i),'_p',num2str(j),',18,l)));'])
             end
@@ -503,7 +510,7 @@ for n=1:size(sbjs_all,1)
     for i=1:4
         for j=1:3
             eval(['mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'=nonzeros(mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),')'''])
-            eval(['size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'=size(mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),',2)'])
+            eval(['size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),'=size(mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),',2);'])
         end
     end
         
@@ -515,11 +522,11 @@ for n=1:size(sbjs_all,1)
         end
     end
     
-    grps_plot_25=[1 4 7 10]
+    grps_plot_25=[1 4 7 10];
     for i=1:4
         for j=1
             eval(['mat_sz_plot_25{',num2str(i),'}=linspace(',num2str(grps_plot_25(i)),',',num2str(grps_plot_25(i)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_25_all=cat(2,mat_sz_plot_25{:});
@@ -532,18 +539,18 @@ for n=1:size(sbjs_all,1)
     ylim_25=get(gca,'ylim');
     set(gca,'XTick',[1:4],'XTickLabel',{'t1';'t2';'t3';'t4'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch18_p1,table_mean_',freq_band,'_sbj',m,'_ch18_p1,stats_mean_',freq_band,'_sbj',m,...
-        '_ch18_p1]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t1_p1,mean_',freq_band,'_sbj',m,'_ch18_t2_p1,mean_',freq_band,'_sbj',m,'_ch18_t3_p1,mean_',freq_band,'_sbj',m,'_ch18_t4_p1],[grp_plot_25_all],''off'')'])
+        '_ch18_p1]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t1_p1,mean_',freq_band,'_sbj',m,'_ch18_t2_p1,mean_',freq_band,'_sbj',m,'_ch18_t3_p1,mean_',freq_band,'_sbj',m,'_ch18_t4_p1],[grp_plot_25_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch18_p1'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_p1),''Color'',[1 0 0])'])
     else
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_p1))'])
     end
 
-    grps_plot_30=[2 5 8 11]
+    grps_plot_30=[2 5 8 11];
     for i=1:4
         for j=2
             eval(['mat_sz_plot_30{',num2str(i),'}=linspace(',num2str(grps_plot_30(i)),',',num2str(grps_plot_30(i)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_30_all=cat(2,mat_sz_plot_30{:});
@@ -556,18 +563,18 @@ for n=1:size(sbjs_all,1)
     ylim_30=get(gca,'ylim');
     set(gca,'XTick',[1:4],'XTickLabel',{'t1';'t2';'t3';'t4'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch18_p2,table_mean_',freq_band,'_sbj',m,'_ch18_p2,stats_mean_',freq_band,'_sbj',m,...
-        '_ch18_p2]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t1_p2,mean_',freq_band,'_sbj',m,'_ch18_t2_p2,mean_',freq_band,'_sbj',m,'_ch18_t3_p2,mean_',freq_band,'_sbj',m,'_ch18_t4_p2],[grp_plot_30_all],''off'')'])
+        '_ch18_p2]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t1_p2,mean_',freq_band,'_sbj',m,'_ch18_t2_p2,mean_',freq_band,'_sbj',m,'_ch18_t3_p2,mean_',freq_band,'_sbj',m,'_ch18_t4_p2],[grp_plot_30_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch18_p2'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_p2),''Color'',[1 0 0])'])
     else
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_p2))'])
     end
 
-    grps_plot_35=[3 6 9 12]
+    grps_plot_35=[3 6 9 12];
     for i=1:4
         for j=3
             eval(['mat_sz_plot_35{',num2str(i),'}=linspace(',num2str(grps_plot_35(i)),',',num2str(grps_plot_35(i)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_35_all=cat(2,mat_sz_plot_35{:});
@@ -582,7 +589,7 @@ for n=1:size(sbjs_all,1)
     ymax4=max([ylim_25(2) ylim_30(2) ylim_35(2)]);
     set(gca,'XTick',[1:4],'XTickLabel',{'t1';'t2';'t3';'t4'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch18_p3,table_mean_',freq_band,'_sbj',m,'_ch18_p3,stats_mean_',freq_band,'_sbj',m,...
-        '_ch18_p3]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t1_p3,mean_',freq_band,'_sbj',m,'_ch18_t2_p3,mean_',freq_band,'_sbj',m,'_ch18_t3_p3,mean_',freq_band,'_sbj',m,'_ch18_t4_p3],[grp_plot_35_all],''off'')'])
+        '_ch18_p3]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t1_p3,mean_',freq_band,'_sbj',m,'_ch18_t2_p3,mean_',freq_band,'_sbj',m,'_ch18_t3_p3,mean_',freq_band,'_sbj',m,'_ch18_t4_p3],[grp_plot_35_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch18_p3'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_p3),''Color'',[1 0 0])'])
     else
@@ -595,17 +602,17 @@ for n=1:size(sbjs_all,1)
     end
     
     subplot(8,5,25)
-    eval(['mc_ch18_p1=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_p1,ymin4)'])
+    eval(['mc_ch18_p1=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_p1,ymin4);'])
     subplot(8,5,30)
-    eval(['mc_ch18_p2=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_p2,ymin4)'])
+    eval(['mc_ch18_p2=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_p2,ymin4);'])
     subplot(8,5,35)
-    eval(['mc_ch18_p3=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_p3,ymin4)'])
+    eval(['mc_ch18_p3=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_p3,ymin4);'])
     
-    grps_plot_36=[1 2 3]
+    grps_plot_36=[1 2 3];
     for i=1
         for j=1:3
             eval(['mat_sz_plot_36{',num2str(j),'}=linspace(',num2str(grps_plot_36(j)),',',num2str(grps_plot_36(j)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_36_all=cat(2,mat_sz_plot_36{:});
@@ -618,18 +625,18 @@ for n=1:size(sbjs_all,1)
     ylim_36=get(gca,'ylim');
     set(gca,'XTick',[1:3],'XTickLabel',{'h';'p';'m'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch18_t1,table_mean_',freq_band,'_sbj',m,'_ch18_t1_new,stats_mean_',freq_band,'_sbj',m,...
-        '_ch18_t1]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t1_p1,mean_',freq_band,'_sbj',m,'_ch18_t1_p2,mean_',freq_band,'_sbj',m,'_ch18_t1_p3],[grp_plot_36_all],''off'')'])
+        '_ch18_t1]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t1_p1,mean_',freq_band,'_sbj',m,'_ch18_t1_p2,mean_',freq_band,'_sbj',m,'_ch18_t1_p3],[grp_plot_36_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch18_t1'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_t1),''Color'',[1 0 0])'])
     else
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_t1))'])
     end
     
-    grps_plot_37=[4 5 6]
+    grps_plot_37=[4 5 6];
     for i=2
         for j=1:3
             eval(['mat_sz_plot_37{',num2str(j),'}=linspace(',num2str(grps_plot_37(j)),',',num2str(grps_plot_37(j)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_37_all=cat(2,mat_sz_plot_37{:});
@@ -642,18 +649,18 @@ for n=1:size(sbjs_all,1)
     ylim_37=get(gca,'ylim');
     set(gca,'XTick',[1:3],'XTickLabel',{'h';'p';'m'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch18_t2,table_mean_',freq_band,'_sbj',m,'_ch18_t2,stats_mean_',freq_band,'_sbj',m,...
-        '_ch18_t2]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t2_p1,mean_',freq_band,'_sbj',m,'_ch18_t2_p2,mean_',freq_band,'_sbj',m,'_ch18_t2_p3],[grp_plot_37_all],''off'')'])
+        '_ch18_t2]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t2_p1,mean_',freq_band,'_sbj',m,'_ch18_t2_p2,mean_',freq_band,'_sbj',m,'_ch18_t2_p3],[grp_plot_37_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch18_t2'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_t2),''Color'',[1 0 0])'])
     else
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_t2))'])
     end
     
-    grps_plot_38=[7 8 9]
+    grps_plot_38=[7 8 9];
     for i=3
         for j=1:3
             eval(['mat_sz_plot_38{',num2str(j),'}=linspace(',num2str(grps_plot_38(j)),',',num2str(grps_plot_38(j)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_38_all=cat(2,mat_sz_plot_38{:});
@@ -666,18 +673,18 @@ for n=1:size(sbjs_all,1)
     ylim_38=get(gca,'ylim');
     set(gca,'XTick',[1:3],'XTickLabel',{'h';'p';'m'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch18_t3,table_mean_',freq_band,'_sbj',m,'_ch18_t3,stats_mean_',freq_band,'_sbj',m,...
-        '_ch18_t3]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t3_p1,mean_',freq_band,'_sbj',m,'_ch18_t3_p2,mean_',freq_band,'_sbj',m,'_ch18_t3_p3],[grp_plot_38_all],''off'')'])
+        '_ch18_t3]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t3_p1,mean_',freq_band,'_sbj',m,'_ch18_t3_p2,mean_',freq_band,'_sbj',m,'_ch18_t3_p3],[grp_plot_38_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch18_t3'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_t3),''Color'',[1 0 0])'])
     else
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_t3))'])
     end
     
-    grps_plot_39=[10 11 12]
+    grps_plot_39=[10 11 12];
     for i=4
         for j=1:3
             eval(['mat_sz_plot_39{',num2str(j),'}=linspace(',num2str(grps_plot_39(j)),',',num2str(grps_plot_39(j)),...
-            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),')'])
+            ',size_mean_',freq_band,'_sbj',m,'_ch18_t',num2str(i),'_p',num2str(j),');'])
         end
     end
     grp_plot_39_all=cat(2,mat_sz_plot_39{:});
@@ -690,7 +697,7 @@ for n=1:size(sbjs_all,1)
     ylim_39=get(gca,'ylim');
     set(gca,'XTick',[1:3],'XTickLabel',{'h';'p';'m'})
     eval(['[p_mean_',freq_band,'_sbj',m,'_ch18_t4,table_mean_',freq_band,'_sbj',m,'_ch18_t4,stats_mean_',freq_band,'_sbj',m,...
-        '_ch18_t4]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t4_p1,mean_',freq_band,'_sbj',m,'_ch18_t4_p2,mean_',freq_band,'_sbj',m,'_ch18_t4_p3],[grp_plot_39_all],''off'')'])
+        '_ch18_t4]=kruskalwallis([mean_',freq_band,'_sbj',m,'_ch18_t4_p1,mean_',freq_band,'_sbj',m,'_ch18_t4_p2,mean_',freq_band,'_sbj',m,'_ch18_t4_p3],[grp_plot_39_all],''off'');'])
     if eval(['p_mean_',freq_band,'_sbj',m,'_ch18_t4'])<=0.05
         eval(['title(num2str(p_mean_',freq_band,'_sbj',m,'_ch18_t4),''Color'',[1 0 0])'])
     else
@@ -705,16 +712,16 @@ for n=1:size(sbjs_all,1)
     end
     
     subplot(8,5,36)
-    eval(['mc_ch18_t1=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_t1,ymin5)'])
+    eval(['mc_ch18_t1=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_t1,ymin5);'])
     subplot(8,5,37)
-    eval(['mc_ch18_t2=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_t2,ymin5)'])
+    eval(['mc_ch18_t2=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_t2,ymin5);'])
     subplot(8,5,38)
-    eval(['mc_ch18_t3=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_t3,ymin5)'])
+    eval(['mc_ch18_t3=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_t3,ymin5);'])
     subplot(8,5,39)
-    eval(['mc_ch18_t4=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_t4,ymin5)'])
+    eval(['mc_ch18_t4=nr_multcompare_ind_tdcs_plot(stats_mean_',freq_band,'_sbj',m,'_ch18_t4,ymin5);'])
     
     if strcmp(save_fig,'yes')
-        saveas(gcf,['~/nr_data_analysis/data_analyzed/eeg/gen_03/figures/gen_03_ver_a_',labl,'_ind_',...
+        saveas(gcf,['~/nr_data_analysis/data_analyzed/eeg/gen_03/analysis_pow/',date_str,'/gen_03_ver_',version,'_',labl,'_ind_',...
             freq_band,'_sbj',m,'.fig'],'fig')
     end
     
@@ -723,14 +730,14 @@ for n=1:size(sbjs_all,1)
 end
 
 if strcmp(save_data,'yes')
-        save(['~/nr_data_analysis/data_analyzed/eeg/gen_03/data/gen_03_ver_a_',...
-            '_mean_mean_',freq_band,'_ind_all','_',labl] ,['mean_mean_',freq_band,'*']) 
+        save(['~/nr_data_analysis/data_analyzed/eeg/gen_03/analysis_pow/',date_str,'/gen_03_ver_',version,...
+            '_',labl,'_mean_mean_',freq_band,'_ind_all'] ,['mean_mean_',freq_band,'*']) 
 end
 
 
-find100=find(epochs.',epoch_type,'.t1.atStartPosition.psd.freq<100)
-figure
-plot(epochs.',epoch_type,'.t1.atStartPosition.psd.freq(1:17),log10(epochs.',epoch_type,'.t1.atStartPosition.psd.saw(1:17,:,1)))
+% find100=find(epochs.',epoch_type,'.t1.atStartPosition.psd.freq<100)
+% figure
+% plot(epochs.',epoch_type,'.t1.atStartPosition.psd.freq(1:17),log10(epochs.',epoch_type,'.t1.atStartPosition.psd.saw(1:17,:,1)))
 
 % clear
 % load('/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_02/data/pro00087153_0043/analysis/S3-EEGanalysis/s3_dat.mat')
