@@ -330,7 +330,7 @@ for i = 1:length(reaches)
     vrMetrics.avgAcceleration(i) = avgAcceleration;
     vrMetrics.maxAcceleration(i)= maxAcceleration;
     
-    reachstarttime(i)=reachStart;
+    reachstarttime(i)=reachStart-vrData.sync.deltaT;
     
     % generate plot data
     t_reach = t(indReach);

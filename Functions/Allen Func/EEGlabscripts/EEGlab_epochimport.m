@@ -1,4 +1,4 @@
-function [EEG]=EEGlab_epochimport(trialData,sessioninfo,epochs,EEG)
+function [EEG]=EEGlab_epochimport(trialData,sessioninfo,epochs,EEG,movementstart)
 
 
     ft_vrdat=trialData.vr;
@@ -15,9 +15,10 @@ function [EEG]=EEGlab_epochimport(trialData,sessioninfo,epochs,EEG)
         el_hold{t,1}=[wk.atStartPosition.val(:,1) 1*ones(size(wk.atStartPosition.val,1),1)+t*10];
         el_prep{t,1}=[wk.cueEvent.val(:,1) 2*ones(size(wk.cueEvent.val,1),1)+t*10];
         el_move{t,1}=[wk.targetUp.val(:,1) 3*ones(size(wk.targetUp.val,1),1)+t*10];
+        el_movestart{t,1} = [movementstart(t,:)' 4*ones(size(wk.targetUp.val,1),1)+t*10];
     end
 
-    el_epochs=sortrows(cell2mat([el_hold; el_prep; el_move]),1);
+    el_epochs=sortrows(cell2mat([el_hold; el_prep; el_move; el_movestart]),1);
 
     insertdat=zeros(1,size(EEG.data,2));
 

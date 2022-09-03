@@ -21,7 +21,7 @@ calc_kin=true;
 calc_labpower=false;
 
 subjectData=[];
-parfor s=1:numel(sbj)
+parfor s=1%:numel(sbj)
     % Analysis folder
     anfold=fullfile(protocolfolder,sbj{s},'analysis');
     

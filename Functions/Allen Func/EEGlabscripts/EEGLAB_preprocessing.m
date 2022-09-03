@@ -34,6 +34,7 @@ end
 % Load EDF+ file
 disp('Loading EDF+ file...')
 [trialData,EEG,VR_chan]=loadVrTrialData_EEGlab(vrDataFolders,edf_file,{'DC1','DC2'},false,s1dat.vrchanLabel);
+fs = trialData.eeg.header.Fs;
 
 % Save processing data
 if save_procPipeline
@@ -186,6 +187,15 @@ for i=1:length(fieldnames(epochs.vrevents))
     end
 end
 
+% Find Movement start
+movementstart = [];
+fn = fieldnames(s2dat.movementstart);
+for i = 1:numel(fn)
+    movementstart = cat(1,movementstart,s2dat.movementstart.(fn{i}){:});
+end
+for i = 1:size(movementstart,1)
+    movementstart(i,:) = (movementstart(i,:).*fs + VR_sig(i,1));
+end
 
 clc
 if manual
@@ -230,6 +240,11 @@ while x~=1
         end
     end
     
+    % Add movement start
+    for i = 1:numel(movementstart)
+        plot([movementstart(i) movementstart(i)],yplotlim,'-c','LineWidth',0.5);
+    end
+    
     clearvars eventtimelist
     for i=1:length(trialData.vr)
         fieldnamesevents=fieldnames(trialData.vr(i).events);
@@ -260,7 +275,7 @@ end
 
 %% EEGlab code
 % Add Events channel to channel 46
-EEG=EEGlab_epochimport(trialData,sessioninfo,epochs,EEG);
+EEG=EEGlab_epochimport(trialData,sessioninfo,epochs,EEG,movementstart);
 
 % Extract Events in channel 46
 EEG=pop_chanevent(EEG,46,'edge','leading');
@@ -286,7 +301,6 @@ for i=1:length(EEG.event)
             tempreach=tempreach+1;
         end
     end
-    
     
     
     if trialcounter~=newtrialcounter
@@ -542,17 +556,17 @@ for i=1:size(vrsig,1)
         tempeeg.processingData{7}.details={'Artifact Subspace Reconstruction'};
     end
 
-    % Extract Epochs
-    [tempeeg,indices]=pop_epoch(tempeeg,[],[-0.25 1]);
-    tempeeg.ASRrmvIdx(indices)=[];
-    
-    if isempty(tempeeg.epoch)
-        figure;
-        hold on
-        plot(vrsig(i,1):vrsig(i,2),EEG.data(7,vrsig(i,1):vrsig(i,2)));
-        plot(vrsig(i,1):vrsig(i,2),EEG.data(vrsig(i,1):vrsig(i,2)));
-        error('epoch field empty')
-    end
+%     % Extract Epochs
+%     [tempeeg,indices]=pop_epoch(tempeeg,[],[-0.25 1]);
+%     tempeeg.ASRrmvIdx(indices)=[];
+%     
+%     if isempty(tempeeg.epoch)
+%         figure;
+%         hold on
+%         plot(vrsig(i,1):vrsig(i,2),EEG.data(7,vrsig(i,1):vrsig(i,2)));
+%         plot(vrsig(i,1):vrsig(i,2),EEG.data(vrsig(i,1):vrsig(i,2)));
+%         error('epoch field empty')
+%     end
     
     % Save processing data
     if save_procPipeline
@@ -561,6 +575,10 @@ for i=1:size(vrsig,1)
     end
     
     eegevents.trials.(['t',num2str(i)])=tempeeg;
+    
+    % Save as set file
+    pop_saveset(tempeeg, 'filepath', fullfile(analysisfolder,['t',num2str(i),'_preproc.set']));
+
 end
 
 
