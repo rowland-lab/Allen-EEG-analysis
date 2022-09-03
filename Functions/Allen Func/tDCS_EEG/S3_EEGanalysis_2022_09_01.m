@@ -184,7 +184,7 @@ while x~=1
         end
     end
 
-    % DON'T NEED THE FIGURES FOR NOW!!
+    % DON'T NEED THESE FIGURES FOR NOW!!
 %     %%%%%%%%%% Check if properly epoched %%%%%%%%%%
 %     figure('Name',['Epoched EEG signal graph==',figtitle],'units','normalized','outerposition',[0 0 1 1]); 
 %     hold on
@@ -248,7 +248,7 @@ while x~=1
 %     else
 %         x=1;
 %     end
-% end
+end
 % 
 % saveas(gcf,fullfile(eeganalysisfolder,[get(gcf,'Name'),'.jpg']))
 % close all
@@ -288,17 +288,17 @@ for i=1:length(fieldnames(epochs.vrevents))
     end
 end
 
-% PSD VR event reactivity (-1 sec, +1 sec)
-fn=fieldnames(epochs.vrevents);
-for t=1:length(fn)
-    for ev=1:length(epocheventtypes)
-        temp_data=epochs.vrevents.(fn{t}).(epocheventtypes{ev}).val;
-        for re=1:length(temp_data)
-            [epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.saw{re,1},epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.freq{re,1}]=pwelch(trialData.eeg.data(temp_data(re,1)-fs:temp_data(re,1),chan_num),window,nooverlap,nfft,fs);
-            [epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.saw{re,2},epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.freq{re,2}]=pwelch(trialData.eeg.data(temp_data(re,1):temp_data(re,1)+fs,chan_num),window,nooverlap,nfft,fs);
-        end
-    end
-end
+% % PSD VR event reactivity (-1 sec, +1 sec)
+% fn=fieldnames(epochs.vrevents);
+% for t=1:length(fn)
+%     for ev=1:length(epocheventtypes)
+%         temp_data=epochs.vrevents.(fn{t}).(epocheventtypes{ev}).val;
+%         for re=1:length(temp_data)
+%             [epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.saw{re,1},epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.freq{re,1}]=pwelch(trialData.eeg.data(temp_data(re,1)-fs:temp_data(re,1),chan_num),window,nooverlap,nfft,fs);
+%             [epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.saw{re,2},epochs.vrreactivity.(fn{t}).(epocheventtypes{ev}).psd.freq{re,2}]=pwelch(trialData.eeg.data(temp_data(re,1):temp_data(re,1)+fs,chan_num),window,nooverlap,nfft,fs);
+%         end
+%     end
+% end
 
 % Find frequency indexes
 % delta      1-4 Hz
@@ -308,13 +308,13 @@ end
 % gamma_low  30-50 Hz
 % gamma_bb   70-200 Hz
 
-freq_idx_100=epochs.vrwhole.psd.freq<=100;
-freq_idx_delta=epochs.vrwhole.psd.freq>=1&epochs.vrwhole.psd.freq<=4;
-freq_idx_theta=epochs.vrwhole.psd.freq>=4&epochs.vrwhole.psd.freq<=8;
-freq_idx_alpha=epochs.vrwhole.psd.freq>=8&epochs.vrwhole.psd.freq<=13;
-freq_idx_beta=epochs.vrwhole.psd.freq>=13&epochs.vrwhole.psd.freq<=30;
-freq_idx_gammal=epochs.vrwhole.psd.freq>=30&epochs.vrwhole.psd.freq<=50;
-freq_idx_gammabb=epochs.vrwhole.psd.freq>=70&epochs.vrwhole.psd.freq<=200;
+% freq_idx_100=epochs.vrwhole.psd.freq<=100;
+% freq_idx_delta=epochs.vrwhole.psd.freq>=1&epochs.vrwhole.psd.freq<=4;
+% freq_idx_theta=epochs.vrwhole.psd.freq>=4&epochs.vrwhole.psd.freq<=8;
+% freq_idx_alpha=epochs.vrwhole.psd.freq>=8&epochs.vrwhole.psd.freq<=13;
+% freq_idx_beta=epochs.vrwhole.psd.freq>=13&epochs.vrwhole.psd.freq<=30;
+% freq_idx_gammal=epochs.vrwhole.psd.freq>=30&epochs.vrwhole.psd.freq<=50;
+% freq_idx_gammabb=epochs.vrwhole.psd.freq>=70&epochs.vrwhole.psd.freq<=200;
 
 % %% Figure Creation (Rest Epochs vs VR Whole Epochs)
 % %%%%%%%%%%%% Power Spectral Density Analysis (all channels per epoch)[psd_allepoch_allchan] %%%%%%%%%%%% 
@@ -377,7 +377,7 @@ freq_idx_gammabb=epochs.vrwhole.psd.freq>=70&epochs.vrwhole.psd.freq<=200;
 % % % Input Comparison (Rest vs VR Whole Epochs)
 % % clc
 % % Epochcompare=input(sprintf('Enter epoch comparisons (Multiple=[#R,#VR;#R,#VR]) :  '));
-% Epochcompare=[1:size(epochs.vrwhole.val,1);1:size(epochs.vrwhole.val,1)]'; % Default epoch compare
+%Epochcompare=[1:size(epochs.vrwhole.val,1);1:size(epochs.vrwhole.val,1)]'; % Default epoch compare
 % 
 % % Create Line Plots (Rest Epochs and VR Whole Epochs)
 % figure('Name',['Cn7_Cn18_RestEpochs==',figtitle],'units','normalized','outerposition',[0 0 1 1])
@@ -1163,6 +1163,6 @@ freq_idx_gammabb=epochs.vrwhole.psd.freq>=70&epochs.vrwhole.psd.freq<=200;
 % % saveas(gcf,fullfile(vrepochfolder,[get(gcf,'Name'),'.jpg']))
 
 %% Save variables
-save(fullfile(eeganalysisfolder,'s3_dat_filt'),'Epochcompare','epochs')
+save(fullfile(eeganalysisfolder,'s3_dat_filt'),'epochs')
 close all
-end
+%end
