@@ -1,37 +1,20 @@
-function eegevents=EEGLAB_timefreq(eegevents,subject)
+function eegevents=EEGLAB_timefreq(eegevents,subject,opt)
 
-% subjectfolder=fullfile(protocolfolder,subject);
-% analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
-%
-%
-% % Create figure folders
-% figfolder=fullfile(analysisfolder,'figures');
-% mkdir(figfolder);
-%
-% spectrogramfolder=fullfile(figfolder,'spectrogram');
-% mkdir(spectrogramfolder);
-%
-% topoplotfolder=fullfile(figfolder,'topoplot');
-% mkdir(topoplotfolder);
+protocolfolder = opt.paths.protocolfolder;
+subjectfolder=fullfile(protocolfolder,subject);
+analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
 
-
-% try
-%     % Import EEG structures
-%     load(fullfile(analysisfolder,'ICA-Removed.mat'));
-% catch
-%     disp('Missing Previous step files')
-%     return
-% end
-%
-% % Import S1 session info
-% s1=load(fullfile(subjectfolder,'analysis','S1-VR_preproc',[subject,'_S1-VRdata_preprocessed.mat']));
-% sessioninfo=s1.sessioninfo;
-% trialnames=sessioninfo.trialnames;
-
+if exist(fullfile(analysisfolder,'EEGlab_Total.mat'),'file') && ~opt.tfa.rerun
+    EEGlab_Total = load(fullfile(analysisfolder,'EEGlab_Total.mat'));
+    if isfield(EEGlab_Total,'eegevents_tfa')
+        eegevents = EEGlab_Total.eegevents_tfa;
+        return
+    end
+end
 
 % Time-Freq analysis creation
 fn=fieldnames(eegevents.trials);
-for e=1:numel(fn)
+for e=1%:numel(fn)
     EEG=eegevents.trials.(fn{e});
     
     % Fix Epoch field to numbers and non-cells
@@ -122,85 +105,48 @@ for e=1:numel(fn)
         
         % Calculate Power of each channel
         for elec = 1:EEG.nbchan
-            % Calculate Difference in Power
-            [ersp,itc,powbase,times,freqs,erspboot,itcboot] = pop_newtimef(phaseEEG,1, elec,[phaseEEG.xmin*1000,phaseEEG.xmax*1000],0,'padratio',8, ...
-                'plotphase', 'off', 'timesout', 60, 'alpha', .01,'mcorrect','fdr','plotersp','off', 'plotitc','off');
-            phaseEEG.power.ersp_diff(:,:,elec) = ersp;
-            phaseEEG.power.times_diff(:,:,elec) = times;
-            phaseEEG.power.freqs_diff(:,:,elec) = freqs;
-            phaseEEG.power.erspboot_diff(:,:,elec) = erspboot;
-            
-            % Calculate Significant different in power
-            tempdat=ersp;
-            for r=1:size(tempdat,1)
-                temprow=tempdat(r,:);
-                tempboot=erspboot(r,:);
+            for trial = 1:phaseEEG.trials
+                trialEEG = phaseEEG;
+                trialEEG.data = phaseEEG.data(:,:,trial);
+                % Calculate Difference in Power
+                [ersp,itc,powbase,times,freqs,erspboot,itcboot] = pop_newtimef(trialEEG,1,elec,[trialEEG.xmin*1000,trialEEG.xmax*1000],0,'padratio',8, ...
+                    'plotphase', 'off', 'timesout', 60, 'alpha', .01,'mcorrect','fdr','plotersp','off', 'plotitc','off','verbose','off');
+                phaseEEG.power.ersp_diff(:,:,trial,elec) = ersp;
+                phaseEEG.power.times_diff(:,:,trial,elec) = times;
+                phaseEEG.power.freqs_diff(:,:,trial,elec) = freqs;
+                phaseEEG.power.erspboot_diff(:,:,trial,elec) = erspboot;
                 
-                tempdat(r,temprow>tempboot(1) & temprow<tempboot(2))=0;
+                % Calculate Significant different in power
+                tempdat=ersp;
+                for r=1:size(tempdat,1)
+                    temprow=tempdat(r,:);
+                    tempboot=erspboot(r,:);
+                    
+                    tempdat(r,temprow>tempboot(1) & temprow<tempboot(2))=0;
+                end
+                phaseEEG.power.significant_diff(:,:,trial,elec)=tempdat;
+                
+                % Calculate Raw Power
+                [ersp,itc,powbase,times,freqs,erspboot,itcboot] = pop_newtimef(trialEEG,1,elec,[trialEEG.xmin*1000,trialEEG.xmax*1000],0,'padratio',8, ...
+                    'plotphase', 'off', 'timesout', 60,'plotersp','off', 'plotitc','off','baseline',nan,'verbose','off');
+                phaseEEG.power.ersp(:,:,trial,elec) = ersp;
+                phaseEEG.power.times(:,:,trial,elec) = times;
+                phaseEEG.power.freqs(:,:,trial,elec) = freqs;
+                phaseEEG.power.erspboot(:,:,trial,elec) = erspboot;
             end
-            phaseEEG.power.significant_diff(:,:,elec)=tempdat;
-            
-            % Calculate Raw Power
-            [ersp,itc,powbase,times,freqs,erspboot,itcboot] = pop_newtimef(phaseEEG,1,elec,[phaseEEG.xmin*1000,phaseEEG.xmax*1000],0,'padratio',8, ...
-                'plotphase', 'off', 'timesout', 60,'plotersp','off', 'plotitc','off','baseline',nan);
-            phaseEEG.power.ersp(:,:,elec) = ersp;
-            phaseEEG.power.times(:,:,elec) = times;
-            phaseEEG.power.freqs(:,:,elec) = freqs;
-            phaseEEG.power.erspboot(:,:,elec) = erspboot;
         end
+
+        phaseEEG.power.dim = {'freq','time(ms)','trial','electrode'};
         
         % Save structure back to tempphaseeeg structure
         tempphaseeg(pn,:)=phaseEEG;
-        
-        phases={'hold';'prep';'move'}
-        trialnames=fn;
-        
-        
-                % Plot C3 power
-                figure('units','normalized','outerposition',[0 0 1 1])
-                c3elec=find(strcmp({phaseEEG.chanlocs.labels},'C3'));
-                pop_newtimef(phaseEEG,1, c3elec,[-500,1000],0,'padratio',8, ...
-                    'timesout', 60, 'alpha', .05,'mcorrect','fdr','plotitc','off','plotphase', 'off');
-                temptitle=[subject,' - ',phases{ph},' - ',trialnames{e},' --- Left Motor Cortex (C3), 0.05 alpha (fdr correct)'];
-                sgtitle(temptitle,'Interpreter', 'none')
-                graphchild=get(gcf,'Children');
-                graph=graphchild(5);
-                graph.CLim=[-5 5];
-                cb=graphchild(4);
-                cb.YLim=[-5 5];
-                cb.Children.YData=[-5 5];
-        
-        %         saveas(gcf,fullfile(spectrogramfolder,[temptitle,'.jpeg']),'jpeg')
-                %saveas(gcf,fullfile(spectrogramfolder,[temptitle]),'epsc')
-                %close allF
-        
-        
-                % Plot C4 power
-                figure('units','normalized','outerposition',[0 0 1 1])
-                c4elec=find(strcmp({phaseEEG.chanlocs.labels},'C4'));
-                pop_newtimef(phaseEEG,1, c4elec,[-500,1000],0,'padratio',8, ...
-                    'timesout', 60, 'alpha', .05,'mcorrect','fdr','plotitc','off','plotphase', 'off');
-                temptitle=[subject,' - ',phases{ph},' - ',trialnames{e},' --- Right Motor Cortex (C4), 0.05 alpha (fdr correct)'];
-                sgtitle(temptitle,'Interpreter', 'none')
-                graphchild=get(gcf,'Children');
-                graph=graphchild(5);
-                graph.CLim=[-5 5];
-                cb=graphchild(4);
-                cb.YLim=[-5 5];
-                cb.Children.YData=[-5 5];
-                %saveas(gcf,fullfile(spectrogramfolder,[temptitle,'.jpeg']),'jpeg')
-        %         saveas(gcf,fullfile(spectrogramfolder,[temptitle]),'epsc')
-                %close all
     end
     
-    %     Save tempphaseeg back to eegevents structure
+    % Save tempphaseeg back to eegevents structure
     eegevents.trials.(fn{e})=tempphaseeg;
 end
 
 % Preprocessing step completion tag
 eegevents.pipeline.FieldTrip=true;
-
-
-% save(fullfile(analysisfolder,'EEGlab_power'),'eegevents','-v7.3');
 
 end

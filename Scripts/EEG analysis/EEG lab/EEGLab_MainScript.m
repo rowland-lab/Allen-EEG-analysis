@@ -6,7 +6,7 @@ gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
 cd(gitpath)
 
 % Enter in protocol folder
-protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
+protocolfolder = 'C:\Users\Allen\Documents\data';
 
 % Add EEG related paths
 allengit_genpaths(gitpath,'EEG')
@@ -15,12 +15,30 @@ allengit_genpaths(gitpath,'EEG')
 sbj=dir(fullfile(protocolfolder,'pro000*.'));
 sbj={sbj.name}';
 
-%% Run Code
+%% Options
 
-% Run EEG Lab Processing Pipeline
+% General
+opt.save_procPipeline = false;
+
+% Step 1 - Preprocess
+opt.icarem.rerun = false;
+opt.icarem.ica_auto = true;
+opt.icarem.manual = false;
+
+% Step 2 - Time Frequency Analysis
+opt.tfa.rerun = true;
+
+% Step 3 - FieldTrip (Coherence Anaylsis)
+opt.ft.rerun = false;
+
+% Defining Paths
+opt.paths.githubpath = gitpath;
+opt.paths.protocolfolder = protocolfolder;
+%% Run EEG Lab Processing Pipeline
+
 clear status
 parfor i=1:numel(sbj)
-    status{i,1}=runEEGlab(sbj{i},protocolfolder,gitpath,false,false,true);
+    status{i,1}=runEEGlab(sbj{i},opt);
 end
 
 

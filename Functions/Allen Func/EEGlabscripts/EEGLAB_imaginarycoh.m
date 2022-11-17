@@ -1,18 +1,17 @@
-function eegevents=EEGLAB_imaginarycoh(eegevents)
+function eegevents=EEGLAB_imaginarycoh(eegevents,subject,opt)
+% Define folder paths
+protocolfolder = opt.paths.protocolfolder;
+subjectfolder=fullfile(protocolfolder,subject);
+analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
 
-% subjectfolder=fullfile(protocolfolder,subject);
-% analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
-% 
-% % Import power calculated EEG structures
-% importmatfile=fullfile(analysisfolder,'EEGlab_power.mat');
-% if any(exist(importmatfile))
-%     import=load(importmatfile);
-%     eegevents=import.eegevents;
-% else
-%     disp([subject,' missing EEGlab power file'])
-%     return
-% end
-
+% Check if to see if processed already
+if exist(fullfile(analysisfolder,'EEGlab_Total.mat'),'file') && ~opt.ft.rerun
+    EEGlab_Total = load(fullfile(analysisfolder,'EEGlab_Total.mat'));
+    if isfield(EEGlab_Total,'eegevents_ft')
+        eegevents = EEGlab_Total.eegevents_ft;
+        return
+    end
+end
 fn=fieldnames(eegevents.trials);
 for i=1:numel(fn)
     wkEEG=eegevents.trials.(fn{i});

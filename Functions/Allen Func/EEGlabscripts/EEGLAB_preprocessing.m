@@ -1,10 +1,26 @@
-function eegevents=EEGLAB_preprocessing(subject,protocolfolder,gitpath,save_procPipeline,manual,auto)
+function eegevents=EEGLAB_preprocessing(subject,opt)
+
+protocolfolder = opt.paths.protocolfolder;
+gitpath = opt.paths.githubpath;
+save_procPipeline = opt.save_procPipeline;
+manual = opt.icarem.manual;
+auto = opt.icarem.ica_auto;
 
 % Define folder paths
 subjectfolder=fullfile(protocolfolder,subject);
 analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
 edf_file=fullfile(subjectfolder,'edf',[subject,'.edf']);
 vrfolder=fullfile(subjectfolder,'vr');
+
+% Check if to see if processed already
+if exist(fullfile(analysisfolder,'EEGlab_Total.mat'),'file') && ~opt.icarem.rerun
+    EEGlab_Total = load(fullfile(analysisfolder,'EEGlab_Total.mat'));
+    if isfield(EEGlab_Total,'eegevents_icarem')
+        eegevents = EEGlab_Total.eegevents_icarem;
+        return
+    end
+end
+
 
 % Import S1-preprocessed data
 disp('Loading S1 data...')
