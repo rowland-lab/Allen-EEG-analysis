@@ -14,7 +14,7 @@ end
 
 % Time-Freq analysis creation
 fn=fieldnames(eegevents.trials);
-for e=1%:numel(fn)
+for e=1:numel(fn)
     EEG=eegevents.trials.(fn{e});
     
     % Fix Epoch field to numbers and non-cells
