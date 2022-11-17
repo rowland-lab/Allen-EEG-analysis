@@ -24,6 +24,7 @@ opt.save_procPipeline = false;
 opt.icarem.rerun = false;
 opt.icarem.ica_auto = true;
 opt.icarem.manual = false;
+opt.icarem.save_set = true;
 
 % Step 2 - Time Frequency Analysis
 opt.tfa.rerun = true;
@@ -40,6 +41,4 @@ clear status
 parfor i=1:numel(sbj)
     status{i,1}=runEEGlab(sbj{i},opt);
 end
-
-
 

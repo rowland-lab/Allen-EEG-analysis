@@ -572,17 +572,22 @@ for i=1:size(vrsig,1)
         tempeeg.processingData{7}.details={'Artifact Subspace Reconstruction'};
     end
 
-%     % Extract Epochs
-%     [tempeeg,indices]=pop_epoch(tempeeg,[],[-0.25 1]);
-%     tempeeg.ASRrmvIdx(indices)=[];
-%     
-%     if isempty(tempeeg.epoch)
-%         figure;
-%         hold on
-%         plot(vrsig(i,1):vrsig(i,2),EEG.data(7,vrsig(i,1):vrsig(i,2)));
-%         plot(vrsig(i,1):vrsig(i,2),EEG.data(vrsig(i,1):vrsig(i,2)));
-%         error('epoch field empty')
-%     end
+    if opt.icarem.save_set
+        % Save as set file
+        pop_saveset(tempeeg, 'filepath', fullfile(analysisfolder,['t',num2str(i),'_preproc.set']));
+    end
+
+    % Extract Epochs
+    [tempeeg,indices]=pop_epoch(tempeeg,[],[-0.25 1]);
+    tempeeg.ASRrmvIdx(indices)=[];
+    
+    if isempty(tempeeg.epoch)
+        figure;
+        hold on
+        plot(vrsig(i,1):vrsig(i,2),EEG.data(7,vrsig(i,1):vrsig(i,2)));
+        plot(vrsig(i,1):vrsig(i,2),EEG.data(vrsig(i,1):vrsig(i,2)));
+        error('epoch field empty')
+    end
     
     % Save processing data
     if save_procPipeline
@@ -592,9 +597,6 @@ for i=1:size(vrsig,1)
     
     eegevents.trials.(['t',num2str(i)])=tempeeg;
     
-    % Save as set file
-    pop_saveset(tempeeg, 'filepath', fullfile(analysisfolder,['t',num2str(i),'_preproc.set']));
-
 end
 
 
