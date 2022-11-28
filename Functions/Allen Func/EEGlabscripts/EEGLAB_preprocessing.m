@@ -2,7 +2,7 @@ function eegevents=EEGLAB_preprocessing(subject,opt)
 
 protocolfolder = opt.paths.protocolfolder;
 gitpath = opt.paths.githubpath;
-save_procPipeline = opt.save_procPipeline;
+save_procPipeline = opt.icarem.save_procPipeline;
 manual = opt.icarem.manual;
 auto = opt.icarem.ica_auto;
 
@@ -51,12 +51,6 @@ end
 disp('Loading EDF+ file...')
 [trialData,EEG,VR_chan]=loadVrTrialData_EEGlab(vrDataFolders,edf_file,{'DC1','DC2'},false,s1dat.vrchanLabel);
 fs = trialData.eeg.header.Fs;
-
-% Save processing data
-if save_procPipeline
-    EEG.processingData{1}.data=EEG.data;
-    EEG.processingData{1}.details='Import';
-end
 
 % Detect and remove Bad/Non-VR task trials
 reject_trials=[];
@@ -210,7 +204,7 @@ for i = 1:numel(fn)
     movementstart = cat(1,movementstart,s2dat.movementstart.(fn{i}){:});
 end
 for i = 1:size(movementstart,1)
-    movementstart(i,:) = (movementstart(i,:).*fs + VR_sig(i,1));
+    movementstart(i,:) = (movementstart(i,:).*fs + epochs.vrevents.(['t',num2str(i)]).targetUp.val(:,1)');
 end
 
 clc
@@ -296,6 +290,13 @@ EEG=EEGlab_epochimport(trialData,sessioninfo,epochs,EEG,movementstart);
 % Extract Events in channel 46
 EEG=pop_chanevent(EEG,46,'edge','leading');
 
+% Save processing data
+if save_procPipeline
+    EEG.processingData{1}.data=EEG.data;
+    EEG.processingData{1}.events=EEG.event;
+    EEG.processingData{1}.details='Import';
+end
+
 % Add Reach number and trial tag to events
 for i=1:length(EEG.event)
     
@@ -352,6 +353,7 @@ EEG=pop_resample(EEG,256,[],[]);
 % Save processing data
 if save_procPipeline
     EEG.processingData{2}.data=EEG.data;
+    EEG.processingData{2}.events=EEG.event;
     EEG.processingData{2}.details='Downsample to 256';
 end
 
@@ -361,15 +363,15 @@ EEG = pop_eegfilt( EEG, 0.5, 0, [], 0, 0, 0, 'fir1',0);
 % Save processing data
 if save_procPipeline
     EEG.processingData{3}.data=EEG.data;
+    EEG.processingData{3}.events=EEG.event;
     EEG.processingData{3}.details='High Pass Filter (0.5)';
 end
 
+% Remove Unused data
+EEG.data([21 24:end],:)=[];
+
 % Load Channel Locations
 EEG.chanlocs=pop_chanedit(EEG.chanlocs, 'load',{fullfile(gitpath,'toolboxes','EEG','etc','eeglab_electrodeLoc','Electrode_Loc.ced'), 'filetype', 'autodetect'});
-
-% Remove Unused Channel data/locations
-EEG.chanlocs([21 24:end])=[];
-EEG.data([21 24:end],:)=[];
 EEG.nbchan=numel(EEG.chanlocs);
 
 % Doesn't work for BIOSEMI??! EDF+
@@ -387,6 +389,7 @@ EEG = pop_eegfilt( EEG, 59, 61, 35, 1 ,0 ,0);
 % Save processing data
 if save_procPipeline
     EEG.processingData{4}.data=EEG.data;
+    EEG.processingData{4}.events=EEG.event;
     EEG.processingData{4}.details='Notch Filter';
 end
 
@@ -414,18 +417,9 @@ for i=1:size(vrsig,1)
     % Save processing data
     if save_procPipeline
         tempeeg.processingData{5}.data=tempeeg.data;
-        tempeeg.processingData{5}.VRsignal=vrsig(i,:);
+        tempeeg.processingData{5}.events=tempeeg.event;
         tempeeg.processingData{5}.details={'Trial Epoch'};
     end
-    
-%     % Rereference to average
-%     tempeeg=pop_reref(tempeeg,[]);
-%     
-%     % Save processing data
-%     if save_procPipeline
-%         tempeeg.processingData{7}.data=tempeeg.data;
-%         tempeeg.processingData{7}.details='Rereference to average';
-%     end
     
     % Calculate ICA weights
     tempeeg= pop_runica(tempeeg,'icatype','runica');
@@ -507,6 +501,14 @@ for i=1:size(vrsig,1)
         tempeeg=pop_subcomp(tempeeg,rcmp,1);
     end
     
+    
+    % Save processing data
+    if save_procPipeline
+        tempeeg.processingData{6}.data=tempeeg.data;
+        tempeeg.processingData{6}.events=tempeeg.event;
+        tempeeg.processingData{6}.details='ICA removed';
+    end
+
     % Find Bad Channels
     originaltempEEG=tempeeg;
     EEGremoval=clean_artifacts(tempeeg,'Highpass','off','BurstCriterion','off','WindowCriterion','off','WindowCriterionTolerances','off');
@@ -557,8 +559,9 @@ for i=1:size(vrsig,1)
     
     % Save processing data
     if save_procPipeline
-        tempeeg.processingData{6}.data=tempeeg.data;
-        tempeeg.processingData{6}.details='Removed Bad channels and interpolate';
+        tempeeg.processingData{7}.data=tempeeg.data;
+        tempeeg.processingData{7}.events=tempeeg.event;
+        tempeeg.processingData{7}.details='Removed Bad channels and interpolate';
     end
 
     % Perform Artifact Subspace Reconstruction (ASR) --> REMOVES EPOCHS
@@ -568,8 +571,9 @@ for i=1:size(vrsig,1)
     
     % Save processing data
     if save_procPipeline
-        tempeeg.processingData{7}.data=tempeeg.data;
-        tempeeg.processingData{7}.details={'Artifact Subspace Reconstruction'};
+        tempeeg.processingData{8}.data=tempeeg.data;
+        tempeeg.processingData{8}.events=tempeeg.event;
+        tempeeg.processingData{8}.details={'Artifact Subspace Reconstruction'};
     end
 
     if opt.icarem.save_set
@@ -591,17 +595,15 @@ for i=1:size(vrsig,1)
     
     % Save processing data
     if save_procPipeline
-        tempeeg.processingData{8}.data=tempeeg.data;
-        tempeeg.processingData{8}.details={'Reach epoched'};
+        tempeeg.processingData{9}.data=tempeeg.data;
+        tempeeg.processingData{9}.events=tempeeg.event;
+        tempeeg.processingData{9}.details={'Reach epoched'};
     end
     
     eegevents.trials.(['t',num2str(i)])=tempeeg;
     
 end
 
-
-% % Save structure
-% save(fullfile(analysisfolder,'Pre-ICA'),'eegevents','-v7.3');
 
 % Preprocessing step completion tag
 eegevents.pipeline.preprocessing=true;

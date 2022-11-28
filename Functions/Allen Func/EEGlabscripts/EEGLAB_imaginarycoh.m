@@ -9,6 +9,7 @@ if exist(fullfile(analysisfolder,'EEGlab_Total.mat'),'file') && ~opt.ft.rerun
     EEGlab_Total = load(fullfile(analysisfolder,'EEGlab_Total.mat'));
     if isfield(EEGlab_Total,'eegevents_ft')
         eegevents = EEGlab_Total.eegevents_ft;
+        disp('Previous fieldtrip coherence step detected... Skipping')
         return
     end
 end

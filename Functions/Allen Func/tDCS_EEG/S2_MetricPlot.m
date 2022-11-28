@@ -14,8 +14,8 @@ trialData.vr = importdata.trialData.vr;
 trialData.sessioninfo=importdata.sessioninfo;
 
 % initialize data folders
-subjectfolder=trialData.sessioninfo.path.sbjfolder;
-vrDataFolder=trialData.sessioninfo.path.vrfolder;
+subjectfolder=fullfile(protocolfolder,sbjnum);
+vrDataFolder=fullfile(subjectfolder,'vr');
 
 % Make analysis folder
 metricsfolder=fullfile(subjectfolder,'analysis','S2-metrics');
@@ -60,10 +60,11 @@ colorsnr.post = {'b'};
 linestyle={'-','--',':','-.','-','--',':','-.'};
 
 % Pre
-for i=1:numel(prestimtrials.num)
+for i=1:prestimtrials.num
     % load environment settings
-    environmentFiles = dir(fullfile(vrDataFolder,prestimtrials.label{i},'environment *.xml'));
+    environmentFiles = dir(fullfile(vrDataFolder,prestimtrials.label{i},'environment*'));
     if isempty(environmentFiles)
+        disp(['ERROR- CANNOT FIND ENVIRONMENT FILE IN',fullfile(vrDataFolder,prestimtrials.label{i})])
         return;
     end
     environmentFile = fullfile(vrDataFolder,prestimtrials.label{i},environmentFiles(1).name);
@@ -80,6 +81,7 @@ for i=1:numel(stimtrials.num)
     % load environment settings
     environmentFiles = dir(fullfile(vrDataFolder,stimtrials.label{i},'environment *.xml'));
     if isempty(environmentFiles)
+            disp(['ERROR- CANNOT FIND ENVIRONMENT FILE IN',fullfile(vrDataFolder,stimtrials.label{i})])
         return;
     end
     environmentFile = fullfile(vrDataFolder,stimtrials.label{i},environmentFiles(1).name);
@@ -99,6 +101,7 @@ for i=1:numel(poststimtrials.num)
     % load environment settings
     environmentFiles = dir(fullfile(vrDataFolder,poststimtrials.label{i},'environment *.xml'));
     if isempty(environmentFiles)
+            disp(['ERROR- CANNOT FIND ENVIRONMENT FILE IN',fullfile(vrDataFolder,poststimtrials.label{i})])
         return;
     end
     environmentFile = fullfile(vrDataFolder,poststimtrials.label{i},environmentFiles(1).name);

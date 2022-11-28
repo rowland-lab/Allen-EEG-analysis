@@ -8,6 +8,7 @@ if exist(fullfile(analysisfolder,'EEGlab_Total.mat'),'file') && ~opt.tfa.rerun
     EEGlab_Total = load(fullfile(analysisfolder,'EEGlab_Total.mat'));
     if isfield(EEGlab_Total,'eegevents_tfa')
         eegevents = EEGlab_Total.eegevents_tfa;
+        disp('Previous time frequency step detected... Skipping')
         return
     end
 end

@@ -17,17 +17,15 @@ sbj={sbj.name}';
 
 %% Options
 
-% General
-opt.save_procPipeline = false;
-
 % Step 1 - Preprocess
-opt.icarem.rerun = false;
+opt.icarem.save_procPipeline = true;
+opt.icarem.rerun = true;
 opt.icarem.ica_auto = true;
 opt.icarem.manual = false;
 opt.icarem.save_set = true;
 
 % Step 2 - Time Frequency Analysis
-opt.tfa.rerun = true;
+opt.tfa.rerun = false;
 
 % Step 3 - FieldTrip (Coherence Anaylsis)
 opt.ft.rerun = false;
