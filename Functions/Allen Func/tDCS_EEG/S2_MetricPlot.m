@@ -2,7 +2,12 @@
 function S2_MetricPlot (sbjnum,protocolfolder,threshold)
 
 %% Assigned Variables
+sbjnum='pro00087153_0021'
+
 sbjname=['Subject-',extractAfter(sbjnum,'pro00087153_00')];
+
+protocolfolder='/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data';
+
 
 % Import S1 preprocessed data
 try
@@ -14,12 +19,15 @@ trialData.vr = importdata.trialData.vr;
 trialData.sessioninfo=importdata.sessioninfo;
 
 % initialize data folders
-subjectfolder=trialData.sessioninfo.path.sbjfolder;
-vrDataFolder=trialData.sessioninfo.path.vrfolder;
+%UNCOMMENTsubjectfolder=trialData.sessioninfo.path.sbjfolder;
+subjectfolder='~/nr_data_analysis/data_analyzed/eeg/gen_03/data/pro00087153_0021';
+
+%UNCOMMENTvrDataFolder=trialData.sessioninfo.path.vrfolder;
+vrDataFolder='~/nr_data_analysis/data_analyzed/eeg/gen_03/data/pro00087153_0021/vr';
 
 % Make analysis folder
-metricsfolder=fullfile(subjectfolder,'analysis','S2-metrics');
-mkdir(metricsfolder);
+% UNCOMMENTmetricsfolder=fullfile(subjectfolder,'analysis','S2-metrics');
+% UNCOMMENTmkdir(metricsfolder);
 
 % Detect trials types
 prestimtrials.label=[];
@@ -48,7 +56,7 @@ metricNames = {'movementDuration' 'reactionTime' 'handpathlength' 'avgVelocity' 
 metricDescriptions = {'Reach Duration' 'Reaction Time' 'Hand Path Length' 'Average Velocity' 'Maximum Hand Velocity' 'Velocity Peaks' 'Time to Max Velocity' 'Time to Max Velocity - Normalized' 'Average Acceleration' 'Max Acceleration' 'Accuracy' 'Normalized Jerk' 'Index of Curvature'};
 metricYlabel = {'time [s]' 'time [s]' 'hand path length[m]' 'Average Velocity [m/s]' '|V| [m/s]' 'peaks []' 'time [s]' '% movement []' 'Average Acceleration [m/s^2]' 'Max Acceleration [m/s^2]' 'accuracy score [1/mm]' 'normalized jerk []' 'IOC []' 'straight line distance[m]'};
 
-%% Calculate data 
+%%% Calculate data 
 
 fh(1) = figure; % position
 fh(2) = figure; % velocity magnitude
@@ -62,7 +70,8 @@ linestyle={'-','--',':','-.','-','--',':','-.'};
 % Pre
 for i=1:numel(prestimtrials.num)
     % load environment settings
-    environmentFiles = dir(fullfile(vrDataFolder,prestimtrials.label{i},'environment *.xml'));
+    environmentFiles = dir(fullfile(vrDataFolder,prestimtrials.label{i},'environment *.xml'))
+
     if isempty(environmentFiles)
         return;
     end
@@ -73,7 +82,6 @@ for i=1:numel(prestimtrials.num)
     % calculate vr metrics
     eval(['[vrMetrics_pre.t',num2str(prestimtrials.num(i)),',rejecttrials.pre{i},movementstart.pre{i}]= calculateVRMetrics(trialData.vr(prestimtrials.num(i)),environmentSettings,fh,string(colorsnr.pre),linestyle{i},1);'])
 end
-
 
 % Stim
 for i=1:numel(stimtrials.num)
@@ -95,7 +103,7 @@ for i=1:numel(stimtrials.num)
 end
 
 % Post
-for i=1:numel(poststimtrials.num)
+for i=1%:numel(poststimtrials.num)
     % load environment settings
     environmentFiles = dir(fullfile(vrDataFolder,poststimtrials.label{i},'environment *.xml'));
     if isempty(environmentFiles)
@@ -112,7 +120,7 @@ for i=1:numel(poststimtrials.num)
         eval(['[vrMetrics_post.t',num2str(poststimtrials.num(i)),',rejecttrials.post{i},movementstart.post{i}]= calculateVRMetrics(trialData.vr(poststimtrials.num(i)),environmentSettings,fh,string(colorsnr.post),linestyle{i},0);'])
     end
 end
-%%
+
 figure(fh(1))
 subplot(3,1,1)
 h1 = plot(-1,0,'color',string(colorsnr.pre(1)));
@@ -124,7 +132,7 @@ h3.LineWidth=1;
 xlim([0 100])
 legend([h1 h2 h3],{'Pre-stim','Stim','Post-stim'});
 title('coordinates')
-saveas(fh(2),fullfile(metricsfolder,'coordinates.jpeg'))
+%UNCOMMENTsaveas(fh(2),fullfile(metricsfolder,'coordinates.jpeg'))
 
 
 figure(fh(2))
@@ -137,7 +145,7 @@ h3.LineWidth=1;
 xlim([0 100])
 legend([h1 h2 h3],{'Pre-stim','Stim','Post-stim'});
 title('velocity')
-saveas(fh(2),fullfile(metricsfolder,'velocity.jpeg'))
+%UNCOMMENTsaveas(fh(2),fullfile(metricsfolder,'velocity.jpeg'))
 
 
 %% bar graphs

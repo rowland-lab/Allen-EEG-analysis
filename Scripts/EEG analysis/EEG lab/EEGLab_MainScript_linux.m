@@ -7,7 +7,7 @@ gitpath='/home/rowlandn/nr_data_analysis/data_scripts/ac/Allen-EEG-analysis';
 cd(gitpath)
 
 % Enter in protocol folder
-protocolfolder='/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_02/data/';
+protocolfolder='/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data/';
 %protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
 
 % Add EEG related paths
@@ -21,7 +21,7 @@ sbj={sbj.name}';
 
 % Run EEG Lab Processing Pipeline
 clear status
-parfor i=2:21%:numel(sbj)
+parfor i=1%2:21%:numel(sbj)
     status{i,1}=runEEGlab(sbj{i},protocolfolder,gitpath,false,false,true);
 end
 

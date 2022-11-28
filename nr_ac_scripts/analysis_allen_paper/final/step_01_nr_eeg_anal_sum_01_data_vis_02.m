@@ -1,6 +1,6 @@
 function step_01_nr_eeg_anal_sum_01_data_vis_02(sbj_no)
 
-sbj_no='03'
+%sbj_no='03'
 fldr_nm=['pro00087153_00',sbj_no];
 file_nm=['pro00087153_00',sbj_no,'_S1-VRdata_preprocessed.mat'];
 load(['/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data/',fldr_nm,...
@@ -13,7 +13,7 @@ trialData.eeg.data=trialData.eeg.data(:,1:22);
 trialData.eeg.data=filtfilt(n1_b,n1_a,trialData.eeg.data);
 
 % %0.5 Hz high pass filter
-% X=highpass(trialData.eeg.data,0.5,trialData.eeg.header.samplingrate);
+X=highpass(trialData.eeg.data,0.5,trialData.eeg.header.samplingrate);
 trialData.eeg.data=X;
 
 %Calculate car and check against original signals

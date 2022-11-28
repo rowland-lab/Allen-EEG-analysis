@@ -348,6 +348,8 @@ y_mean = mean(y_plot,2); y_std = std(y_plot,[],2);
 z_mean = mean(z_plot,2); z_std = std(z_plot,[],2);
 V_mean = mean(V_plot,2); V_std = std(V_plot,[],2);
 t = linspace(0,100,size(x_plot,1))';
+vrMetrics.V_mean = V_mean;
+vrMetrics.t=t;
 
 if shadeoption==1
     figure(figureHandles(1));

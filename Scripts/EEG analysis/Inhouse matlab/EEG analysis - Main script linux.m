@@ -101,14 +101,14 @@ end
 
 
 %%%%%%%%%%%%%%%% Metric Plots --> S2_MetricPlot (sbjnum,protocolfolder,threshold[seconds])
-parfor i=2:21%5
+parfor i=1%2:21%5
     S2_MetricPlot(sbj{i},protocolfolder,2)
 end
 
 
 
 %%%%%%%%%%%%%%%% EEG Analysis --> S3_EEGanalysis(sbjnum,protocolfolder,window(seconds),nooverlap,nfft(seconds),manual)
-for i=1%2:21%5
+parfor i=2:21
     S3_EEGanalysis_2022_09_01(sbj{i},protocolfolder,0.1250,0.5,0.1250,false)
 end
 

@@ -1,18 +1,9 @@
 %function [subjectData,icoh_data_anal,export,a1,a3]=step_05a_nr_ac_icoh_subjectData(datestr,datafolder,gitpath,calc_icoh,calc_kin,calc_labpower,savefile)
 
-try catch
-for
-end
 
-if 
-end
-
-try
-catch
-end
 
 % for debugging
-datestr='2022_08_17a'
+datestr='2022_11_09'
 datafolder='/home/rowlandn/nr_data_analysis/data_analyzed/eeg/gen_03/data';
 gitpath='/home/rowlandn/nr_data_analysis/data_scripts/ac/Allen-EEG-analysis';
 calc_icoh=true;
@@ -40,7 +31,7 @@ phases={'Hold','Prep','Reach'};
 DOI={'stroke','healthy'};
 stimtypes=[0,2];
 stimname={'Sham','Stim'};
-savefigures=true;
+savefigures=false;
 
 
 
@@ -264,7 +255,8 @@ electrodes={'A1','Fp1','F7','T3','T5','O1','F3','C3','P3','Fz','Cz','Pz','A2','F
 
 for f=1:numel(FOI_freq)
     for d=1:numel(DOI)
-        figure; set(gcf,'Position',[469 686 593 430])
+        %figure; set(gcf,'Position',[469 686 593 430])
+        figure; set(gcf,'Position',[273 -113 846 1032])
         set(gcf,'color','w');
         ax_count=1;
         clear h
@@ -313,10 +305,10 @@ for f=1:numel(FOI_freq)
                         imagescDat=mat2gray(imagescDat);
                         imagescDat(logical(diag(ones(size(imagescDat,1),1))))=nan;
                     end
-                    imagesc(imagescDat,[0.4 0.7])
-                    axis square
+                    %imagesc(imagescDat,[0.4 0.7])
+                    %axis square
                     
-                    colormap('jet');
+                    %colormap('jet');
                     xticks([1:numel(electrodes)])
                     xticklabels(electrodes)
                     yticks([1:numel(electrodes)])
@@ -361,7 +353,7 @@ for f=1:numel(FOI_freq)
             savefig(gcf,figname)
         end
         
-        close all
+        %close all
     end
 end
 
@@ -1067,15 +1059,19 @@ end
 
 %% Coherence diff
 
+% phases={'Hold','Prep','Reach'};
+
+
 %electrodes={'F7','T3','T5','O1','F3','C3','P3','A1','Fz','Cz','Fp2','F8','T4','T6','O2','F4','C4','P4','A2','Pz','Fp1'};
 electrodes={'A1','Fp1','F7','T3','T5','O1','F3','C3','P3','Fz','Cz','Pz','A2','Fp2','F8','T4','T6','O2','F4','C4','P4'};
 
 sbj=dir(fullfile(datafolder,'pro000*'));
 sbj={sbj.name}'; 
 
-for f=1:numel(FOI_freq)
+for f=5%1:numel(FOI_freq)
     for d=1:numel(DOI)
-        figure; set(gcf,'Position',[2371 385 593 430])
+        %UNCOMMENTfigure; set(gcf,'Position',[2371 385 593 430])
+        figure; set(gcf,'Position',[2904 -116 603 1020])
         ax_count=1;
         clear h
         cmin=[];
@@ -1139,7 +1135,10 @@ for f=1:numel(FOI_freq)
                     eval(['icoh_data_anal.mat_diff.all.',FOI_label{f},'.',DOI{d},'.',phases{p},'_',phases{p+1},'.',stimname{st},'.',TOI_mod1{t},'=matcoh(:,:,find(idx));'])
                                              
                     imagescDat=mean(matcoh(:,:,idx),3);
+                    imagescDat=mat2gray(imagescDat);
+                    %%%%% put mat2gray here
                     imagesc(imagescDat)
+                    axis square
                     
                     % Find caxis
                     cmin=min([cmin; imagescDat(:)]);
@@ -1181,7 +1180,7 @@ for f=1:numel(FOI_freq)
             savefig(gcf,figname)
         end
         
-        close all
+        %close all
     end
 end
 
@@ -1509,8 +1508,8 @@ for s=1:21
     sbj_str{s}=extractAfter({subjectData(s).SubjectName},'pro00087153_00');
 end
 
-for f=1:numel(FOI_label)
-    for s=1:21
+for f=5%1:numel(FOI_label)
+    for s=3%1:21
         figure; set(gcf,'Position',[2052 610 743 515])
         [sbj_r,sbj_c]=find(strcmp(sbj_name,sbj_str{s}));
         cmin=[];
@@ -1521,6 +1520,7 @@ for f=1:numel(FOI_label)
                 subplot(4,2,spv1(t))
                 eval(['imagesc(icoh_data_anal.mat_diff.all.',FOI_label{f},'.',tempdisease{s},'.','Hold_Prep.',tempstimlabel{s},...
                     '.',time{tvec(t)},'(:,:,sbj_r));'])
+                %axis square
 %                 eval(['imagescDat=imagesc(icoh_data_anal.mat_diff.all.',FOI_label{f},'.',tempdisease{s},'.','Hold_Prep.',tempstimlabel{s},...
 %                     '.',time{tvec(t)},'(:,:,sbj_r));'])
                 hcol(t)=colorbar;
@@ -1541,6 +1541,7 @@ for f=1:numel(FOI_label)
                 subplot(4,2,spv1(t))
                 eval(['imagesc(icoh_data_anal.mat_diff.all.',FOI_label{f},'.',tempdisease{s},'.','Prep_Reach.',tempstimlabel{s},...
                     '.',time{tvec(t)},'(:,:,sbj_r));'])
+                %axis square
 %                 eval(['imagescDat=imagesc(icoh_data_anal.mat_diff.all.',FOI_label{f},'.',tempdisease{s},'.','Hold_Prep.',tempstimlabel{s},...
 %                     '.',time{tvec(t)},'(:,:,sbj_r));'])
                 hcol(t)=colorbar;
@@ -1582,7 +1583,7 @@ for f=1:numel(FOI_label)
             savefig(gcf,figname)
         end
         
-        close all
+        %close all
         
     end
 end
@@ -1599,7 +1600,7 @@ end
 %% this is to recreate the individual plots for c3c4 electrodes
 %%%%% do not link axes and turn off colormap
 sp_vec=[2,6,10,1,5,9,13,3,17,4,7,8,12,16,11,15,20,24,19,14,18];
-for f=1:numel(FOI_label)
+for f=5%1:numel(FOI_label)
     figure; set(gcf,'Position',[2123 401 1368 793])
     for s=1:21
         
@@ -1617,9 +1618,11 @@ for f=1:numel(FOI_label)
         end
         
         subplot(6,4,sp_vec(s)); hold on
+        temp_icoh_mat_diff_c3c4=mat2gray(temp_icoh_mat_diff_c3c4);
         imagesc(temp_icoh_mat_diff_c3c4)
+        axis square
         eval(['hcolc3c4_',char(sbj_str{s}),'=colorbar;'])
-        %colormap('jet')
+        colormap('jet')
 %         subplot(6,4,sbj)
 %             eval(['imagesc(imagescDat_ind_',FOI_label{f},'_c3_c4{sp_vec(sbj)},[0.4 0.7])'])
             ylabel(sbj_str{s},'Fontweight','bold')
@@ -1655,7 +1658,7 @@ for f=1:numel(FOI_label)
         savefig(gcf,figname)
     end
 
-    close all
+    %close all
 end
 
 %%%%Okay, after a long day of testing, these are different from the mat's
@@ -1675,6 +1678,92 @@ end
 % test_mat2(4,2)=icoh_data_anal.mat_diff.all.Beta.healthy.Prep_Reach.Stim.pos(20,8,6)
 % figure; imagesc(test_mat2,[-58 -2.8])
 % colorbar
+
+
+%%%%okay I need to write a piece of code that will plot the means of the
+%%%%heat maps
+
+mat_c3c4_diff_gamma.stroke.stim(1,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.pre)
+mat_c3c4_diff_gamma.stroke.stim(1,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.pre)
+mat_c3c4_diff_gamma.stroke.stim(2,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.i05)
+mat_c3c4_diff_gamma.stroke.stim(2,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.i05)
+mat_c3c4_diff_gamma.stroke.stim(3,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.i15)
+mat_c3c4_diff_gamma.stroke.stim(3,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.i15)
+mat_c3c4_diff_gamma.stroke.stim(4,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.pos)
+mat_c3c4_diff_gamma.stroke.stim(4,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.pos)
+
+mat_c3c4_diff_gamma.stroke.sham_stim(1,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Sham.pre)
+mat_c3c4_diff_gamma.stroke.sham_stim(1,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.pre)
+mat_c3c4_diff_gamma.stroke.sham_stim(2,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Sham.i05)
+mat_c3c4_diff_gamma.stroke.sham_stim(2,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.i05)
+mat_c3c4_diff_gamma.stroke.sham_stim(3,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Sham.i15)
+mat_c3c4_diff_gamma.stroke.sham_stim(3,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.i15)
+mat_c3c4_diff_gamma.stroke.sham_stim(4,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Sham.pos)
+mat_c3c4_diff_gamma.stroke.sham_stim(4,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.pos)
+
+mat_c3c4_diff_gamma.stroke_healthy.stim(1,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.healthy.Prep_Reach.Stim.pre)
+mat_c3c4_diff_gamma.stroke_healthy.stim(1,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.pre)
+mat_c3c4_diff_gamma.stroke_healthy.stim(2,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.healthy.Prep_Reach.Stim.i05)
+mat_c3c4_diff_gamma.stroke_healthy.stim(2,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.i05)
+mat_c3c4_diff_gamma.stroke_healthy.stim(3,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.healthy.Prep_Reach.Stim.i15)
+mat_c3c4_diff_gamma.stroke_healthy.stim(3,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.i15)
+mat_c3c4_diff_gamma.stroke_healthy.stim(4,1)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.healthy.Prep_Reach.Stim.pos)
+mat_c3c4_diff_gamma.stroke_healthy.stim(4,2)=mean(icoh_data_anal.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.pos)
+
+test_plot(1,1)=mean(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.pre)
+test_plot(1,2)=mean(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.i05)
+test_plot(1,3)=mean(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.i15)
+test_plot(1,4)=mean(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.pos)
+figure; bar(test_plot)
+
+
+%first what you might do is again look through all the figs and make sure
+%mat is all normalized and matt diff isn't, then you can try the normalized
+%matt diff values for significance that you calculated manually and if it
+%works then try to redo matt diff normalized including plots and the other
+%two way anova
+% scratch that - results exactly the same, no need to renormalize
+% everything!!
+
+% re: laterality index you should do a plot just like this one but with pow
+% contra-ipsi
+
+test_plot2(1,1)=icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.sham.pre_prep-icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.sham.pre_hold
+test_plot2(1,2)=icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.sham.i05_prep-icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.sham.i05_hold
+test_plot2(1,3)=icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.sham.i15_prep-icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.sham.i15_hold
+test_plot2(1,4)=icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.sham.pos_prep-icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.sham.pos_hold
+figure; bar(test_plot2)
+
+test_plot3(1,1)=icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.stim.pre_prep-icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.stim.pre_hold
+test_plot3(1,2)=icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.stim.i05_prep-icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.stim.i05_hold
+test_plot3(1,3)=icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.stim.i15_prep-icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.stim.i15_hold
+test_plot3(1,4)=icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.stim.pos_prep-icoh_data_anal_2022_11_09.mat.c3c4.mean.Gamma.stroke.stim.pos_hold
+test_plot4(1,1)=icoh_data_anal_2022_11_09.mat.c3c4.se.Gamma.stroke.stim.pre_prep-icoh_data_anal_2022_11_09.mat.c3c4.se.Gamma.stroke.stim.pre_hold
+test_plot4(1,2)=icoh_data_anal_2022_11_09.mat.c3c4.se.Gamma.stroke.stim.i05_prep-icoh_data_anal_2022_11_09.mat.c3c4.se.Gamma.stroke.stim.i05_hold
+test_plot4(1,3)=icoh_data_anal_2022_11_09.mat.c3c4.se.Gamma.stroke.stim.i15_prep-icoh_data_anal_2022_11_09.mat.c3c4.se.Gamma.stroke.stim.i15_hold
+test_plot4(1,4)=icoh_data_anal_2022_11_09.mat.c3c4.se.Gamma.stroke.stim.pos_prep-icoh_data_anal_2022_11_09.mat.c3c4.se.Gamma.stroke.stim.pos_hold
+
+figure; bar(test_plot3); hold on
+errorbar(test_plot3, test_plot4,'.k')
+
+
+
+dlmwrite('mattdiff_heatmap_01.txt',mat_c3c4_diff_gamma.stroke.sham_stim)
+%do simple line plot of gamma coherence across pre,i5,i15, pos (perhaps
+%compare all 4 groups)
+%need to try regressing hold-prep and prep-reach against max accel
+% also need to regress gamma against FMA - hold prep and prep reach
+% can try laterality index as well
+% try downsampling acceleration and then just taking mean of all 12 reaches
+% that might smooth things out a bit
+
+figure
+imagesc(mat_c3c4_diff_gamma.stroke.sham_stim)
+colorbar
+
+figure
+imagesc(mat_c3c4_diff_gamma.stroke_healthy.stim)
+colorbar
 
 
 %% c3c4 mat diff bar plots           
@@ -2026,7 +2115,35 @@ for f=1:numel(FOI_label)
     end
 
     close all
-end    
+end
+
+%% working with graphpad
+
+gamma_diff_01(:,1)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.pre)
+gamma_diff_01(:,2)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.i05)
+gamma_diff_01(:,3)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.i15)
+gamma_diff_01(:,4)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Stim.pos)
+
+gamma_diff_02(:,1)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Sham.pre)
+gamma_diff_02(:,2)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Sham.i05)
+gamma_diff_02(:,3)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Sham.i15)
+gamma_diff_02(:,4)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Hold_Prep.Sham.pos)
+
+dlmwrite('gamma_diff_01.txt',gamma_diff_01)
+dlmwrite('gamma_diff_02.txt',gamma_diff_02)
+
+gamma_diff_03(:,1)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.pre)
+gamma_diff_03(:,2)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.i05)
+gamma_diff_03(:,3)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.i15)
+gamma_diff_03(:,4)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.stroke.Prep_Reach.Stim.pos)
+
+gamma_diff_04(:,1)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.healthy.Prep_Reach.Stim.pre)
+gamma_diff_04(:,2)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.healthy.Prep_Reach.Stim.i05)
+gamma_diff_04(:,3)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.healthy.Prep_Reach.Stim.i15)
+gamma_diff_04(:,4)=squeeze(icoh_data_anal_2022_11_09.mat_diff.c3c4.Gamma.healthy.Prep_Reach.Stim.pos)
+
+dlmwrite('gamma_diff_03.txt',gamma_diff_03)
+dlmwrite('gamma_diff_04.txt',gamma_diff_04)
 
 %% iCoh C3-C4 phase diff
 

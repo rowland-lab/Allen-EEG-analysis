@@ -159,3 +159,8 @@ rest
 flexion-extension
 imaginary movement
 pos10 and pos15
+
+%9/24/22
+%power doesn't show much difference after removing ica but there is a
+%broadband beta-gamma increase in power for hc only that you don't see in
+%stim, delta, theta as well

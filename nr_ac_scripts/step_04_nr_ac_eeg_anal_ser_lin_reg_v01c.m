@@ -136,7 +136,7 @@ metrics={'reaction_time';'hand_path_length';'avg_vel';'max_vel';'vel_peak';
 stim_status={'stm';'non'};
 lat={'ipsi';'cont'};
 
-freq={'delta';'theta';'alpha';'beta';'low_gamma';'high_gamma'};
+freq={'delta';'theta';'alpha';'beta';'gamma'};
 if strcmp(freq_band,'delta')
     freq_idx=1;
 elseif strcmp(freq_band,'theta')
@@ -145,10 +145,8 @@ elseif strcmp(freq_band,'alpha')
     freq_idx=3;
 elseif strcmp(freq_band,'beta')
     freq_idx=4;
-elseif strcmp(freq_band,'low_gamma')
+elseif strcmp(freq_band,'gamma')
     freq_idx=5;
-elseif strcmp(freq_band,'high_gamma')
-    freq_idx=6;
 end
         
 sp_table=[1:48];

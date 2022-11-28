@@ -573,7 +573,8 @@ for j=1:3
            
         if count==1
             ylabel('atStartPosition')
-            title([grp,' all:ipsi non:t1:',labl])
+            %title([grp,' all:ipsi non:t1:',labl])
+            title([grp,' all:ipsi non:t1:',freq_band,':',labl,':ver ',version])
         elseif count==2
             title('t2')
         elseif count==3

@@ -1,5 +1,11 @@
 function eegevents=EEGLAB_preprocessing(subject,protocolfolder,gitpath,save_procPipeline,manual,auto)
 
+subject='pro00087153_0003'
+save_procPipeline=false
+manual=false
+auto=true
+EEG.sessioninfo=sessioninfo
+
 % Define folder paths
 subjectfolder=fullfile(protocolfolder,subject);
 analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
@@ -278,7 +284,8 @@ end
 EEG=EEGlab_epochimport(trialData,sessioninfo,epochs,EEG,movementstart);
 
 % Extract Events in channel 46
-EEG=pop_chanevent(EEG,46,'edge','leading');
+%UNCOMMENTEEG=pop_chanevent(EEG,46,'edge','leading');
+EEG=pop_chanevent(EEG,42,'edge','leading');
 
 % Add Reach number and trial tag to events
 for i=1:length(EEG.event)
@@ -331,7 +338,8 @@ for i=1:size(EEG.event,2)
 end
 
 % Downsample to 256
-EEG=pop_resample(EEG,256,[],[]);
+%UNCOMMENTEEG=pop_resample(EEG,256,[],[]);
+
 
 % Save processing data
 if save_procPipeline

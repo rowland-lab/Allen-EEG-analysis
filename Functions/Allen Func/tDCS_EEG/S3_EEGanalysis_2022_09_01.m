@@ -1,4 +1,11 @@
 function S3_EEGanalysis_2022_09_01(sbjnum,protocolfolder,window,nooverlap,nfft,manual)
+
+% sbjnum='pro00087153_0004'
+% window=0.1250
+% nooverlap=0.5
+% nfft=0.1250
+% manual=false
+
 %% Define variables and import data
 analysisfolder=fullfile(protocolfolder,sbjnum,'analysis');
 
@@ -101,7 +108,7 @@ clc
 x=2;
 close all
 
-while x~=1
+%while x~=1
     % Epoch VR whole trials
     epochs.vrwhole.val(:,1)=mean(VR_sig(:,1:2),2)-((epochlength*trialData.eeg.header.samplingrate)/2);
     epochs.vrwhole.val(:,2)=mean(VR_sig(:,1:2),2)+((epochlength*trialData.eeg.header.samplingrate)/2);
@@ -114,8 +121,34 @@ while x~=1
         epochs.rest.val(i,1)=VR_sig(i,1)-(buffer*trialData.eeg.header.samplingrate)-(epochlength*trialData.eeg.header.samplingrate);
     end
     epochs.rest.val(:,2)=epochs.rest.val(:,1)+(epochlength*trialData.eeg.header.samplingrate);
-
-
+    
+    % Epoch Rest trials/10
+    for i=1:length(VR_sig)
+        if i==1
+            eval(['epochs.rest2.t',num2str(i),'.val(1,1)=VR_sig(i,1)-(buffer*trialData.eeg.header.samplingrate)-(epochlength*trialData.eeg.header.samplingrate);'])
+        end
+        eval(['epochs.rest2.t',num2str(i),'.val(1,1)=VR_sig(i,1)-(buffer*trialData.eeg.header.samplingrate)-(epochlength*trialData.eeg.header.samplingrate);'])
+        eval(['epochs.rest2.t',num2str(i),'.val(1,2)=epochs.rest2.t',num2str(i),'.val(:,1)+(epochlength*trialData.eeg.header.samplingrate);'])
+        eval(['subarray_div',num2str(i),'=(epochs.rest2.t',num2str(i),'.val(2)-epochs.rest2.t',num2str(i),'.val(1))/10;'])
+        eval(['end_val.t',num2str(i),'=epochs.rest2.t',num2str(i),'.val(1,2);'])
+    end
+    
+    
+    for i=1:length(VR_sig)
+        for j=1:10
+            if j==1
+                eval(['epochs.rest2.t',num2str(i),'.val(j,1)=epochs.rest2.t',num2str(i),'.val(1,1)'])
+                eval(['epochs.rest2.t',num2str(i),'.val(j,2)=epochs.rest2.t',num2str(i),'.val(1,1)+subarray_div',num2str(i)])
+            elseif j>=2 & j<=9
+                eval(['epochs.rest2.t',num2str(i),'.val(j,1)=epochs.rest2.t',num2str(i),'.val(j-1,2)+1'])
+                eval(['epochs.rest2.t',num2str(i),'.val(j,2)=epochs.rest2.t',num2str(i),'.val(j,1)+subarray_div',num2str(i)])
+            else
+                eval(['epochs.rest2.t',num2str(i),'.val(j,1)=epochs.rest2.t',num2str(i),'.val(j-1,2)+1'])
+                eval(['epochs.rest2.t',num2str(i),'.val(j,2)=end_val.t',num2str(i)])
+            end
+        end
+    end
+                    
     % Epoch VR events
     epocheventtypes={'atStartPosition','cueEvent','targetUp'};
     epocheventlabels={'Hold','Prep','Move'};
@@ -248,7 +281,7 @@ while x~=1
 %     else
 %         x=1;
 %     end
-end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%end
 % 
 % saveas(gcf,fullfile(eeganalysisfolder,[get(gcf,'Name'),'.jpg']))
 % close all
@@ -264,6 +297,13 @@ end
 % PSD Rest epochs
 for i=1:length(epochs.rest.val)
     [epochs.rest.psd.saw(:,:,i),epochs.rest.psd.freq]=pwelch(trialData.eeg.data(epochs.rest.val(i,1):epochs.rest.val(i,2),chan_num),window,nooverlap,nfft,fs);
+end
+
+% PSD Rest2 epochs
+for i=1:4
+    for j=1:10
+        eval(['[epochs.rest2.t',num2str(i),'.psd.saw(:,:,j),epochs.rest2.t',num2str(i),'.psd.freq]=pwelch(trialData.eeg.data(epochs.rest2.t',num2str(i),'.val(j,1):epochs.rest2.t',num2str(i),'.val(j,2),chan_num),window,nooverlap,nfft,fs);'])
+    end
 end
 
 % PSD VR events
