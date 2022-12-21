@@ -1,4 +1,4 @@
-%% Notes
+ %% Notes
 
 % Requires correct folder structure
 
@@ -65,7 +65,7 @@ gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
 cd(gitpath)
 
 % Enter in protocol folder
-protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
+protocolfolder='C:\Users\Allen\Documents\data';
 
 % Add EEG related paths
 allengit_genpaths(gitpath,'EEG')
@@ -91,7 +91,7 @@ parfor i=1%:3
 end
 
 % Manual run failed auto S1
-for i=cell2mat(manual);
+for i=cell2mat(manual)
      S1_VR_trial_preproc(sbj{i},protocolfolder,true)
 end
 

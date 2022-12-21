@@ -5,8 +5,8 @@ cd(gitpath)
 % Add EEG related paths
 allengit_genpaths(gitpath,'EEG')
 %%
-subjectFolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153\pro00087153_0005';
-subjectNumber='pro00087153_0005';
+subjectFolder='C:\Users\Allen\Documents\data\pro00087153_0003';
+subjectNumber='pro00087153_0003';
 
 % Load S1 data
 s1=load(fullfile(subjectFolder,'analysis','S1-VR_preproc',[subjectNumber,'_S1-VRdata_preprocessed.mat']));

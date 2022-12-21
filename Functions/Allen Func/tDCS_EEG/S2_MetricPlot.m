@@ -19,11 +19,16 @@ trialData.vr = importdata.trialData.vr;
 trialData.sessioninfo=importdata.sessioninfo;
 
 % initialize data folders
+<<<<<<< HEAD
 %UNCOMMENTsubjectfolder=trialData.sessioninfo.path.sbjfolder;
 subjectfolder='~/nr_data_analysis/data_analyzed/eeg/gen_03/data/pro00087153_0021';
 
 %UNCOMMENTvrDataFolder=trialData.sessioninfo.path.vrfolder;
 vrDataFolder='~/nr_data_analysis/data_analyzed/eeg/gen_03/data/pro00087153_0021/vr';
+=======
+subjectfolder=fullfile(protocolfolder,sbjnum);
+vrDataFolder=fullfile(subjectfolder,'vr');
+>>>>>>> ffaf96856d6e8018a3ce114eb3094109948b6ab7
 
 % Make analysis folder
 % UNCOMMENTmetricsfolder=fullfile(subjectfolder,'analysis','S2-metrics');
@@ -68,11 +73,16 @@ colorsnr.post = {'b'};
 linestyle={'-','--',':','-.','-','--',':','-.'};
 
 % Pre
-for i=1:numel(prestimtrials.num)
+for i=1:prestimtrials.num
     % load environment settings
+<<<<<<< HEAD
     environmentFiles = dir(fullfile(vrDataFolder,prestimtrials.label{i},'environment *.xml'))
 
+=======
+    environmentFiles = dir(fullfile(vrDataFolder,prestimtrials.label{i},'environment*'));
+>>>>>>> ffaf96856d6e8018a3ce114eb3094109948b6ab7
     if isempty(environmentFiles)
+        disp(['ERROR- CANNOT FIND ENVIRONMENT FILE IN',fullfile(vrDataFolder,prestimtrials.label{i})])
         return;
     end
     environmentFile = fullfile(vrDataFolder,prestimtrials.label{i},environmentFiles(1).name);
@@ -88,6 +98,7 @@ for i=1:numel(stimtrials.num)
     % load environment settings
     environmentFiles = dir(fullfile(vrDataFolder,stimtrials.label{i},'environment *.xml'));
     if isempty(environmentFiles)
+            disp(['ERROR- CANNOT FIND ENVIRONMENT FILE IN',fullfile(vrDataFolder,stimtrials.label{i})])
         return;
     end
     environmentFile = fullfile(vrDataFolder,stimtrials.label{i},environmentFiles(1).name);
@@ -107,6 +118,7 @@ for i=1%:numel(poststimtrials.num)
     % load environment settings
     environmentFiles = dir(fullfile(vrDataFolder,poststimtrials.label{i},'environment *.xml'));
     if isempty(environmentFiles)
+            disp(['ERROR- CANNOT FIND ENVIRONMENT FILE IN',fullfile(vrDataFolder,poststimtrials.label{i})])
         return;
     end
     environmentFile = fullfile(vrDataFolder,poststimtrials.label{i},environmentFiles(1).name);

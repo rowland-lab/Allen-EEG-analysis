@@ -3,7 +3,8 @@ close all
 clear all
 
 % Enter in protocol folder
-protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
+%protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
+protocolfolder = 'C:\Users\Allen\Documents\data';
 
 % Detect subjects
 sbj=dir(fullfile(protocolfolder,'pro000*.'));
@@ -21,7 +22,7 @@ calc_kin=true;
 calc_labpower=false;
 
 subjectData=[];
-parfor s=1%:numel(sbj)
+parfor s=1:numel(sbj)
     % Analysis folder
     anfold=fullfile(protocolfolder,sbj{s},'analysis');
     

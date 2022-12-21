@@ -1,4 +1,10 @@
-function eegevents=EEGLAB_preprocessing(subject,protocolfolder,gitpath,save_procPipeline,manual,auto)
+function eegevents=EEGLAB_preprocessing(subject,opt)
+
+protocolfolder = opt.paths.protocolfolder;
+gitpath = opt.paths.githubpath;
+save_procPipeline = opt.icarem.save_procPipeline;
+manual = opt.icarem.manual;
+auto = opt.icarem.ica_auto;
 
 subject='pro00087153_0003'
 save_procPipeline=false
@@ -11,6 +17,16 @@ subjectfolder=fullfile(protocolfolder,subject);
 analysisfolder=fullfile(subjectfolder,'analysis','EEGlab');
 edf_file=fullfile(subjectfolder,'edf',[subject,'.edf']);
 vrfolder=fullfile(subjectfolder,'vr');
+
+% Check if to see if processed already
+if exist(fullfile(analysisfolder,'EEGlab_Total.mat'),'file') && ~opt.icarem.rerun
+    EEGlab_Total = load(fullfile(analysisfolder,'EEGlab_Total.mat'));
+    if isfield(EEGlab_Total,'eegevents_icarem')
+        eegevents = EEGlab_Total.eegevents_icarem;
+        return
+    end
+end
+
 
 % Import S1-preprocessed data
 disp('Loading S1 data...')
@@ -41,12 +57,6 @@ end
 disp('Loading EDF+ file...')
 [trialData,EEG,VR_chan]=loadVrTrialData_EEGlab(vrDataFolders,edf_file,{'DC1','DC2'},false,s1dat.vrchanLabel);
 fs = trialData.eeg.header.Fs;
-
-% Save processing data
-if save_procPipeline
-    EEG.processingData{1}.data=EEG.data;
-    EEG.processingData{1}.details='Import';
-end
 
 % Detect and remove Bad/Non-VR task trials
 reject_trials=[];
@@ -200,7 +210,7 @@ for i = 1:numel(fn)
     movementstart = cat(1,movementstart,s2dat.movementstart.(fn{i}){:});
 end
 for i = 1:size(movementstart,1)
-    movementstart(i,:) = (movementstart(i,:).*fs + VR_sig(i,1));
+    movementstart(i,:) = (movementstart(i,:).*fs + epochs.vrevents.(['t',num2str(i)]).targetUp.val(:,1)');
 end
 
 clc
@@ -287,6 +297,13 @@ EEG=EEGlab_epochimport(trialData,sessioninfo,epochs,EEG,movementstart);
 %UNCOMMENTEEG=pop_chanevent(EEG,46,'edge','leading');
 EEG=pop_chanevent(EEG,42,'edge','leading');
 
+% Save processing data
+if save_procPipeline
+    EEG.processingData{1}.data=EEG.data;
+    EEG.processingData{1}.events=EEG.event;
+    EEG.processingData{1}.details='Import';
+end
+
 % Add Reach number and trial tag to events
 for i=1:length(EEG.event)
     
@@ -344,6 +361,7 @@ end
 % Save processing data
 if save_procPipeline
     EEG.processingData{2}.data=EEG.data;
+    EEG.processingData{2}.events=EEG.event;
     EEG.processingData{2}.details='Downsample to 256';
 end
 
@@ -353,15 +371,15 @@ EEG = pop_eegfilt( EEG, 0.5, 0, [], 0, 0, 0, 'fir1',0);
 % Save processing data
 if save_procPipeline
     EEG.processingData{3}.data=EEG.data;
+    EEG.processingData{3}.events=EEG.event;
     EEG.processingData{3}.details='High Pass Filter (0.5)';
 end
 
+% Remove Unused data
+EEG.data([21 24:end],:)=[];
+
 % Load Channel Locations
 EEG.chanlocs=pop_chanedit(EEG.chanlocs, 'load',{fullfile(gitpath,'toolboxes','EEG','etc','eeglab_electrodeLoc','Electrode_Loc.ced'), 'filetype', 'autodetect'});
-
-% Remove Unused Channel data/locations
-EEG.chanlocs([21 24:end])=[];
-EEG.data([21 24:end],:)=[];
 EEG.nbchan=numel(EEG.chanlocs);
 
 % Doesn't work for BIOSEMI??! EDF+
@@ -379,6 +397,7 @@ EEG = pop_eegfilt( EEG, 59, 61, 35, 1 ,0 ,0);
 % Save processing data
 if save_procPipeline
     EEG.processingData{4}.data=EEG.data;
+    EEG.processingData{4}.events=EEG.event;
     EEG.processingData{4}.details='Notch Filter';
 end
 
@@ -406,18 +425,9 @@ for i=1:size(vrsig,1)
     % Save processing data
     if save_procPipeline
         tempeeg.processingData{5}.data=tempeeg.data;
-        tempeeg.processingData{5}.VRsignal=vrsig(i,:);
+        tempeeg.processingData{5}.events=tempeeg.event;
         tempeeg.processingData{5}.details={'Trial Epoch'};
     end
-    
-%     % Rereference to average
-%     tempeeg=pop_reref(tempeeg,[]);
-%     
-%     % Save processing data
-%     if save_procPipeline
-%         tempeeg.processingData{7}.data=tempeeg.data;
-%         tempeeg.processingData{7}.details='Rereference to average';
-%     end
     
     % Calculate ICA weights
     tempeeg= pop_runica(tempeeg,'icatype','runica');
@@ -499,6 +509,14 @@ for i=1:size(vrsig,1)
         tempeeg=pop_subcomp(tempeeg,rcmp,1);
     end
     
+    
+    % Save processing data
+    if save_procPipeline
+        tempeeg.processingData{6}.data=tempeeg.data;
+        tempeeg.processingData{6}.events=tempeeg.event;
+        tempeeg.processingData{6}.details='ICA removed';
+    end
+
     % Find Bad Channels
     originaltempEEG=tempeeg;
     EEGremoval=clean_artifacts(tempeeg,'Highpass','off','BurstCriterion','off','WindowCriterion','off','WindowCriterionTolerances','off');
@@ -549,8 +567,9 @@ for i=1:size(vrsig,1)
     
     % Save processing data
     if save_procPipeline
-        tempeeg.processingData{6}.data=tempeeg.data;
-        tempeeg.processingData{6}.details='Removed Bad channels and interpolate';
+        tempeeg.processingData{7}.data=tempeeg.data;
+        tempeeg.processingData{7}.events=tempeeg.event;
+        tempeeg.processingData{7}.details='Removed Bad channels and interpolate';
     end
 
     % Perform Artifact Subspace Reconstruction (ASR) --> REMOVES EPOCHS
@@ -560,38 +579,39 @@ for i=1:size(vrsig,1)
     
     % Save processing data
     if save_procPipeline
-        tempeeg.processingData{7}.data=tempeeg.data;
-        tempeeg.processingData{7}.details={'Artifact Subspace Reconstruction'};
+        tempeeg.processingData{8}.data=tempeeg.data;
+        tempeeg.processingData{8}.events=tempeeg.event;
+        tempeeg.processingData{8}.details={'Artifact Subspace Reconstruction'};
     end
 
-%     % Extract Epochs
-%     [tempeeg,indices]=pop_epoch(tempeeg,[],[-0.25 1]);
-%     tempeeg.ASRrmvIdx(indices)=[];
-%     
-%     if isempty(tempeeg.epoch)
-%         figure;
-%         hold on
-%         plot(vrsig(i,1):vrsig(i,2),EEG.data(7,vrsig(i,1):vrsig(i,2)));
-%         plot(vrsig(i,1):vrsig(i,2),EEG.data(vrsig(i,1):vrsig(i,2)));
-%         error('epoch field empty')
-%     end
+    if opt.icarem.save_set
+        % Save as set file
+        pop_saveset(tempeeg, 'filepath', fullfile(analysisfolder,['t',num2str(i),'_preproc.set']));
+    end
+
+    % Extract Epochs
+    [tempeeg,indices]=pop_epoch(tempeeg,[],[-0.25 1]);
+    tempeeg.ASRrmvIdx(indices)=[];
+    
+    if isempty(tempeeg.epoch)
+        figure;
+        hold on
+        plot(vrsig(i,1):vrsig(i,2),EEG.data(7,vrsig(i,1):vrsig(i,2)));
+        plot(vrsig(i,1):vrsig(i,2),EEG.data(vrsig(i,1):vrsig(i,2)));
+        error('epoch field empty')
+    end
     
     % Save processing data
     if save_procPipeline
-        tempeeg.processingData{8}.data=tempeeg.data;
-        tempeeg.processingData{8}.details={'Reach epoched'};
+        tempeeg.processingData{9}.data=tempeeg.data;
+        tempeeg.processingData{9}.events=tempeeg.event;
+        tempeeg.processingData{9}.details={'Reach epoched'};
     end
     
     eegevents.trials.(['t',num2str(i)])=tempeeg;
     
-    % Save as set file
-    pop_saveset(tempeeg, 'filepath', fullfile(analysisfolder,['t',num2str(i),'_preproc.set']));
-
 end
 
-
-% % Save structure
-% save(fullfile(analysisfolder,'Pre-ICA'),'eegevents','-v7.3');
 
 % Preprocessing step completion tag
 eegevents.pipeline.preprocessing=true;
