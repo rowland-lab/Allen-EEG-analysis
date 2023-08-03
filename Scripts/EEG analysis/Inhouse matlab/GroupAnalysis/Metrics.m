@@ -7,19 +7,13 @@ allengit_genpaths(gitpath,'tDCS')
 
 
 % Enter in protocol folder
-protocolfolder='C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153';
+protocolfolder='C:\Users\allen\Documents\tDCS_VR\data';
 
 % Detect subjects
 sbj=dir(fullfile(protocolfolder,'pro000*.'));
 sbj={sbj.name}';
 
 sbj_label=extractAfter(sbj,'pro00087153_00');
-
-% Create fig folder
-figfolder=fullfile('C:\Users\allen\Box Sync\Desktop\Allen_Rowland_EEG\protocol_00087153','groupanalysis','VR');;
-
-% Make group power folder
-mkdir(figfolder);
 %% Group VR data
 
 for sub=1:numel(sbj)
@@ -65,7 +59,7 @@ clear vars shamdat stimdat
 
 temp_xml=[];
 tempnames=[];
-for d=1
+for d=3
     
     % Create figure
     figure;
@@ -161,51 +155,51 @@ for d=1
             temp_xml.(metric_measures{measure})=[temp_xml.(metric_measures{measure}) inputmat];
             
         end
-        
-        % Run Mixed Anova
-        [tbl,rm]=simple_mixed_anova(inputmat,between_factors,{'Time'},{'Modality'});
-%         tbl = mauchly(rm)
-        
-        % Save structure
-        shamdat{measure}=[inputmat(between_factors==1,:) nan(sum(between_factors==1),1)];
-        stimdat{measure}=[inputmat(between_factors==2,:) nan(sum(between_factors==2),1)];
-        
-        % Compare stim vs sham
-        Mrm1 = multcompare(rm,'Modality','By','Time','ComparisonType','bonferroni');
-        
-        if any(Mrm1.pValue<=0.05)
-            sigidx=double(unique(Mrm1.Time(find(Mrm1.pValue<=0.05))));
-            Ylimits=get(gca,'YLim');
-            nYlimits=[Ylimits(1) Ylimits(2)+0.1*Ylimits(2)];
-            set(gca,'YLim',nYlimits)
-            for i=1:numel(sigidx)
-                text(sigidx(i),Ylimits(2),'*','FontSize',20,'HorizontalAlignment','center')
-            end
-        end
-        
-        % Compare time points
-        Mrm2 = multcompare(rm,'Time','By','Modality','ComparisonType','bonferroni');
-        if any(Mrm2.pValue<=0.05)
-            idx=find(Mrm2.pValue<=0.05);
-            for i=1:numel(idx)
-                t1=double(Mrm2.Time_1(idx(i)));
-                t2=double(Mrm2.Time_2(idx(i)));
-                pval=Mrm2.pValue(idx(i));
-                if t1<t2
-                 	Ylimits=get(gca,'YLim');
-                    nYlimits=[Ylimits(1) Ylimits(2)+0.1*Ylimits(2)];
-                    set(gca,'YLim',nYlimits)
-                    l=line(gca,[t1 t2],[1 1]*Ylimits(2));
-                    t=text(gca,mean([t1 t2]),Ylimits(2),num2str(pval),'HorizontalAlignment','center');
-                    if double(Mrm2.Modality(idx(i)))==1
-                        set(l,'linewidth',2,'Color','r')
-                    else
-                        set(l,'linewidth',2,'Color','g')
-                    end
-                end
-            end
-        end
-        
+
+%         % Run Mixed Anova
+%         [tbl,rm]=simple_mixed_anova(inputmat,between_factors,{'Time'},{'Modality'});
+% %         tbl = mauchly(rm)
+% 
+%         % Save structure
+%         shamdat{measure}=[inputmat(between_factors==1,:) nan(sum(between_factors==1),1)];
+%         stimdat{measure}=[inputmat(between_factors==2,:) nan(sum(between_factors==2),1)];
+% 
+%         % Compare stim vs sham
+%         Mrm1 = multcompare(rm,'Modality','By','Time','ComparisonType','bonferroni');
+% 
+%         if any(Mrm1.pValue<=0.05)
+%             sigidx=double(unique(Mrm1.Time(find(Mrm1.pValue<=0.05))));
+%             Ylimits=get(gca,'YLim');
+%             nYlimits=[Ylimits(1) Ylimits(2)+0.1*Ylimits(2)];
+%             set(gca,'YLim',nYlimits)
+%             for i=1:numel(sigidx)
+%                 text(sigidx(i),Ylimits(2),'*','FontSize',20,'HorizontalAlignment','center')
+%             end
+%         end
+% 
+%         % Compare time points
+%         Mrm2 = multcompare(rm,'Time','By','Modality','ComparisonType','bonferroni');
+%         if any(Mrm2.pValue<=0.05)
+%             idx=find(Mrm2.pValue<=0.05);
+%             for i=1:numel(idx)
+%                 t1=double(Mrm2.Time_1(idx(i)));
+%                 t2=double(Mrm2.Time_2(idx(i)));
+%                 pval=Mrm2.pValue(idx(i));
+%                 if t1<t2
+%                  	Ylimits=get(gca,'YLim');
+%                     nYlimits=[Ylimits(1) Ylimits(2)+0.1*Ylimits(2)];
+%                     set(gca,'YLim',nYlimits)
+%                     l=line(gca,[t1 t2],[1 1]*Ylimits(2));
+%                     t=text(gca,mean([t1 t2]),Ylimits(2),num2str(pval),'HorizontalAlignment','center');
+%                     if double(Mrm2.Modality(idx(i)))==1
+%                         set(l,'linewidth',2,'Color','r')
+%                     else
+%                         set(l,'linewidth',2,'Color','g')
+%                     end
+%                 end
+%             end
+%         end
+
         set(gca,'XLim',[0 5],'XTick',[1 2 3 4],'XTickLabel',{'BL','ES','LS','PT'})
         title([metricdat.label{measure}])
         if norm
@@ -213,15 +207,15 @@ for d=1
         else
             ylabel(metricdat.units{measure})
         end
-    end
-    
+     end
+
     legend([ersham erstim],{['Sham (n=',num2str(shamnum),')'],['Stim (n=',num2str(stimnum),')']},'Orientation','vertical')
-    
+
     % Title figure
     sgtitle(dx_type{d})
-    
-    stimdat_con=[stimdat{:}];
-    shamdat_con=[shamdat{:}];
+
+    % stimdat_con=[stimdat{:}];
+    % shamdat_con=[shamdat{:}];
 
     if export_xml
         filename = fullfile(figfolder,[dx_type{d},' metric.xlsx']);
@@ -239,9 +233,9 @@ end
 dx_type={'stroke','pd','healthy'};
 stim_type={0,2};
 metric_measures=metricdat.label;
-norm=true;
+norm=false;
 
-for d=1
+for d=3
     
     
     % Create figure
