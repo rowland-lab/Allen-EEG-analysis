@@ -65,7 +65,7 @@ gitpath='C:\Users\allen\Documents\GitHub\Allen-EEG-analysis';
 cd(gitpath)
 
 % Enter in protocol folder
-protocolfolder='C:\Users\Allen\Documents\data';
+protocolfolder='C:\Users\Allen\Documents\tDCS_VR\data';
 
 % Add EEG related paths
 allengit_genpaths(gitpath,'EEG')

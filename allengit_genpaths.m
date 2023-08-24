@@ -52,9 +52,11 @@ elseif strcmp(type,'EEG')
     ft_defaults
     addpath(fullfile(gitpath,'toolboxes','EEG','fieldtrip-20200607','external','spm12'))
     addpath(fullfile(gitpath,'toolboxes','EEG','fieldtrip-20200607','external','bsmart'))
+elseif strcmp(type,'ECoG')
+    addpath(genpath(fullfile(gitpath,'toolboxes','ECoG')))
 elseif strcmp(type,'none')
 else
-    error('unknown genpath type. acceptable inputs [imaging, tDCS, or EEG]')
+    error('unknown genpath type. acceptable inputs [imaging, tDCS, ECoG, or EEG]')
 end
 
 clc
